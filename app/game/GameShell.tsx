@@ -38,6 +38,7 @@ export function GameShell() {
   const [overlay, setOverlay] = useState<OverlayId>(null);
   const [detail, setDetail] = useState<DetailCard | null>(null);
   const [settings, setSettings] = useState(defaultSettings);
+  const [command, setCommand] = useState("");
   const [notice, setNotice] = useState("第一卷《黑雨》内容包已载入");
   const importRef = useRef<HTMLInputElement>(null);
   const panelScrollPositions = useRef<Partial<Record<PanelId, number>>>({});
@@ -106,9 +107,21 @@ export function GameShell() {
     catch (error) { setNotice(error instanceof Error ? error.message : "存档导入失败"); }
   }
 
+  function submitCommand() {
+    const intent = command.trim();
+    if (!intent) {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: settings.reducedMotion ? "auto" : "smooth" });
+      setNotice("已回到当前剧情与可用选择");
+      return;
+    }
+    setCommand("");
+    setNotice(`意图“${intent}”已记下；请以剧情选择推进故事。`);
+  }
+
   return (
     <main className="game-shell mythic-shell">
       <header className="topbar">
+        <button className="menu-trigger" aria-label="打开角色档案" onClick={() => setOverlay("character")}>☷</button>
         <button className="brand" aria-label="返回卷册" onClick={() => selectPanel("story")}>
           <span className="brand-seal">异</span><span><strong>山海异闻录</strong><small>天地未定</small></span>
         </button>
@@ -119,6 +132,13 @@ export function GameShell() {
           <button onClick={() => setOverlay("settings")} aria-label="设置">设</button>
         </div>
       </header>
+
+      <section className="mobile-status-strip" aria-label="角色当前状态">
+        <Meter label="生息" value={state.resources.life} max={12} tone="red" />
+        <Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" />
+        <Meter label="定力" value={state.resources.resolve} max={10} tone="blue" />
+        <button type="button" onClick={() => setOverlay("character")} aria-label="查看角色档案">{state.player.name.slice(0, 1)}</button>
+      </section>
 
       <section className="desktop-grid">
         <CharacterRail state={state} onCreate={() => setOverlay("create")} onOpenDetails={() => setOverlay("character")} />
@@ -132,6 +152,11 @@ export function GameShell() {
         </section>
         <SideRail panel={panel} setPanel={selectPanel} state={state} />
       </section>
+
+      <form className={`command-dock ${panel === "story" ? "is-visible" : ""}`} onSubmit={(event) => { event.preventDefault(); submitCommand(); }} aria-label="当前意图栏">
+        <label><span aria-hidden="true">&gt;</span><input value={command} onChange={(event) => setCommand(event.target.value)} maxLength={40} placeholder="写下意图，或直接选择下方行动…" aria-label="输入当前意图" /></label>
+        <button type="submit">记入</button>
+      </form>
 
       <nav className="mobile-nav" aria-label="主要功能">
         {navItems.filter((item) => item.id !== "people").map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
