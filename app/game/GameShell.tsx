@@ -177,21 +177,61 @@ function StoryPanel({ state, advanceStory, reducedMotion, openCreate }: { state:
   const blocks = visibleBlocks(state);
   const choices = visibleChoices(state).map((choice) => state.created ? choice : { ...choice, enabled: false, disabledHint: "请先建立角色，再以出身进入故事。" });
   const latestNodeRef = useRef<HTMLDivElement>(null);
+  const transcriptEndRef = useRef<HTMLDivElement>(null);
   const previousNodeId = useRef(node.id);
-  const history = state.storyHistory?.length ? state.storyHistory : blocks.map((block, index) => ({ id: `${node.id}:fallback:${index}`, nodeId: node.id, kind: block.type === "dialogue" ? "npc-dialogue" as const : block.type === "system" ? "system" as const : "narration" as const, text: interpolate(state, block.text), speaker: block.speaker }));
+  const fallbackHistory = blocks.map((block, index) => ({ id: `${node.id}:fallback:${index}`, nodeId: node.id, kind: block.type === "dialogue" ? "npc-dialogue" as const : block.type === "system" ? "system" as const : "narration" as const, text: interpolate(state, block.text), speaker: block.speaker }));
+  const savedHistory = state.storyHistory ?? [];
+  const history = savedHistory.some((entry) => entry.nodeId === node.id) ? savedHistory : [...savedHistory, ...fallbackHistory];
   const latestStart = history.findIndex((entry) => entry.nodeId === node.id);
+  const currentEntries = history.slice(latestStart);
+  const [reveal, setReveal] = useState(() => ({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 }));
+  const revealNodeMatches = reveal.nodeId === node.id;
+  const revealIndex = revealNodeMatches ? reveal.entryIndex : 0;
+  const revealCharacters = revealNodeMatches ? reveal.characters : 0;
+  const displayIndex = reducedMotion ? currentEntries.length : revealIndex;
+  const displayCharacters = reducedMotion ? 0 : revealCharacters;
+  const isTyping = !reducedMotion && revealIndex < currentEntries.length;
+
+  function scrollToLatest(position: "start" | "end" = "end") {
+    const target = position === "start" ? latestNodeRef.current : transcriptEndRef.current;
+    window.requestAnimationFrame(() => target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: position === "start" ? "center" : "end" }));
+  }
+
+  function revealAll() { setReveal({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 }); }
 
   useEffect(() => {
     if (previousNodeId.current === node.id) return;
     previousNodeId.current = node.id;
+    setReveal({ nodeId: node.id, entryIndex: 0, characters: 0 });
     window.requestAnimationFrame(() => latestNodeRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" }));
   }, [node.id, reducedMotion]);
+
+  useEffect(() => {
+    if (!isTyping) return;
+    const entry = currentEntries[revealIndex];
+    const nextCharacter = revealCharacters + 1;
+    const completed = nextCharacter > entry.text.length;
+    const finalCharacter = entry.text.at(-1) ?? "";
+    const delay = completed ? 280 : /[。！？；：]/.test(entry.text[revealCharacters] ?? finalCharacter) ? 280 : 30;
+    const timer = window.setTimeout(() => setReveal((current) => completed
+      ? { ...current, entryIndex: current.entryIndex + 1, characters: 0 }
+      : { ...current, characters: nextCharacter }), delay);
+    return () => window.clearTimeout(timer);
+  }, [currentEntries, isTyping, reducedMotion, revealCharacters, revealIndex]);
 
   return <article className="story-panel story-runtime">
     <header className="story-kicker"><span>{node.chapter.replace("ACT", "第")}</span><small>{node.presentation === "prologue" ? "卷首" : "剧情节点"}</small></header>
     {!state.created && <div className="story-create"><b>以你的出身进入杳湾</b><button className="ink-button" onClick={openCreate}>建立角色</button></div>}
-    <div className="story-blocks story-transcript">{history.map((entry, index) => <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className="story-message npc-dialogue"><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{entry.text}</p></blockquote> : entry.kind === "system" ? <aside className="story-message story-system">异兆记录 · {entry.text}</aside> : entry.kind === "narration" ? <p className="story-message narration">{entry.text}</p> : <article className={`story-message player-message ${entry.kind}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{entry.text}</p></article>}</div>)}</div>
-    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); return <button key={choice.id} className={`${intent}-choice ${!choice.enabled ? "locked" : ""}`} disabled={!choice.enabled} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `线索：${choice.sourceTag}` : choice.enabled ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{choice.enabled ? "→" : "—"}</i></button>; })}</div>
+    <div className="story-blocks story-transcript">{history.map((entry, index) => {
+      const currentIndex = index - latestStart;
+      const isCurrentEntry = currentIndex === displayIndex;
+      if (currentIndex > displayIndex) return null;
+      const text = isCurrentEntry ? entry.text.slice(0, displayCharacters) : entry.text;
+      return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{text}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {text}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{text}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{text}</p></article>}</div>;
+    })}</div>
+    <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll}>显示全文</button>}<button onClick={() => scrollToLatest()}>回到最新</button></div>
+    <div ref={transcriptEndRef} />
+    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; return <button key={choice.id} className={`${intent}-choice ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `线索：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>
   </article>;
 }
 

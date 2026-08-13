@@ -9,6 +9,8 @@ test("game UI renders the active Black Rain story runtime", () => {
   assert.match(source, /advanceStory\(choice.id\)/);
   assert.match(source, /scrollIntoView/);
   assert.match(source, /player-message/);
+  assert.match(source, /剧情正在展开/);
+  assert.match(source, /显示全文/);
 });
 
 test("platform boundary is ready for a WeChat adapter", () => {
