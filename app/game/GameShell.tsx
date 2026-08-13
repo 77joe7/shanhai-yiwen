@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { codexEntries, createInitialState, flaws, natures, origins } from "./gameData";
+import { createInitialState, flaws, hydrateBlackRainState, natures, origins } from "./gameData";
+import { blackRainContent, genericItems, itemById } from "./blackRainContent";
+import { chooseStory, currentStoryNode, displayCharacterName, enterCurrentNode, interpolate, visibleBlocks, visibleChoices } from "./storyRuntime";
 import { exportSave, importSave, loadGame, readSettings, saveGame, writeSettings } from "./storage";
 import { browserPlatform } from "./platform";
 import type { CharacterDraft, GameState, OverlayId, PanelId, Settings } from "./types";
@@ -36,7 +38,7 @@ export function GameShell() {
   const [overlay, setOverlay] = useState<OverlayId>(null);
   const [detail, setDetail] = useState<DetailCard | null>(null);
   const [settings, setSettings] = useState(defaultSettings);
-  const [notice, setNotice] = useState("系统演示模式 · 第一卷内容待接入");
+  const [notice, setNotice] = useState("第一卷《黑雨》内容包已载入");
   const importRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -44,7 +46,9 @@ export function GameShell() {
       try {
         setSettings(readSettings(defaultSettings));
         const saved = loadGame();
-        if (saved) setState(saved.payload);
+        const prepared = enterCurrentNode(hydrateBlackRainState(saved?.payload ?? createInitialState()));
+        setState(prepared.state);
+        if (prepared.notes.length) setNotice(prepared.notes.join(" · "));
       } catch { setNotice("检测到无效存档，已安全载入初始状态"); }
     }, 0);
     return () => window.clearTimeout(timer);
@@ -69,6 +73,19 @@ export function GameShell() {
     setNotice(label);
   }
 
+  function advanceStory(choiceId: string) {
+    let nextNotice = "剧情继续推进。";
+    setState((current) => {
+      const result = chooseStory(hydrateBlackRainState(current), choiceId);
+      const node = currentStoryNode(result.state);
+      nextNotice = result.notes.length ? result.notes.join(" · ") : `抵达：${node.title}`;
+      const logged = { ...result.state, revision: result.state.revision + 1, log: [nextNotice, ...result.state.log].slice(0, 20) };
+      saveGame(logged);
+      return logged;
+    });
+    setNotice(nextNotice);
+  }
+
   function downloadSave() {
     browserPlatform.files.exportText(`天地未定_${state.player.name}_${new Date().toISOString().slice(0, 10)}.json`, exportSave(state));
     setNotice("存档已导出到本机");
@@ -76,7 +93,7 @@ export function GameShell() {
 
   async function receiveImport(file?: File) {
     if (!file) return;
-    try { const next = importSave(await file.text()); setState(next); setNotice("存档导入成功，原存档已保留"); }
+    try { const next = hydrateBlackRainState(importSave(await file.text())); saveGame(next, "imported"); setState(next); setNotice("存档导入成功，原存档已保留"); }
     catch (error) { setNotice(error instanceof Error ? error.message : "存档导入失败"); }
   }
 
@@ -86,7 +103,7 @@ export function GameShell() {
         <button className="brand" aria-label="返回卷册" onClick={() => setPanel("story")}>
           <span className="brand-seal">异</span><span><strong>山海异闻录</strong><small>天地未定</small></span>
         </button>
-        <div className="chapter-marker"><span>卷一</span><strong>未写之章</strong><em>内容待接入</em></div>
+        <div className="chapter-marker"><span>卷一</span><strong>黑雨初落</strong><em>内容 v{blackRainContent.manifest.contentVersion}</em></div>
         <div className="top-actions">
           <button onClick={() => setOverlay("help")} aria-label="帮助">?</button>
           <button onClick={() => setOverlay("saves")} aria-label="存档">存</button>
@@ -98,11 +115,11 @@ export function GameShell() {
         <CharacterRail state={state} onCreate={() => setOverlay("create")} />
         <section className="reader" aria-live="polite">
           <div className="reader-heading">
-            <span className="eyebrow">赤水北岸 · 黑雨将至</span>
-            <h1>{panel === "story" ? "静候一场黑雨" : navItems.find((x) => x.id === panel)?.label}</h1>
+            <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
+            <h1>{panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
             <div className="brush-rule"><i /></div>
           </div>
-          <Panel panel={panel} state={state} mutate={mutate} openOverlay={setOverlay} openDetail={setDetail} />
+          <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} openOverlay={setOverlay} openDetail={setDetail} />
         </section>
         <SideRail panel={panel} setPanel={setPanel} state={state} />
       </section>
@@ -146,80 +163,82 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
   </aside>;
 }
 
-function Panel({ panel, state, mutate, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
-  if (panel === "story") return <StoryPanel state={state} mutate={mutate} openCreate={() => openOverlay("create")} />;
-  if (panel === "map") return <MapPanel mutate={mutate} />;
-  if (panel === "codex") return <CodexPanel openDetail={openDetail} />;
-  if (panel === "inventory") return <InventoryPanel state={state} mutate={mutate} openDetail={openDetail} />;
+function Panel({ panel, state, mutate, advanceStory, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
+  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} openCreate={() => openOverlay("create")} />;
+  if (panel === "map") return <MapPanel state={state} />;
+  if (panel === "codex") return <CodexPanel state={state} openDetail={openDetail} />;
+  if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
   if (panel === "people") return <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} />;
   return <MorePanel state={state} openOverlay={openOverlay} />;
 }
 
-function StoryPanel({ state, mutate, openCreate }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openCreate: () => void }) {
-  return <div className="story-panel">
-    <p className="lead">雨还没有落下。</p>
-    <p className="chapter-handoff">第一卷《黑雨》的剧情节点、人物对白与正式关卡将由后续内容包接入。这里暂不替故事作主，只展示游戏系统如何承接一段尚未写下的神话。</p>
-    <div className="empty-chapter"><span className="giant-one">一</span><div><small>第一章 · 内容席位</small><h3>等待故事抵达</h3><p>StoryNode、选择条件、状态效果与余响接口均已预留。补充内容后无需重做界面和存档结构。</p></div></div>
-    <div className="system-callout"><b>可先试玩系统</b><p>建立角色后，可在舆图、山海志、行囊与人物页体验探索消耗、材料认知、装备、关系和世界状态反馈。</p></div>
-    <div className="choices">
-      {!state.created && <button onClick={openCreate}><span>01</span><div><b>建立你的凡人</b><small>选择出身、天性与缺陷</small></div><i>→</i></button>}
-      <button onClick={() => mutate("你在空白卷页边写下了一个记号", (s) => ({ ...s, world: { ...s.world, "volume.one.marked": true } }))}><span>{state.created ? "01" : "02"}</span><div><b>触摸空白卷页</b><small>测试一次可追踪的世界状态变化</small></div><i>→</i></button>
-      <button className="locked" disabled><span>锁</span><div><b>踏入黑雨</b><small>需要：第一卷内容包</small></div><i>—</i></button>
-    </div>
-    {Boolean(state.world["volume.one.marked"]) && <p className="echo">余响：纸面纤维记住了你的指温。等故事到来时，这个记号仍会在。</p>}
-  </div>;
+function StoryPanel({ state, advanceStory, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; openCreate: () => void }) {
+  const node = currentStoryNode(state);
+  const blocks = visibleBlocks(state);
+  const choices = visibleChoices(state).map((choice) => state.created ? choice : { ...choice, enabled: false, disabledHint: "请先建立角色，再以出身进入故事。" });
+  return <article className="story-panel story-runtime">
+    <header className="story-kicker"><span>{node.chapter.replace("ACT", "第")}</span><small>{node.presentation === "prologue" ? "卷首" : "剧情节点"}</small></header>
+    {!state.created && <div className="story-create"><b>以你的出身进入杳湾</b><button className="ink-button" onClick={openCreate}>建立角色</button></div>}
+    <div className="story-blocks">{blocks.map((block, index) => block.type === "dialogue" ? <blockquote key={`${node.id}-${index}`}><cite>{displayCharacterName(block.speaker ?? "")}</cite><p>{interpolate(state, block.text)}</p></blockquote> : block.type === "system" ? <aside key={`${node.id}-${index}`} className="story-system">{interpolate(state, block.text)}</aside> : <p key={`${node.id}-${index}`} className={block.type === "conditional" ? "story-echo" : ""}>{interpolate(state, block.text)}</p>)}</div>
+    <div className="choices story-choices">{choices.map((choice, index) => <button key={choice.id} className={!choice.enabled ? "locked" : ""} disabled={!choice.enabled} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `线索：${choice.sourceTag}` : choice.enabled ? "推进故事" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{choice.enabled ? "→" : "—"}</i></button>)}</div>
+  </article>;
 }
 
-function MapPanel({ mutate }: { mutate: (l: string, f: (s: GameState) => GameState) => void }) {
+function MapPanel({ state }: { state: GameState }) {
   const places = [
-    { name: "卷一入口", tag: "已知", x: 49, y: 48 }, { name: "北岸荒径", tag: "传闻", x: 26, y: 30 }, { name: "雾中旧祠", tag: "未明", x: 71, y: 26 }, { name: "赤水渡口", tag: "锁定", x: 68, y: 69 },
+    { name: "杳湾", tag: "起点", x: 49, y: 48 }, { name: "北滩无名尸", tag: "线索", x: 27, y: 29 }, { name: "东桑林", tag: "异象", x: 72, y: 26 }, { name: "旧盐井", tag: "深处", x: 68, y: 69 },
   ];
-  return <div className="map-panel"><p>地点以道路、时辰、天气和认知相连。当前为系统预演图，不包含第一章正式地名与事件。</p><div className="map-canvas">{places.map((p) => <button key={p.name} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.tag === "锁定"} onClick={() => mutate(`你前往了${p.name}，时间推进至黄昏`, (s) => ({ ...s, location: p.name, period: "黄昏", resources: { ...s.resources, stamina: Math.max(0, s.resources.stamina - 1) } }))}><i /><b>{p.name}</b><small>{p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已知地点</span><span><i />传闻地点</span><span><i className="locked-dot" />条件未满足</span></div></div>;
+  return <div className="map-panel"><p>本章的行旅由剧情选择推进。舆图记录已经在故事中显形的地点与线索；当前所在：{state.location}。</p><div className="map-canvas">{places.map((p) => <button key={p.name} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.name !== state.location}><i /><b>{p.name}</b><small>{p.name === state.location ? "当前" : p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已抵达</span><span><i />剧情线索</span><span><i className="locked-dot" />尚待剧情开启</span></div></div>;
 }
 
-function CodexPanel({ openDetail }: { openDetail: (card: DetailCard) => void }) {
-  const categories = [...new Set(codexEntries.map((entry) => entry.category))];
+function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
+  const categoryNames: Record<string, string> = { event: "异象", person: "人物", item: "器物", material: "材料", beast: "异兽", place: "地理" };
+  const categories = [...new Set(blackRainContent.codex.map((entry) => entry.category))];
   const [category, setCategory] = useState(categories[0]);
-  const entries = codexEntries.filter((entry) => entry.category === category);
-  return <ArchiveBrowser label="山海志分类" categories={categories} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类见闻尚未被记录。">
-    {entries.map((entry) => <ArchiveRow key={entry.id} eyebrow={entry.level} title={entry.title} note={entry.source} onClick={() => openDetail({ eyebrow: `${entry.category} · ${entry.level}`, title: entry.title, text: entry.text, source: `记录来源：${entry.source}`, facts: [{ label: "认知层级", value: entry.level }, { label: "归类", value: entry.category }] })} />)}
+  const entries = blackRainContent.codex.filter((entry) => entry.category === category).filter((entry) => (state.codexLayers?.[entry.id]?.length ?? 0) > 0);
+  return <ArchiveBrowser label="山海志分类" categories={categories} categoryLabels={categoryNames} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类见闻尚未被记录。">
+    {entries.map((entry) => {
+      const unlocked = new Set(state.codexLayers?.[entry.id] ?? []);
+      const layer = entry.layers.filter((candidate) => unlocked.has(candidate.id)).at(-1) ?? entry.layers[0];
+      return <ArchiveRow key={entry.id} eyebrow={layer.sourceVoice} title={entry.title} note={`已获 ${unlocked.size}/${entry.layers.length} 层见闻`} onClick={() => openDetail({ eyebrow: `${categoryNames[entry.category] ?? entry.category} · ${layer.sourceVoice}`, title: entry.title, text: layer.text, source: `可信度：${layer.reliability}${layer.contradictions.length ? `；矛盾：${layer.contradictions.join(" / ")}` : ""}`, facts: [{ label: "已解锁层级", value: `${unlocked.size}/${entry.layers.length}` }, { label: "归类", value: categoryNames[entry.category] ?? entry.category }] })} />;
+    })}
   </ArchiveBrowser>;
 }
 
-function InventoryPanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
-  const items = [
-    { name: "烧不尽的灰", type: "未知材料", text: "触手温热，雨水冲不散。", action: "试着辨认" },
-    { name: "粗陶水囊", type: "旅具", text: "装着一天的净水。", action: "饮用" },
-    { name: "旧麻绳", type: "工具", text: "承重尚可，浸水后会变得难解。", action: "检查" },
-  ];
-  const categories = ["装备", ...new Set(items.map((item) => item.type))];
+function InventoryPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
+  const categoryNames: Record<string, string> = { equipment: "装备", generic: "行旅", material: "材料", tool: "工具", clue: "线索", unique: "异物" };
+  const genericEntries = Object.entries(state.itemQuantities ?? {}).filter(([id, quantity]) => id in genericItems && Number(quantity) > 0).map(([id, quantity]) => ({ id, name: genericItems[id], category: "generic", text: "出身携带的行旅物件。", quantity: Number(quantity) }));
+  const categories = ["equipment", ...(genericEntries.length ? ["generic"] : []), ...new Set(blackRainContent.items.map((item) => item.category))];
   const [category, setCategory] = useState(categories[0]);
   const equipmentSlots = ["主手", "衣具", "护符"];
-  const entries = category === "装备"
-    ? state.equipment.map((name, index) => ({ name, type: equipmentSlots[index], text: "已装备在身的行旅器物，可在剧情节点中响应条件。" }))
-    : items.filter((item) => item.type === category);
-  return <ArchiveBrowser label="行囊分类" categories={categories} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类行囊尚未获得。">
-    {entries.map((item) => <ArchiveRow key={item.name} eyebrow={item.type} title={item.name} note="查看器物详情" onClick={() => {
-      const action = "action" in item ? item.action : undefined;
-      openDetail({ eyebrow: `${item.type} · 行囊`, title: item.name, text: item.text, source: action ? "可在详情中执行当前动作。" : "当前已装备。", facts: [{ label: "归类", value: item.type }, { label: "携带状态", value: category === "装备" ? "已装备" : "行囊中" }], action: action ? { label: action, run: () => mutate(`${item.name}：${action}已执行`, (s) => item.name === "粗陶水囊" ? ({ ...s, resources: { ...s.resources, stamina: Math.min(10, s.resources.stamina + 1) } }) : s) } : undefined });
+  const entries = category === "equipment"
+    ? state.equipment.map((name, index) => ({ id: `equipment-${index}`, name, category: equipmentSlots[index], text: "已装备在身的行旅器物，可在剧情节点中响应条件。", quantity: 1 }))
+    : category === "generic" ? genericEntries
+    : blackRainContent.items.filter((item) => Number(state.itemQuantities?.[item.id] ?? 0) > 0).filter((item) => item.category === category).map((item) => ({ ...item, quantity: Number(state.itemQuantities?.[item.id] ?? 0) }));
+  return <ArchiveBrowser label="行囊分类" categories={categories} categoryLabels={categoryNames} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类行囊尚未获得。">
+    {entries.map((item) => <ArchiveRow key={item.id} eyebrow={category === "equipment" ? item.category : categoryNames[item.category] ?? item.category} title={item.name} note={`持有 ${item.quantity} 件`} onClick={() => {
+      const content = itemById.get(item.id);
+      const recognition = content?.recognitionStages[Math.max(0, Number(state.itemKnowledge?.[item.id] ?? 0) - 1)] ?? content?.recognitionStages[0];
+      openDetail({ eyebrow: `${category === "equipment" ? item.category : categoryNames[item.category] ?? item.category} · 行囊`, title: recognition?.displayName ?? item.name, text: recognition?.text ?? item.text, source: content ? `来源：${content.origin}` : category === "generic" ? "来源：角色出身" : "当前已装备。", facts: [{ label: "数量", value: item.quantity }, { label: "物性", value: content?.properties?.join(" · ") ?? "装备" }, { label: "稀有度", value: content?.rarity ?? "常见" }] });
     }} />)}
   </ArchiveBrowser>;
 }
 
 function PeoplePanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
-  const categories = ["同行", "线索人物"];
+  const factionLabels: Record<string, string> = { "FACTION-YAOWAN": "杳湾", "FACTION-NORTH": "北方来使", "FACTION-JIULI": "九黎流民", "FACTION-FUSANG": "扶桑遗脉" };
+  const categories = [...new Set(blackRainContent.characters.map((character) => character.factionIds[0] ?? "其他"))];
   const [category, setCategory] = useState(categories[0]);
-  const entries = Object.entries(state.relation).filter((_, index) => category === "同行" ? index === 1 : index !== 1);
-  return <ArchiveBrowser label="人物分类" categories={categories} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类人物尚未在卷中显形。">
-    {entries.map(([name, value]) => <ArchiveRow key={name} eyebrow={`信任 ${value}`} title={name} note={value > 1 ? "对你的言行已有记忆" : "仍在观察你"} onClick={() => openDetail({ eyebrow: "人物 · 关系档案", title: name, text: "关系不会压缩成一个好感度。正式角色卡将同时记录敬重、畏惧、债务与各自目标。", source: "系统占位人物；正式剧情接入后将替换为角色档案。", facts: [{ label: "信任", value }, { label: "当前类别", value: category }], action: { label: "履行小约", run: () => mutate(`${name}记住了你守约的一次`, (s) => ({ ...s, relation: { ...s.relation, [name]: value + 1 } })) } })} />)}
+  const entries = blackRainContent.characters.filter((character) => (character.factionIds[0] ?? "其他") === category);
+  return <ArchiveBrowser label="人物分类" categories={categories} categoryLabels={factionLabels} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类人物尚未在卷中显形。">
+    {entries.map((character) => { const value = Number(state.relation[character.id] ?? 0); return <ArchiveRow key={character.id} eyebrow={character.state} title={character.name} note={character.identity} onClick={() => openDetail({ eyebrow: "人物 · 关系档案", title: character.name, text: character.desire, source: `言谈：${character.speechGuide}`, facts: [{ label: "当前关系", value: value }, { label: "关系轴", value: character.relationshipAxes.join(" · ") }, { label: "行踪", value: character.location }], action: { label: "留下守约的印象", run: () => mutate(`${character.name}记住了你守约的一次`, (draft) => ({ ...draft, relation: { ...draft.relation, [character.id]: value + 1 } })) } })} />; })}
   </ArchiveBrowser>;
 }
 
-function ArchiveBrowser({ label, categories, selectedCategory, setSelectedCategory, emptyText, children }: { label: string; categories: string[]; selectedCategory: string; setSelectedCategory: (value: string) => void; emptyText: string; children: React.ReactNode }) {
+function ArchiveBrowser({ label, categories, categoryLabels = {}, selectedCategory, setSelectedCategory, emptyText, children }: { label: string; categories: string[]; categoryLabels?: Record<string, string>; selectedCategory: string; setSelectedCategory: (value: string) => void; emptyText: string; children: React.ReactNode }) {
   const childCount = Array.isArray(children) ? children.length : 1;
   return <section className="archive-browser" aria-label={label}>
-    <div className="archive-toolbar"><div><small>卷内检索</small><h2>{label}</h2></div><select aria-label={label} value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>{categories.map((category) => <option value={category} key={category}>{category}</option>)}</select></div>
-    <div className="category-tabs" role="tablist" aria-label={label}>{categories.map((category) => <button role="tab" aria-selected={selectedCategory === category} className={selectedCategory === category ? "active" : ""} onClick={() => setSelectedCategory(category)} key={category}>{category}</button>)}</div>
+    <div className="archive-toolbar"><div><small>卷内检索</small><h2>{label}</h2></div><select aria-label={label} value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>{categories.map((category) => <option value={category} key={category}>{categoryLabels[category] ?? category}</option>)}</select></div>
+    <div className="category-tabs" role="tablist" aria-label={label}>{categories.map((category) => <button role="tab" aria-selected={selectedCategory === category} className={selectedCategory === category ? "active" : ""} onClick={() => setSelectedCategory(category)} key={category}>{categoryLabels[category] ?? category}</button>)}</div>
     <div className="archive-list">{childCount ? children : <p className="archive-empty">{emptyText}</p>}</div>
   </section>;
 }
@@ -229,7 +248,8 @@ function ArchiveRow({ eyebrow, title, note, onClick }: { eyebrow: string; title:
 }
 
 function MorePanel({ state, openOverlay }: { state: GameState; openOverlay: (o: OverlayId) => void }) {
-  return <div className="more-panel"><button onClick={() => openOverlay("saves")}><b>存档与迁移</b><span>自动存档、手动槽、导入与导出</span></button><button onClick={() => openOverlay("settings")}><b>阅读与无障碍</b><span>字号、行距、对比度与减弱动效</span></button><button onClick={() => openOverlay("help")}><b>系统说明</b><span>设计口径、平台边界与快捷操作</span></button><div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div></div>;
+  const activeQuests = blackRainContent.quests.filter((quest) => state.activeQuests?.includes(quest.id));
+  return <div className="more-panel">{activeQuests.length > 0 && <section className="quest-summary"><small>进行中的任务</small>{activeQuests.map((quest) => <article key={quest.id}><b>{quest.name}</b><p>{quest.summary}</p></article>)}</section>}<button onClick={() => openOverlay("saves")}><b>存档与迁移</b><span>自动存档、手动槽、导入与导出</span></button><button onClick={() => openOverlay("settings")}><b>阅读与无障碍</b><span>字号、行距、对比度与减弱动效</span></button><button onClick={() => openOverlay("help")}><b>系统说明</b><span>剧情内容、平台边界与快捷操作</span></button><div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div></div>;
 }
 
 function DetailCardModal({ card, close }: { card: DetailCard; close: () => void }) {
@@ -238,7 +258,7 @@ function DetailCardModal({ card, close }: { card: DetailCard; close: () => void 
 
 function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
   return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}><section className="modal" role="dialog" aria-modal="true" aria-label="游戏弹窗"><button className="close" onClick={close}>×</button>
-    {type === "create" && <CharacterCreator state={state} complete={(draft) => { const next = createInitialState(draft); setState(next); saveGame(next); setNotice(`${draft.name}已在天地间留下名字`); close(); }} />}
+    {type === "create" && <CharacterCreator state={state} complete={(draft) => { const entered = enterCurrentNode(createInitialState(draft)); setState(entered.state); saveGame(entered.state); setNotice(entered.notes.join(" · ") || `${draft.name}已在天地间留下名字`); close(); }} />}
     {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} />}
     {type === "saves" && <SavePanel state={state} setState={setState} download={downloadSave} importNow={() => importRef.current?.click()} setNotice={setNotice} />}
     {type === "help" && <HelpPanel />}
@@ -263,4 +283,4 @@ function SavePanel({ state, setState, download, importNow, setNotice }: { state:
   return <div className="save-panel"><span className="eyebrow">LOCAL FIRST · 本地存档</span><h2>命数留痕</h2><div className="auto-save"><div><small>自动存档</small><b>{state.player.name} · {state.location}</b><span>{state.lastSavedAt ? new Date(state.lastSavedAt).toLocaleString("zh-CN") : "尚未写入"}</span></div><button onClick={() => { const e = saveGame(state); setState(e.payload); setNotice("自动存档已更新"); }}>覆写</button></div>{slots.map((slot, i) => <div className="save-slot" key={slot}><span>{i + 1}</span><div><b>手动命数槽 {i + 1}</b><small>可写入当前状态或读取已有记录</small></div><button onClick={() => { const e = saveGame(state, slot); setState(e.payload); setNotice(`命数槽 ${i + 1} 已写入`); }}>存</button><button onClick={() => { try { const e = loadGame(slot); if (e) { setState(e.payload); setNotice(`命数槽 ${i + 1} 已读取`); } else setNotice("此命数槽尚为空"); } catch { setNotice("存档损坏，未覆盖当前进度"); } }}>读</button></div>)}<div className="save-actions"><button onClick={download}>导出 JSON</button><button onClick={importNow}>导入 JSON</button></div><p>存档保存在当前浏览器设备。本版本不接入账号、云同步或第三方服务。</p></div>;
 }
 
-function HelpPanel() { return <div className="help-panel"><span className="eyebrow">ABOUT · 系统说明</span><h2>这是一册会记得你的书</h2><p>当前版本根据 V1.3 说明书实现浏览器与移动浏览器的界面、状态和交互骨架。第一章剧情特意留空，避免在正式内容到来前补写设定。</p><div><b>现已可用</b><span>角色创建 · 响应式三栏/单栏 · 探索消耗 · 认知图鉴 · 行囊装备 · 多轴关系预留 · 本地存档 · 导入导出 · 阅读设置</span></div><div><b>后续平台化</b><span>领域状态不直接依赖浏览器界面；存档与平台服务经适配层隔离，可在后续对接微信小游戏的文件、触摸、音频与生命周期 API。</span></div><small>快捷键与完整键盘流将在内容节点接入后随可达性测试一并冻结。</small></div>; }
+function HelpPanel() { return <div className="help-panel"><span className="eyebrow">ABOUT · 系统说明</span><h2>这是一册会记得你的书</h2><p>当前版本已加载第一卷《黑雨》v{blackRainContent.manifest.contentVersion}：剧情按节点呈现，选择会写入本地存档并解锁对应的任务、物品、关系与山海志见闻。</p><div><b>当前内容来源</b><span>仅读取“剧情/第一卷_黑雨/第一章_黑雨”的内容包与正文；备份目录不会参与游戏加载。</span></div><div><b>后续平台化</b><span>领域状态不直接依赖浏览器界面；存档与平台服务经适配层隔离，可在后续对接微信小游戏的文件、触摸、音频与生命周期 API。</span></div><small>剧情内容更新后，以内容包的 manifest 版本和当前节点 ID 为准重新载入。</small></div>; }

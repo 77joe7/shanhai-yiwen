@@ -1,7 +1,7 @@
 export type PanelId = "story" | "map" | "codex" | "inventory" | "people" | "more";
 export type OverlayId = "create" | "settings" | "saves" | "help" | null;
 
-export type OriginId = "hunter" | "mountain" | "apprentice" | "wanderer";
+export type OriginId = string;
 export type NatureId = "cautious" | "curious" | "kind" | "resolute";
 export type FlawId = "water" | "night" | "injury" | "speech";
 
@@ -22,7 +22,7 @@ export interface Settings {
 
 export interface GameState {
   schemaVersion: 1;
-  contentVersion: "system-preview-0.1";
+  contentVersion: string;
   revision: number;
   player: CharacterDraft;
   created: boolean;
@@ -32,10 +32,18 @@ export interface GameState {
   resources: { life: number; stamina: number; resolve: number };
   stats: Record<"体魄" | "身法" | "灵识" | "心志" | "机巧" | "言契", number>;
   inventory: string[];
+  itemQuantities?: Record<string, number>;
   equipment: string[];
   codexUnlocked: string[];
+  codexLayers?: Record<string, string[]>;
   relation: Record<string, number>;
   world: Record<string, string | number | boolean>;
+  flags?: Record<string, boolean>;
+  itemKnowledge?: Record<string, number>;
+  currentNodeId?: string;
+  visitedNodes?: string[];
+  activeQuests?: string[];
+  completedQuests?: string[];
   log: string[];
   lastSavedAt?: string;
 }

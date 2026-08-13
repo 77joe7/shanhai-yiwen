@@ -2,10 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-test("game UI keeps chapter one explicitly un-authored", () => {
+test("game UI renders the active Black Rain story runtime", () => {
   const source = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
-  assert.match(source, /第一卷《黑雨》的剧情节点/);
-  assert.match(source, /需要：第一卷内容包/);
+  assert.match(source, /function StoryPanel/);
+  assert.match(source, /visibleChoices\(state\)/);
+  assert.match(source, /advanceStory\(choice.id\)/);
 });
 
 test("platform boundary is ready for a WeChat adapter", () => {
@@ -26,6 +27,26 @@ test("archive panels use category lists and reusable detail cards", () => {
   const styles = fs.readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.match(gameShell, /function ArchiveBrowser/);
   assert.match(gameShell, /function DetailCardModal/);
-  assert.match(gameShell, /<CodexPanel openDetail=\{openDetail\} \/>/);
+  assert.match(gameShell, /<CodexPanel state=\{state\} openDetail=\{openDetail\} \/>/);
   assert.match(styles, /\.archive-browser/);
+});
+
+test("the application reads only the active chapter content package", () => {
+  const source = fs.readFileSync(new URL("../app/game/blackRainContent.ts", import.meta.url), "utf8");
+  assert.match(source, /第一卷_黑雨\/第一章_黑雨\/内容包\/story-nodes\.json/);
+  assert.match(source, /encounters\.json/);
+  assert.doesNotMatch(source, /备份/);
+});
+
+test("the current Black Rain package is internally complete and offers eight origins", () => {
+  const contentRoot = new URL("../剧情/第一卷_黑雨/第一章_黑雨/内容包/", import.meta.url);
+  const manifest = JSON.parse(fs.readFileSync(new URL("manifest.json", contentRoot), "utf8"));
+  const story = JSON.parse(fs.readFileSync(new URL("story-nodes.json", contentRoot), "utf8"));
+  const origins = JSON.parse(fs.readFileSync(new URL("player-origins.json", contentRoot), "utf8"));
+  const shell = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
+  assert.equal(manifest.entryNodeId, story.nodes[0].id);
+  assert.equal(manifest.counts.storyNodes, story.nodes.length);
+  assert.equal(manifest.counts.origins, origins.origins.length);
+  assert.equal(origins.origins.length, 8);
+  assert.match(shell, /const groups = \[origins, natures, flaws\]/);
 });
