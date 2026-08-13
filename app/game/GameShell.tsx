@@ -8,7 +8,7 @@ import { exportSave, importSave, loadGame, readSettings, saveGame, writeSettings
 import { browserPlatform } from "./platform";
 import type { CharacterDraft, GameState, OverlayId, PanelId, Settings } from "./types";
 
-const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, textReveal: true, simplifiedTexture: false, ambientVolume: 35 };
+const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, textReveal: true, simplifiedTexture: false, ambientVolume: 35, autoSave: true, haptics: true };
 
 type DetailCard = {
   eyebrow: string;
@@ -78,7 +78,7 @@ export function GameShell() {
     setState((current) => {
       const next = recipe(current);
       const logged = { ...next, revision: next.revision + 1, log: [label, ...next.log].slice(0, 20) };
-      saveGame(logged);
+      if (settings.autoSave) saveGame(logged);
       return logged;
     });
     setNotice(label);
@@ -91,9 +91,10 @@ export function GameShell() {
       const node = currentStoryNode(result.state);
       nextNotice = result.notes.length ? result.notes.join(" · ") : `抵达：${node.title}`;
       const logged = { ...result.state, revision: result.state.revision + 1, log: [nextNotice, ...result.state.log].slice(0, 20) };
-      saveGame(logged);
+      if (settings.autoSave) saveGame(logged);
       return logged;
     });
+    if (settings.haptics) void browserPlatform.feedback.vibrate("light");
     setNotice(nextNotice);
   }
 
@@ -146,15 +147,15 @@ export function GameShell() {
         <section className="reader" aria-live="polite">
           <div className="reader-heading">
             <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
-            <h1>{panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
+            <h1>{!state.created ? "立身入世" : panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
             <div className="brush-rule"><i /></div>
           </div>
-          <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />
+          {!state.created ? <StartPanel state={state} openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />}
         </section>
         <SideRail panel={panel} setPanel={selectPanel} state={state} />
       </section>
 
-      <form className={`command-dock ${panel === "story" ? "is-visible" : ""}`} onSubmit={(event) => { event.preventDefault(); submitCommand(); }} aria-label="当前意图栏">
+      <form className={`command-dock ${panel === "story" && state.created ? "is-visible" : ""}`} onSubmit={(event) => { event.preventDefault(); submitCommand(); }} aria-label="当前意图栏">
         <label><span aria-hidden="true">&gt;</span><input value={command} onChange={(event) => setCommand(event.target.value)} maxLength={40} placeholder="写下意图，或直接选择下方行动…" aria-label="输入当前意图" /></label>
         <button type="submit">记入</button>
       </form>
@@ -208,6 +209,28 @@ function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, 
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
   if (panel === "people") return <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} />;
   return <MorePanel state={state} openOverlay={openOverlay} openPeople={() => selectPanel("people")} />;
+}
+
+function StartPanel({ state, openCreate, openSettings, openSaves }: { state: GameState; openCreate: () => void; openSettings: () => void; openSaves: () => void }) {
+  const hasSaveTrace = Boolean(state.lastSavedAt || state.storyHistory?.length || state.visitedNodes?.length);
+  return <section className="start-panel" aria-label="开始进入界面">
+    <div className="start-hero">
+      <span className="eyebrow">NEW GAME · 黑雨将落</span>
+      <h2>先立下一个普通人的名字</h2>
+      <p>说明书要求主角不是预设的天命之子。新玩家进入前，需要先确定出身、天性与缺陷：它们会改变你能看见的信息、可承担的风险，以及旁人如何回应你。</p>
+      <div className="start-actions">
+        <button className="ink-button" onClick={openCreate}>设置角色信息</button>
+        <button onClick={openSettings}>游戏设置</button>
+        <button onClick={openSaves}>{hasSaveTrace ? "读取存档" : "导入存档"}</button>
+      </div>
+    </div>
+    <div className="start-rule-grid" aria-label="核心体验">
+      <article><b>观察</b><span>从天气、地形、物痕与人言中发现异常。</span></article>
+      <article><b>求证</b><span>用探索、交涉和物件验证传闻，不靠盲目刷数值。</span></article>
+      <article><b>准备</b><span>在行囊、路线、同伴和时机之间做取舍。</span></article>
+      <article><b>后果</b><span>选择会写入关系、世界状态与山海志。</span></article>
+    </div>
+  </section>;
 }
 
 function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; openCreate: () => void }) {
@@ -291,15 +314,14 @@ function MapPanel({ state }: { state: GameState }) {
 }
 
 function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
-  const categoryNames: Record<string, string> = { event: "异象", person: "人物", item: "器物", material: "材料", beast: "异兽", place: "地理", document: "文书", tool: "器物" };
+  const categoryNames: Record<string, string> = { event: "异象", person: "人物", item: "器物", material: "器物", beast: "异兽", place: "地理", document: "文书", tool: "器物" };
   const layerNames: Record<string, string> = { first_sight: "初见", rumor: "传闻", evidence: "行证", insight: "推论", echo: "余响" };
   const categoryGroups: Array<{ id: string; label: string; sources: string[] }> = [
     { id: "event", label: "异象", sources: ["event"] },
     { id: "person", label: "人物", sources: ["person"] },
     { id: "place", label: "地理", sources: ["place"] },
     { id: "beast", label: "异兽", sources: ["beast"] },
-    { id: "artifact", label: "器物", sources: ["item", "tool"] },
-    { id: "material", label: "材料", sources: ["material"] },
+    { id: "artifact", label: "器物", sources: ["item", "tool", "material"] },
     { id: "document", label: "文书", sources: ["document"] },
   ];
   const categories = categoryGroups.filter((group) => blackRainContent.codex.some((entry) => group.sources.includes(entry.category)));
@@ -322,15 +344,22 @@ function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card
 }
 
 function InventoryPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
-  const categoryNames: Record<string, string> = { equipment: "装备", generic: "行旅", material: "材料", tool: "工具", clue: "线索", unique: "异物" };
+  const categoryNames: Record<string, string> = { equipment: "装备", generic: "行旅", material: "器物", tool: "器物", clue: "线索", unique: "异物" };
+  const categoryGroups: Array<{ id: string; label: string; sources: string[] }> = [
+    { id: "generic", label: "行旅", sources: ["generic"] },
+    { id: "artifact", label: "器物", sources: ["material", "tool"] },
+    { id: "clue", label: "线索", sources: ["clue"] },
+    { id: "unique", label: "异物", sources: ["unique"] },
+  ];
   const genericEntries = Object.entries(state.itemQuantities ?? {}).filter(([id, quantity]) => id in genericItems && Number(quantity) > 0).map(([id, quantity]) => ({ id, name: genericItems[id], category: "generic", text: "出身携带的行旅物件。", quantity: Number(quantity) }));
-  const categories = [...(genericEntries.length ? ["generic"] : []), ...new Set(blackRainContent.items.map((item) => item.category))];
+  const categories = categoryGroups.filter((group) => group.sources.includes("generic") ? genericEntries.length > 0 : blackRainContent.items.some((item) => group.sources.includes(item.category)));
   const [view, setView] = useState<"equipment" | "items">("equipment");
-  const [category, setCategory] = useState(categories[0] ?? "generic");
+  const [category, setCategory] = useState(categories[0]?.id ?? "generic");
   const equipmentSlots = [{ label: "主手", name: state.equipment[0] }, { label: "副手／仪式手", name: undefined }, { label: "衣甲", name: state.equipment[1] }, { label: "足具", name: undefined }, { label: "护符", name: state.equipment[2] }, { label: "工具", name: undefined }, { label: "随身信物", name: undefined }];
-  const entries = category === "generic" ? genericEntries
-    : blackRainContent.items.filter((item) => Number(state.itemQuantities?.[item.id] ?? 0) > 0).filter((item) => item.category === category).map((item) => ({ ...item, quantity: Number(state.itemQuantities?.[item.id] ?? 0) }));
-  return <section className="archive-browser inventory-browser" aria-label="行囊"><div className="archive-toolbar"><div><small>行旅准备</small><h2>行囊</h2></div><span className="inventory-count">{view === "equipment" ? `${equipmentSlots.filter((slot) => slot.name).length}/${equipmentSlots.length} 在身` : `${entries.length} 类物件`}</span></div><div className="inventory-view-tabs" role="tablist" aria-label="行囊内容"><button role="tab" aria-selected={view === "equipment"} className={view === "equipment" ? "active" : ""} onClick={() => setView("equipment")}>在身装备</button><button role="tab" aria-selected={view === "items"} className={view === "items" ? "active" : ""} onClick={() => setView("items")}>随身物</button></div>{view === "equipment" ? <div className="archive-list inventory-list">{equipmentSlots.map((slot) => <ArchiveRow key={slot.label} eyebrow="在身装备位" title={slot.name ?? "未携带"} note={slot.name ? `${slot.label} · 可在剧情中响应条件` : `${slot.label} · 尚未携带`} disabled={!slot.name} onClick={() => openDetail({ eyebrow: `${slot.label} · 在身装备`, title: slot.name!, text: "此物已随身携带。它的效用由剧情中的场景、认知与选择共同决定，而不是单独堆叠数值。", source: "装备位仅记录当前在身物；替换与消耗会随剧情状态更新。", facts: [{ label: "装备位", value: slot.label }, { label: "状态", value: "已携带" }] })} />)}</div> : <><div className="category-tabs inventory-category-tabs" role="tablist" aria-label="随身物分类">{categories.map((value) => <button role="tab" aria-selected={category === value} className={category === value ? "active" : ""} onClick={() => setCategory(value)} key={value}>{categoryNames[value] ?? value}</button>)}</div><div className="archive-list inventory-list">
+  const activeCategory = categories.find((group) => group.id === category) ?? categories[0];
+  const entries = activeCategory?.sources.includes("generic") ? genericEntries
+    : blackRainContent.items.filter((item) => Number(state.itemQuantities?.[item.id] ?? 0) > 0).filter((item) => activeCategory?.sources.includes(item.category)).map((item) => ({ ...item, quantity: Number(state.itemQuantities?.[item.id] ?? 0) }));
+  return <section className="archive-browser inventory-browser" aria-label="行囊"><div className="archive-toolbar"><div><small>行旅准备</small><h2>行囊</h2></div><span className="inventory-count">{view === "equipment" ? `${equipmentSlots.filter((slot) => slot.name).length}/${equipmentSlots.length} 在身` : `${entries.length} 类物件`}</span></div><div className="inventory-view-tabs" role="tablist" aria-label="行囊内容"><button role="tab" aria-selected={view === "equipment"} className={view === "equipment" ? "active" : ""} onClick={() => setView("equipment")}>在身装备</button><button role="tab" aria-selected={view === "items"} className={view === "items" ? "active" : ""} onClick={() => setView("items")}>随身物</button></div>{view === "equipment" ? <div className="archive-list inventory-list">{equipmentSlots.map((slot) => <ArchiveRow key={slot.label} eyebrow="在身装备位" title={slot.name ?? "未携带"} note={slot.name ? `${slot.label} · 可在剧情中响应条件` : `${slot.label} · 尚未携带`} disabled={!slot.name} onClick={() => openDetail({ eyebrow: `${slot.label} · 在身装备`, title: slot.name!, text: "此物已随身携带。它的效用由剧情中的场景、认知与选择共同决定，而不是单独堆叠数值。", source: "装备位仅记录当前在身物；替换与消耗会随剧情状态更新。", facts: [{ label: "装备位", value: slot.label }, { label: "状态", value: "已携带" }] })} />)}</div> : <><div className="category-tabs compact-tabs inventory-category-tabs" role="tablist" aria-label="随身物分类">{categories.map((group) => <button role="tab" aria-selected={category === group.id} className={category === group.id ? "active" : ""} onClick={() => setCategory(group.id)} key={group.id}>{group.label}</button>)}</div><div className="archive-list inventory-list">
     {entries.map((item) => <ArchiveRow key={item.id} eyebrow={categoryNames[item.category] ?? item.category} title={item.name} note={`持有 ${item.quantity} 件`} onClick={() => {
       const content = itemById.get(item.id);
       const recognition = content?.recognitionStages[Math.max(0, Number(state.itemKnowledge?.[item.id] ?? 0) - 1)] ?? content?.recognitionStages[0];
@@ -375,7 +404,7 @@ function DetailCardModal({ card, close }: { card: DetailCard; close: () => void 
 function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
   return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}><section className="modal" role="dialog" aria-modal="true" aria-label="游戏弹窗"><button className="close" onClick={close}>×</button>
     {type === "character" && <CharacterDrawer state={state} />}
-    {type === "create" && <CharacterCreator state={state} complete={(draft) => { const entered = enterCurrentNode(createInitialState(draft)); setState(entered.state); saveGame(entered.state); setNotice(entered.notes.join(" · ") || `${draft.name}已在天地间留下名字`); close(); }} />}
+    {type === "create" && <CharacterCreator state={state} complete={(draft) => { const entered = enterCurrentNode(createInitialState(draft)); setState(entered.state); if (settings.autoSave) saveGame(entered.state); if (settings.haptics) void browserPlatform.feedback.vibrate("medium"); setNotice(entered.notes.join(" · ") || `${draft.name}已在天地间留下名字`); close(); }} />}
     {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} />}
     {type === "saves" && <SavePanel state={state} setState={setState} download={downloadSave} importNow={() => importRef.current?.click()} setNotice={setNotice} />}
     {type === "help" && <HelpPanel />}
@@ -396,7 +425,7 @@ function CharacterCreator({ state, complete }: { state: GameState; complete: (d:
 }
 
 function SettingsPanel({ value, setValue }: { value: Settings; setValue: (s: Settings) => void }) {
-  return <div className="settings-panel"><span className="eyebrow">ACCESSIBILITY · 阅读</span><h2>阅读与感官设置</h2><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></div>;
+  return <div className="settings-panel game-settings"><span className="eyebrow">SETTINGS · 游戏</span><h2>游戏设置</h2><section className="settings-section"><h3>流程</h3><button className={`toggle ${value.autoSave ? "on" : ""}`} onClick={() => setValue({ ...value, autoSave: !value.autoSave })}><span>自动保存进度</span><i /></button><button className={`toggle ${value.haptics ? "on" : ""}`} onClick={() => setValue({ ...value, haptics: !value.haptics })}><span>触感反馈</span><i /></button></section><section className="settings-section"><h3>阅读</h3><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button></section><section className="settings-section"><h3>声音与表现</h3><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></section><p>当前为本地浏览器 Demo：账号、云存档、广告与支付只保留接口边界，尚不启用。</p></div>;
 }
 
 function SavePanel({ state, setState, download, importNow, setNotice }: { state: GameState; setState: (s: GameState) => void; download: () => void; importNow: () => void; setNotice: (s: string) => void }) {

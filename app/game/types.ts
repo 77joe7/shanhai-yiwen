@@ -20,6 +20,8 @@ export interface Settings {
   textReveal: boolean;
   simplifiedTexture: boolean;
   ambientVolume: number;
+  autoSave: boolean;
+  haptics: boolean;
 }
 
 export type StoryMessageKind = "narration" | "npc-dialogue" | "system" | "player-action" | "player-speech";
