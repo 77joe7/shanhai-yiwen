@@ -12,7 +12,9 @@
     "quests": "quests.json",
     "encounters": "encounters.json",
     "codex": "codex.json",
-    "worldState": "world-state.json"
+    "worldState": "world-state.json",
+    "literaryExpansion": "黑雨_文学扩写版.md",
+    "writingResearch": "文本结构研究与应用.md"
   },
   "counts": {
     "storyNodes": 28,
