@@ -181,13 +181,19 @@ def render_manuscript(data: dict[str, Any]) -> str:
             lines.extend(["---", "", f"## {act_names[current_act]}", ""])
         lines.extend([f"### {node['title']}", ""])
         for block in node["blocks"]:
-            if block["type"] == "system":
+            condition = json.dumps(block.get("when", []), ensure_ascii=False, separators=(",", ":"))
+            if block["type"] == "conditional":
+                lines.extend([f"> **条件余响 `{condition}`**", ">", f"> {block['text']}", ""])
+            elif block.get("when"):
+                lines.extend([f"> **条件台词 `{condition}`**", ">"])
+                if block["type"] == "dialogue":
+                    lines.extend([f"> **{names.get(block.get('speaker'), block.get('speaker'))}：** {block['text']}", ""])
+                else:
+                    lines.extend([f"> {block['text']}", ""])
+            elif block["type"] == "system":
                 lines.extend([f"> **系统：** {block['text']}", ""])
             elif block["type"] == "dialogue":
                 lines.extend([f"**{names.get(block.get('speaker'), block.get('speaker'))}：** {block['text']}", ""])
-            elif block["type"] == "conditional":
-                condition = json.dumps(block.get("when", []), ensure_ascii=False, separators=(",", ":"))
-                lines.extend([f"> **条件余响 `{condition}`**", ">", f"> {block['text']}", ""])
             else:
                 lines.extend([block["text"], ""])
         if node.get("choices"):
