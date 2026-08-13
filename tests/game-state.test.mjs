@@ -20,3 +20,12 @@ test("browser storage is isolated behind the platform adapter", () => {
   assert.match(source, /browserPlatform\.storage/);
   assert.doesNotMatch(source, /localStorage/);
 });
+
+test("archive panels use category lists and reusable detail cards", () => {
+  const gameShell = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
+  const styles = fs.readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(gameShell, /function ArchiveBrowser/);
+  assert.match(gameShell, /function DetailCardModal/);
+  assert.match(gameShell, /<CodexPanel openDetail=\{openDetail\} \/>/);
+  assert.match(styles, /\.archive-browser/);
+});

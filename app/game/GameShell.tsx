@@ -8,6 +8,15 @@ import type { CharacterDraft, GameState, OverlayId, PanelId, Settings } from "./
 
 const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, ambientVolume: 35 };
 
+type DetailCard = {
+  eyebrow: string;
+  title: string;
+  text: string;
+  source: string;
+  facts?: { label: string; value: string | number }[];
+  action?: { label: string; run: () => void };
+};
+
 const navItems: { id: PanelId; label: string; icon: string }[] = [
   { id: "story", label: "卷册", icon: "册" },
   { id: "map", label: "舆图", icon: "图" },
@@ -25,9 +34,9 @@ export function GameShell() {
   const [state, setState] = useState<GameState>(() => createInitialState());
   const [panel, setPanel] = useState<PanelId>("story");
   const [overlay, setOverlay] = useState<OverlayId>(null);
+  const [detail, setDetail] = useState<DetailCard | null>(null);
   const [settings, setSettings] = useState(defaultSettings);
   const [notice, setNotice] = useState("系统演示模式 · 第一卷内容待接入");
-  const [selectedCodex, setSelectedCodex] = useState(codexEntries[0].id);
   const importRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -93,7 +102,7 @@ export function GameShell() {
             <h1>{panel === "story" ? "静候一场黑雨" : navItems.find((x) => x.id === panel)?.label}</h1>
             <div className="brush-rule"><i /></div>
           </div>
-          <Panel panel={panel} state={state} selectedCodex={selectedCodex} setSelectedCodex={setSelectedCodex} mutate={mutate} openOverlay={setOverlay} />
+          <Panel panel={panel} state={state} mutate={mutate} openOverlay={setOverlay} openDetail={setDetail} />
         </section>
         <SideRail panel={panel} setPanel={setPanel} state={state} />
       </section>
@@ -104,6 +113,7 @@ export function GameShell() {
 
       <div className="toast" role="status"><span />{notice}</div>
       {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} />}
+      {detail && <DetailCardModal card={detail} close={() => setDetail(null)} />}
       <input ref={importRef} hidden type="file" accept="application/json,.json" onChange={(e) => receiveImport(e.target.files?.[0])} />
     </main>
   );
@@ -136,12 +146,12 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
   </aside>;
 }
 
-function Panel({ panel, state, selectedCodex, setSelectedCodex, mutate, openOverlay }: { panel: PanelId; state: GameState; selectedCodex: string; setSelectedCodex: (id: string) => void; mutate: (l: string, f: (s: GameState) => GameState) => void; openOverlay: (o: OverlayId) => void }) {
+function Panel({ panel, state, mutate, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
   if (panel === "story") return <StoryPanel state={state} mutate={mutate} openCreate={() => openOverlay("create")} />;
   if (panel === "map") return <MapPanel mutate={mutate} />;
-  if (panel === "codex") return <CodexPanel selected={selectedCodex} setSelected={setSelectedCodex} />;
-  if (panel === "inventory") return <InventoryPanel state={state} mutate={mutate} />;
-  if (panel === "people") return <PeoplePanel state={state} mutate={mutate} />;
+  if (panel === "codex") return <CodexPanel openDetail={openDetail} />;
+  if (panel === "inventory") return <InventoryPanel state={state} mutate={mutate} openDetail={openDetail} />;
+  if (panel === "people") return <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} />;
   return <MorePanel state={state} openOverlay={openOverlay} />;
 }
 
@@ -167,26 +177,63 @@ function MapPanel({ mutate }: { mutate: (l: string, f: (s: GameState) => GameSta
   return <div className="map-panel"><p>地点以道路、时辰、天气和认知相连。当前为系统预演图，不包含第一章正式地名与事件。</p><div className="map-canvas">{places.map((p) => <button key={p.name} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.tag === "锁定"} onClick={() => mutate(`你前往了${p.name}，时间推进至黄昏`, (s) => ({ ...s, location: p.name, period: "黄昏", resources: { ...s.resources, stamina: Math.max(0, s.resources.stamina - 1) } }))}><i /><b>{p.name}</b><small>{p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已知地点</span><span><i />传闻地点</span><span><i className="locked-dot" />条件未满足</span></div></div>;
 }
 
-function CodexPanel({ selected, setSelected }: { selected: string; setSelected: (s: string) => void }) {
-  const entry = codexEntries.find((x) => x.id === selected) ?? codexEntries[0];
-  return <div className="codex-panel"><div className="codex-list">{codexEntries.map((item) => <button className={item.id === selected ? "active" : ""} onClick={() => setSelected(item.id)} key={item.id}><small>{item.category}</small><b>{item.title}</b><span>{item.level}</span></button>)}</div><article className="codex-page"><span className="seal-word">志</span><small>{entry.category} · {entry.level}</small><h2>{entry.title}</h2><p>{entry.text}</p><footer>记录来源：{entry.source}</footer><div className="layer-track"><b>初见</b><i className="on" /><b>传闻</b><i className={entry.level !== "初见记" ? "on" : ""} /><b>实证</b><i className={entry.level === "行证录" ? "on" : ""} /><b>洞彻</b></div></article></div>;
+function CodexPanel({ openDetail }: { openDetail: (card: DetailCard) => void }) {
+  const categories = [...new Set(codexEntries.map((entry) => entry.category))];
+  const [category, setCategory] = useState(categories[0]);
+  const entries = codexEntries.filter((entry) => entry.category === category);
+  return <ArchiveBrowser label="山海志分类" categories={categories} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类见闻尚未被记录。">
+    {entries.map((entry) => <ArchiveRow key={entry.id} eyebrow={entry.level} title={entry.title} note={entry.source} onClick={() => openDetail({ eyebrow: `${entry.category} · ${entry.level}`, title: entry.title, text: entry.text, source: `记录来源：${entry.source}`, facts: [{ label: "认知层级", value: entry.level }, { label: "归类", value: entry.category }] })} />)}
+  </ArchiveBrowser>;
 }
 
-function InventoryPanel({ state, mutate }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void }) {
+function InventoryPanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
   const items = [
     { name: "烧不尽的灰", type: "未知材料", text: "触手温热，雨水冲不散。", action: "试着辨认" },
     { name: "粗陶水囊", type: "旅具", text: "装着一天的净水。", action: "饮用" },
     { name: "旧麻绳", type: "工具", text: "承重尚可，浸水后会变得难解。", action: "检查" },
   ];
-  return <div className="inventory-panel"><div className="equipment-strip">{state.equipment.map((x, i) => <div key={x}><small>{["主手", "衣具", "护符"][i]}</small><b>{x}</b></div>)}</div><div className="item-grid">{items.map((item) => <article key={item.name}><span>{item.type}</span><h3>{item.name}</h3><p>{item.text}</p><button onClick={() => mutate(`${item.name}：${item.action}已执行`, (s) => item.name === "粗陶水囊" ? ({ ...s, resources: { ...s.resources, stamina: Math.min(10, s.resources.stamina + 1) } }) : s)}>{item.action}</button></article>)}</div></div>;
+  const categories = ["装备", ...new Set(items.map((item) => item.type))];
+  const [category, setCategory] = useState(categories[0]);
+  const equipmentSlots = ["主手", "衣具", "护符"];
+  const entries = category === "装备"
+    ? state.equipment.map((name, index) => ({ name, type: equipmentSlots[index], text: "已装备在身的行旅器物，可在剧情节点中响应条件。" }))
+    : items.filter((item) => item.type === category);
+  return <ArchiveBrowser label="行囊分类" categories={categories} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类行囊尚未获得。">
+    {entries.map((item) => <ArchiveRow key={item.name} eyebrow={item.type} title={item.name} note="查看器物详情" onClick={() => {
+      const action = "action" in item ? item.action : undefined;
+      openDetail({ eyebrow: `${item.type} · 行囊`, title: item.name, text: item.text, source: action ? "可在详情中执行当前动作。" : "当前已装备。", facts: [{ label: "归类", value: item.type }, { label: "携带状态", value: category === "装备" ? "已装备" : "行囊中" }], action: action ? { label: action, run: () => mutate(`${item.name}：${action}已执行`, (s) => item.name === "粗陶水囊" ? ({ ...s, resources: { ...s.resources, stamina: Math.min(10, s.resources.stamina + 1) } }) : s) } : undefined });
+    }} />)}
+  </ArchiveBrowser>;
 }
 
-function PeoplePanel({ state, mutate }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void }) {
-  return <div className="people-panel"><p>关系不会压缩成一个“好感度”。系统演示暂以信任轴展示，正式角色卡将同时记录敬重、畏惧、债务与各自目标。</p>{Object.entries(state.relation).map(([name, value]) => <article key={name}><div className="npc-mark">{name[0]}</div><div><small>系统占位人物</small><h3>{name}</h3><p>{value > 1 ? "对你的言行已有记忆。" : "仍在观察你。"}</p></div><div className="relation"><span>信任 {value}</span><button onClick={() => mutate(`${name}记住了你守约的一次`, (s) => ({ ...s, relation: { ...s.relation, [name]: value + 1 } }))}>履行小约</button></div></article>)}</div>;
+function PeoplePanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
+  const categories = ["同行", "线索人物"];
+  const [category, setCategory] = useState(categories[0]);
+  const entries = Object.entries(state.relation).filter((_, index) => category === "同行" ? index === 1 : index !== 1);
+  return <ArchiveBrowser label="人物分类" categories={categories} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类人物尚未在卷中显形。">
+    {entries.map(([name, value]) => <ArchiveRow key={name} eyebrow={`信任 ${value}`} title={name} note={value > 1 ? "对你的言行已有记忆" : "仍在观察你"} onClick={() => openDetail({ eyebrow: "人物 · 关系档案", title: name, text: "关系不会压缩成一个好感度。正式角色卡将同时记录敬重、畏惧、债务与各自目标。", source: "系统占位人物；正式剧情接入后将替换为角色档案。", facts: [{ label: "信任", value }, { label: "当前类别", value: category }], action: { label: "履行小约", run: () => mutate(`${name}记住了你守约的一次`, (s) => ({ ...s, relation: { ...s.relation, [name]: value + 1 } })) } })} />)}
+  </ArchiveBrowser>;
+}
+
+function ArchiveBrowser({ label, categories, selectedCategory, setSelectedCategory, emptyText, children }: { label: string; categories: string[]; selectedCategory: string; setSelectedCategory: (value: string) => void; emptyText: string; children: React.ReactNode }) {
+  const childCount = Array.isArray(children) ? children.length : 1;
+  return <section className="archive-browser" aria-label={label}>
+    <div className="archive-toolbar"><div><small>卷内检索</small><h2>{label}</h2></div><select aria-label={label} value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>{categories.map((category) => <option value={category} key={category}>{category}</option>)}</select></div>
+    <div className="category-tabs" role="tablist" aria-label={label}>{categories.map((category) => <button role="tab" aria-selected={selectedCategory === category} className={selectedCategory === category ? "active" : ""} onClick={() => setSelectedCategory(category)} key={category}>{category}</button>)}</div>
+    <div className="archive-list">{childCount ? children : <p className="archive-empty">{emptyText}</p>}</div>
+  </section>;
+}
+
+function ArchiveRow({ eyebrow, title, note, onClick }: { eyebrow: string; title: string; note: string; onClick: () => void }) {
+  return <button className="archive-row" onClick={onClick}><span>{eyebrow}</span><b>{title}</b><small>{note}</small><i>查看</i></button>;
 }
 
 function MorePanel({ state, openOverlay }: { state: GameState; openOverlay: (o: OverlayId) => void }) {
   return <div className="more-panel"><button onClick={() => openOverlay("saves")}><b>存档与迁移</b><span>自动存档、手动槽、导入与导出</span></button><button onClick={() => openOverlay("settings")}><b>阅读与无障碍</b><span>字号、行距、对比度与减弱动效</span></button><button onClick={() => openOverlay("help")}><b>系统说明</b><span>设计口径、平台边界与快捷操作</span></button><div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div></div>;
+}
+
+function DetailCardModal({ card, close }: { card: DetailCard; close: () => void }) {
+  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{card.text}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
 }
 
 function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
