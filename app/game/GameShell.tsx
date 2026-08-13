@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createInitialState, flaws, hydrateBlackRainState, natures, origins } from "./gameData";
-import { blackRainContent, genericItems, itemById } from "./blackRainContent";
+import { blackRainContent, entityNames, genericItems, itemById } from "./blackRainContent";
 import { choiceIntent, chooseStory, currentStoryNode, displayCharacterName, enterCurrentNode, interpolate, visibleBlocks, visibleChoices } from "./storyRuntime";
 import { deleteCharacter, exportSave, getActiveId, importSave, listCharacters, loadCharacter, loadCharacterSlot, loadGame, readSettings, saveCharacter, saveCharacterSlot, setActiveId, writeSettings } from "./storage";
 import { browserPlatform } from "./platform";
@@ -33,6 +33,35 @@ const navItems: { id: PanelId; label: string; icon: string }[] = [
 function originName(id: string) { return origins.find((x) => x.id === id)?.name ?? id; }
 function natureName(id: string) { return natures.find((x) => x.id === id)?.name ?? id; }
 function flawName(id: string) { return flaws.find((x) => x.id === id)?.name ?? id; }
+
+/** 转义正则特殊字符，避免实体名中的符号破坏匹配。 */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * 将剧情文本中的人物 / 道具·材料 / 地点包成带颜色类名的 span 节点。
+ * 名称按长度降序排列以避免短名在长名内被误匹配；无命中或空文本时原样返回。
+ */
+function highlightText(text: string): React.ReactNode {
+  if (!text) return text;
+  const uniqueNames = [...new Set([...entityNames.person, ...entityNames.item, ...entityNames.place])]
+    .filter((name) => name.length > 0)
+    .sort((a, b) => b.length - a.length);
+  if (uniqueNames.length === 0) return text;
+
+  const regex = new RegExp(`(${uniqueNames.map(escapeRegExp).join("|")})`);
+  const parts = text.split(regex);
+  if (parts.length === 1) return text;
+
+  return parts.map((part, index) => {
+    if (index % 2 === 0) return part;
+    if (entityNames.person.has(part)) return <span key={index} className="hl-person">{part}</span>;
+    if (entityNames.item.has(part)) return <span key={index} className="hl-item">{part}</span>;
+    if (entityNames.place.has(part)) return <span key={index} className="hl-place">{part}</span>;
+    return part;
+  });
+}
 
 export function GameShell() {
   const [state, setState] = useState<GameState | null>(null);
@@ -139,6 +168,7 @@ export function GameShell() {
       setActiveId(id);
       setActiveIdState(id);
       setPanel("story");
+      panelScrollPositions.current = {};
       if (entered.notes.length) setNotice(entered.notes.join(" · "));
     } else {
       setNotice("该角色存档不存在或已损坏。");
@@ -241,7 +271,7 @@ export function GameShell() {
                 <h1>{!state.created ? "立身入世" : panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
                 <div className="brush-rule"><i /></div>
               </div>
-              {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />}
+              {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel key={activeId} panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />}
             </section>
             <SideRail panel={panel} setPanel={selectPanel} state={state} />
           </section>
@@ -435,7 +465,7 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
       const isCurrentEntry = currentIndex === displayIndex;
       if (currentIndex > displayIndex) return null;
       const text = isCurrentEntry ? entry.text.slice(0, displayCharacters) : entry.text;
-      return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{text}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {text}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{text}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{text}</p></article>}</div>;
+      return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{highlightText(text)}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {highlightText(text)}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{highlightText(text)}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{highlightText(text)}</p></article>}</div>;
     })}</div>
     <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
     {isTyping ? <div className="story-choices-pending" aria-hidden="true">……</div> : <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>}
@@ -535,7 +565,7 @@ function MorePanel({ state, openOverlay, openPeople }: { state: GameState; openO
 }
 
 function DetailCardModal({ card, close }: { card: DetailCard; close: () => void }) {
-  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{card.text}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}{card.sections && <div className="detail-sections">{card.sections.map((section) => <section className={section.locked ? "locked" : ""} key={section.label}><small>{section.label}</small><p>{section.text}</p></section>)}</div>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
+  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{highlightText(card.text)}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}{card.sections && <div className="detail-sections">{card.sections.map((section) => <section className={section.locked ? "locked" : ""} key={section.label}><small>{section.label}</small><p>{highlightText(section.text)}</p></section>)}</div>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
 }
 
 function Modal({ type, close, state, activeId, setState, settings, setSettings, downloadSave, importRef, setNotice, exitToMain, createNewCharacter }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState | null; activeId: string | null; setState: (s: GameState | null) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void; exitToMain: () => void; createNewCharacter: (d: CharacterDraft) => void }) {

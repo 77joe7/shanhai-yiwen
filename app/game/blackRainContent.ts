@@ -44,3 +44,27 @@ export const genericItems: Record<string, string> = {
 export const originById = new Map(blackRainContent.origins.map((origin) => [origin.id, origin]));
 export const itemById = new Map(blackRainContent.items.map((item) => [item.id, item]));
 export const characterById = new Map(blackRainContent.characters.map((character) => [character.id, character]));
+
+/** 剧情文本实体名集合，供渲染层高亮使用（人物 / 道具·材料 / 地点）。 */
+export const entityNames = {
+  person: new Set<string>(
+    blackRainContent.characters.map((c) => c.name).filter((name) => name.length > 0),
+  ),
+  item: new Set<string>(
+    [
+      ...blackRainContent.items.flatMap((item) => [
+        item.name,
+        ...(item.recognitionStages?.map((stage) => stage.displayName) ?? []),
+      ]),
+      ...Object.values(genericItems),
+    ].filter((name) => name.length > 0),
+  ),
+  place: new Set<string>(
+    [
+      ...blackRainContent.codex
+        .filter((entry) => entry.category === "place")
+        .map((entry) => entry.title),
+      "杳湾",
+    ].filter((name) => name.length > 0),
+  ),
+};

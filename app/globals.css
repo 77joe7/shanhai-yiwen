@@ -327,9 +327,9 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
 .mythic-shell .choices button {
   color: #e5dac1;
   border-color: rgba(216, 183, 117, .38);
-  background: linear-gradient(105deg, rgba(31, 39, 29, .92), rgba(41, 37, 27, .72));
+  background: #4a1510;
 }
-.mythic-shell .choices button:hover:not(:disabled) { border-color: #d17750; background: linear-gradient(105deg, rgba(75, 35, 27, .88), rgba(47, 49, 32, .8)); }
+.mythic-shell .choices button:hover:not(:disabled) { border-color: #d17750; background: #5a1a14; }
 .mythic-shell .choices button > span { color: #e4ae70; }.mythic-shell .choices button small { color: #aeb29f; }.mythic-shell .choices button i { color: #e16d4d; }
 .mythic-shell .echo { color: #e0b99e !important; background: rgba(155, 48, 31, .16); border-color: rgba(210, 93, 63, .42); }
 
@@ -398,14 +398,14 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
   .chapter-handoff { display: none; }
   .mythic-shell .topbar { height: calc(58px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); }
   .mythic-shell .character-rail { top: calc(58px + env(safe-area-inset-top)); }
-  .toast { max-width: calc(100vw - 26px); overflow: hidden; text-overflow: ellipsis; font-size: 10px; }
+  .toast { max-width: calc(100vw - 26px); overflow: hidden; text-overflow: ellipsis; font-size: 10px; bottom: calc(76px + env(safe-area-inset-bottom)); }
 }
 
 /* V1.1 taskbook refinements: etched manuscript structure and mobile-first status access. */
 .character-profile-trigger { display: contents; color: inherit; border: 0; background: none; text-align: inherit; cursor: pointer; }
 .danger-status { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; padding: 9px 0; color: #aeb2a0; border-top: 1px solid var(--line); font-size: 10px; letter-spacing: .12em; }.danger-status b { color: #e27958; font-weight: 500; }
 .story-choices .special-choice { border-left: 3px solid #c29a58; }.story-choices .special-choice small { color: #dcb671; }.story-choices .locked::after { content: "锁"; align-self: start; color: #c1a475; font-size: 10px; letter-spacing: .1em; }
-.story-choices button { min-height: 56px; border-radius: 0; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }.story-transcript .npc-dialogue, .story-transcript .player-message { border-radius: 0; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }.story-transcript .npc-dialogue { border-left-width: 3px; }.story-transcript .player-message { border-right: 3px solid rgba(221, 173, 92, .6); }
+.story-choices button { min-height: 56px; border-radius: 0; }.story-transcript .npc-dialogue, .story-transcript .player-message { border-radius: 0; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }.story-transcript .npc-dialogue { border-left-width: 3px; }.story-transcript .player-message { border-right: 3px solid rgba(221, 173, 92, .6); }
 .character-drawer { display: grid; gap: 14px; }.character-drawer h2 { margin: 0; }.character-drawer > p { margin: -8px 0 0; }.character-drawer-resources { display: grid; gap: 10px; margin: 4px 0; }.character-drawer dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }.character-drawer dl div { padding: 11px; border: 1px solid var(--line); background: rgba(25, 33, 25, .38); }.character-drawer dt { color: #d58261; font-size: 10px; }.character-drawer dd { margin: 5px 0 0; color: #eadbbb; font-size: 13px; }.character-drawer .drawer-note { margin: 0; color: #b5b6a5; font-size: 12px; }
 .settings-panel .toggle { min-height: 44px; }.settings-panel .toggle span { text-align: left; }.save-slot, .auto-save { align-items: flex-start; }.save-slot button, .auto-save button, .save-actions button { min-height: 44px; }.save-slot small, .auto-save span { line-height: 1.5; }
 .archive-browser { border-radius: 0; }.archive-row { min-height: 58px; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px)); }
@@ -456,7 +456,7 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
 .story-transcript .player-speech { border-color: rgba(156, 81, 59, .45); background: linear-gradient(135deg, rgba(239, 209, 184, .84), rgba(220, 185, 155, .54)); }
 .story-transcript .player-speech small { color: #924f3d; }
 .story-choices { justify-items: end; margin-top: 20px; }
-.story-choices button { width: min(86%, 580px); justify-self: end; border-radius: 16px 3px 16px 16px; box-shadow: 0 5px 14px rgba(18, 23, 18, .1); }
+.story-choices button { width: min(86%, 580px); justify-self: end; border-radius: 0; box-shadow: 0 5px 14px rgba(18, 23, 18, .1); }
 .story-choices button > span { align-self: start; padding-top: 2px; }
 .story-choices .speech-choice { border-color: rgba(166, 83, 66, .56); }
 .story-choices .speech-choice > span { color: #a65342; }
@@ -476,7 +476,7 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
 .mythic-shell .story-transcript .player-message small { color: #e5c07b; }
 .mythic-shell .story-transcript .player-speech { border-color: rgba(220, 105, 74, .62); background: linear-gradient(130deg, rgba(113, 53, 39, .88), rgba(61, 39, 29, .88)); }
 .mythic-shell .story-transcript .player-speech small { color: #f1a17a; }
-.mythic-shell .story-choices button { border-color: rgba(220, 176, 96, .56); background: linear-gradient(120deg, rgba(77, 60, 33, .94), rgba(35, 45, 30, .95)); }
+.mythic-shell .story-choices button { border-color: rgba(220, 176, 96, .56); background: #4a1510; }
 .mythic-shell .story-choices .speech-choice { border-color: rgba(224, 105, 76, .7); background: linear-gradient(120deg, rgba(103, 48, 34, .94), rgba(53, 40, 29, .95)); }
 .mythic-shell .story-reading-controls { color: #b9a47a; }.mythic-shell .story-reading-controls button:hover { color: #ee9870; }
 
@@ -555,3 +555,11 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
   .card-actions { grid-column: 1 / -1; justify-content: flex-end; }
   .story-transcript .npc-dialogue p, .story-transcript .player-message p { font-size: 13px; }
 }
+
+/* 游戏文本实体高亮：人物 / 道具·材料 / 地点（亮色与暗色双主题）。 */
+.hl-person { color: #c14e37; font-weight: 700; }
+.hl-item   { color: #8a6a1f; font-weight: 700; }
+.hl-place  { color: #3f7a55; font-weight: 700; }
+.mythic-shell .hl-person { color: #f0a17a; }
+.mythic-shell .hl-item   { color: #e4ae70; }
+.mythic-shell .hl-place  { color: #8fb59a; }
