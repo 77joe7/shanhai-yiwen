@@ -13,12 +13,14 @@ qa-output/
 *.png
 *.jpg
 *.jpeg
+*.zip
 
 # Local caches and logs
 .cache/
 __pycache__/
 *.py[cod]
 *.log
+*.tsbuildinfo
 node_modules/
 .next/
 .vinext/
@@ -26,6 +28,7 @@ node_modules/
 dist/
 build/
 tmp/
+.workbuddy/
 
 # OS / editor metadata
 .DS_Store
