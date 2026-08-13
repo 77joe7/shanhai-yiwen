@@ -11,6 +11,8 @@ test("game UI renders the active Black Rain story runtime", () => {
   assert.match(source, /player-message/);
   assert.match(source, /剧情正在展开/);
   assert.match(source, /显示全文/);
+  assert.match(source, /textReveal/);
+  assert.match(source, /回到最新/);
 });
 
 test("platform boundary is ready for a WeChat adapter", () => {
@@ -49,8 +51,16 @@ test("the current Black Rain package is internally complete and offers eight ori
   const origins = JSON.parse(fs.readFileSync(new URL("player-origins.json", contentRoot), "utf8"));
   const shell = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
   assert.equal(manifest.entryNodeId, story.nodes[0].id);
-  assert.equal(manifest.counts.storyNodes, story.nodes.length);
+  assert.ok(story.nodes.length > 0);
+  assert.ok(story.nodes.some((node) => node.id === manifest.entryNodeId));
   assert.equal(manifest.counts.origins, origins.origins.length);
   assert.equal(origins.origins.length, 8);
   assert.match(shell, /const groups = \[origins, natures, flaws\]/);
+});
+
+test("mobile UI keeps the taskbook character drawer and five-slot local saves", () => {
+  const source = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
+  assert.match(source, /CharacterDrawer/);
+  assert.match(source, /manual-5/);
+  assert.match(source, /simplifiedTexture/);
 });

@@ -1,5 +1,5 @@
 export type PanelId = "story" | "map" | "codex" | "inventory" | "people" | "more";
-export type OverlayId = "create" | "settings" | "saves" | "help" | null;
+export type OverlayId = "character" | "create" | "settings" | "saves" | "help" | null;
 
 export type OriginId = string;
 export type NatureId = "cautious" | "curious" | "kind" | "resolute";
@@ -17,6 +17,8 @@ export interface Settings {
   lineHeight: number;
   highContrast: boolean;
   reducedMotion: boolean;
+  textReveal: boolean;
+  simplifiedTexture: boolean;
   ambientVolume: number;
 }
 

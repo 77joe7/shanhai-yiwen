@@ -8,7 +8,7 @@ import { exportSave, importSave, loadGame, readSettings, saveGame, writeSettings
 import { browserPlatform } from "./platform";
 import type { CharacterDraft, GameState, OverlayId, PanelId, Settings } from "./types";
 
-const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, ambientVolume: 35 };
+const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, textReveal: true, simplifiedTexture: false, ambientVolume: 35 };
 
 type DetailCard = {
   eyebrow: string;
@@ -40,6 +40,7 @@ export function GameShell() {
   const [settings, setSettings] = useState(defaultSettings);
   const [notice, setNotice] = useState("第一卷《黑雨》内容包已载入");
   const importRef = useRef<HTMLInputElement>(null);
+  const panelScrollPositions = useRef<Partial<Record<PanelId, number>>>({});
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -60,8 +61,16 @@ export function GameShell() {
     root.style.setProperty("--reader-leading", String(settings.lineHeight));
     root.dataset.contrast = settings.highContrast ? "high" : "normal";
     root.dataset.motion = settings.reducedMotion ? "reduced" : "full";
+    root.dataset.texture = settings.simplifiedTexture ? "simple" : "full";
     writeSettings(settings);
   }, [settings]);
+
+  function selectPanel(next: PanelId) {
+    if (next === panel) return;
+    panelScrollPositions.current[panel] = window.scrollY;
+    setPanel(next);
+    window.requestAnimationFrame(() => window.scrollTo({ top: panelScrollPositions.current[next] ?? 0, behavior: "auto" }));
+  }
 
   function mutate(label: string, recipe: (draft: GameState) => GameState) {
     setState((current) => {
@@ -100,7 +109,7 @@ export function GameShell() {
   return (
     <main className="game-shell mythic-shell">
       <header className="topbar">
-        <button className="brand" aria-label="返回卷册" onClick={() => setPanel("story")}>
+        <button className="brand" aria-label="返回卷册" onClick={() => selectPanel("story")}>
           <span className="brand-seal">异</span><span><strong>山海异闻录</strong><small>天地未定</small></span>
         </button>
         <div className="chapter-marker"><span>卷一</span><strong>黑雨初落</strong><em>内容 v{blackRainContent.manifest.contentVersion}</em></div>
@@ -112,20 +121,20 @@ export function GameShell() {
       </header>
 
       <section className="desktop-grid">
-        <CharacterRail state={state} onCreate={() => setOverlay("create")} />
+        <CharacterRail state={state} onCreate={() => setOverlay("create")} onOpenDetails={() => setOverlay("character")} />
         <section className="reader" aria-live="polite">
           <div className="reader-heading">
             <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
             <h1>{panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
             <div className="brush-rule"><i /></div>
           </div>
-          <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} reducedMotion={settings.reducedMotion} openOverlay={setOverlay} openDetail={setDetail} />
+          <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />
         </section>
-        <SideRail panel={panel} setPanel={setPanel} state={state} />
+        <SideRail panel={panel} setPanel={selectPanel} state={state} />
       </section>
 
       <nav className="mobile-nav" aria-label="主要功能">
-        {navItems.slice(0, 5).map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => setPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
+        {navItems.filter((item) => item.id !== "people").map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
       </nav>
 
       <div className="toast" role="status"><span />{notice}</div>
@@ -136,10 +145,12 @@ export function GameShell() {
   );
 }
 
-function CharacterRail({ state, onCreate }: { state: GameState; onCreate: () => void }) {
+function CharacterRail({ state, onCreate, onOpenDetails }: { state: GameState; onCreate: () => void; onOpenDetails: () => void }) {
   return <aside className="character-rail">
-    <div className="portrait"><div className="portrait-mist" /><span>{state.player.name.slice(0, 1)}</span></div>
-    <div className="identity"><small>{state.created ? originName(state.player.origin) : "尚未入世"}</small><h2>{state.player.name}</h2><p>年十八 · {natureName(state.player.nature)}</p></div>
+    <button className="character-profile-trigger" onClick={onOpenDetails} aria-label="打开角色详情">
+      <div className="portrait"><div className="portrait-mist" /><span>{state.player.name.slice(0, 1)}</span></div>
+      <div className="identity"><small>{state.created ? originName(state.player.origin) : "尚未入世"}</small><h2>{state.player.name}</h2><p>年十八 · {natureName(state.player.nature)} · {state.location}</p></div>
+    </button>
     {!state.created && <button className="ink-button full" onClick={onCreate}>立身入世</button>}
     <div className="resource-list">
       <Meter label="生息" value={state.resources.life} max={12} tone="red" />
@@ -148,6 +159,7 @@ function CharacterRail({ state, onCreate }: { state: GameState; onCreate: () => 
     </div>
     <div className="location-card"><span>当前所在</span><strong>{state.location}</strong><small>第一日 · {state.period}</small></div>
     <div className="traits"><span>缺陷</span><b>{flawName(state.player.flaw)}</b><small>经历相关危机后，可形成新的应对之道。</small></div>
+    <div className="danger-status" aria-label="当前危险状态"><span>状态</span><b>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</b></div>
   </aside>;
 }
 
@@ -163,16 +175,16 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
   </aside>;
 }
 
-function Panel({ panel, state, mutate, advanceStory, reducedMotion, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; reducedMotion: boolean; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
-  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} />;
+function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, selectPanel, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
+  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} typewriter={typewriter} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} />;
   if (panel === "map") return <MapPanel state={state} />;
   if (panel === "codex") return <CodexPanel state={state} openDetail={openDetail} />;
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
   if (panel === "people") return <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} />;
-  return <MorePanel state={state} openOverlay={openOverlay} />;
+  return <MorePanel state={state} openOverlay={openOverlay} openPeople={() => selectPanel("people")} />;
 }
 
-function StoryPanel({ state, advanceStory, reducedMotion, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; reducedMotion: boolean; openCreate: () => void }) {
+function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; openCreate: () => void }) {
   const node = currentStoryNode(state);
   const blocks = visibleBlocks(state);
   const choices = visibleChoices(state).map((choice) => state.created ? choice : { ...choice, enabled: false, disabledHint: "请先建立角色，再以出身进入故事。" });
@@ -185,12 +197,14 @@ function StoryPanel({ state, advanceStory, reducedMotion, openCreate }: { state:
   const latestStart = history.findIndex((entry) => entry.nodeId === node.id);
   const currentEntries = history.slice(latestStart);
   const [reveal, setReveal] = useState(() => ({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 }));
+  const [awayFromLatest, setAwayFromLatest] = useState(false);
   const revealNodeMatches = reveal.nodeId === node.id;
   const revealIndex = revealNodeMatches ? reveal.entryIndex : 0;
   const revealCharacters = revealNodeMatches ? reveal.characters : 0;
-  const displayIndex = reducedMotion ? currentEntries.length : revealIndex;
-  const displayCharacters = reducedMotion ? 0 : revealCharacters;
-  const isTyping = !reducedMotion && revealIndex < currentEntries.length;
+  const shouldType = typewriter && !reducedMotion;
+  const displayIndex = shouldType ? revealIndex : currentEntries.length;
+  const displayCharacters = shouldType ? revealCharacters : 0;
+  const isTyping = shouldType && revealIndex < currentEntries.length;
 
   function scrollToLatest(position: "start" | "end" = "end") {
     const target = position === "start" ? latestNodeRef.current : transcriptEndRef.current;
@@ -205,6 +219,14 @@ function StoryPanel({ state, advanceStory, reducedMotion, openCreate }: { state:
     setReveal({ nodeId: node.id, entryIndex: 0, characters: 0 });
     window.requestAnimationFrame(() => latestNodeRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" }));
   }, [node.id, reducedMotion]);
+
+  useEffect(() => {
+    const target = transcriptEndRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(([entry]) => setAwayFromLatest(!entry.isIntersecting), { threshold: 0.2 });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [node.id]);
 
   useEffect(() => {
     if (!isTyping) return;
@@ -229,9 +251,9 @@ function StoryPanel({ state, advanceStory, reducedMotion, openCreate }: { state:
       const text = isCurrentEntry ? entry.text.slice(0, displayCharacters) : entry.text;
       return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{text}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {text}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{text}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{text}</p></article>}</div>;
     })}</div>
-    <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll}>显示全文</button>}<button onClick={() => scrollToLatest()}>回到最新</button></div>
+    <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
+    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>
     <div ref={transcriptEndRef} />
-    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; return <button key={choice.id} className={`${intent}-choice ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `线索：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>
   </article>;
 }
 
@@ -298,9 +320,9 @@ function ArchiveRow({ eyebrow, title, note, onClick }: { eyebrow: string; title:
   return <button className="archive-row" onClick={onClick}><span>{eyebrow}</span><b>{title}</b><small>{note}</small><i>查看</i></button>;
 }
 
-function MorePanel({ state, openOverlay }: { state: GameState; openOverlay: (o: OverlayId) => void }) {
+function MorePanel({ state, openOverlay, openPeople }: { state: GameState; openOverlay: (o: OverlayId) => void; openPeople: () => void }) {
   const activeQuests = blackRainContent.quests.filter((quest) => state.activeQuests?.includes(quest.id));
-  return <div className="more-panel">{activeQuests.length > 0 && <section className="quest-summary"><small>进行中的任务</small>{activeQuests.map((quest) => <article key={quest.id}><b>{quest.name}</b><p>{quest.summary}</p></article>)}</section>}<button onClick={() => openOverlay("saves")}><b>存档与迁移</b><span>自动存档、手动槽、导入与导出</span></button><button onClick={() => openOverlay("settings")}><b>阅读与无障碍</b><span>字号、行距、对比度与减弱动效</span></button><button onClick={() => openOverlay("help")}><b>系统说明</b><span>剧情内容、平台边界与快捷操作</span></button><div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div></div>;
+  return <div className="more-panel">{activeQuests.length > 0 && <section className="quest-summary"><small>进行中的事件</small>{activeQuests.map((quest) => <article key={quest.id}><b>{quest.name}</b><p>{quest.summary}</p><small>当前问题仍在杳湾延续。</small></article>)}</section>}<button onClick={openPeople}><b>人物与关系</b><span>目标、秘密、关系来源与近况</span></button><button onClick={() => openOverlay("saves")}><b>存档与迁移</b><span>自动存档、命数槽、导入与导出</span></button><button onClick={() => openOverlay("settings")}><b>阅读与无障碍</b><span>字号、行距、动效与背景纹理</span></button><button onClick={() => openOverlay("help")}><b>系统说明</b><span>剧情内容、平台边界与快捷操作</span></button><div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div></div>;
 }
 
 function DetailCardModal({ card, close }: { card: DetailCard; close: () => void }) {
@@ -309,11 +331,16 @@ function DetailCardModal({ card, close }: { card: DetailCard; close: () => void 
 
 function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
   return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}><section className="modal" role="dialog" aria-modal="true" aria-label="游戏弹窗"><button className="close" onClick={close}>×</button>
+    {type === "character" && <CharacterDrawer state={state} />}
     {type === "create" && <CharacterCreator state={state} complete={(draft) => { const entered = enterCurrentNode(createInitialState(draft)); setState(entered.state); saveGame(entered.state); setNotice(entered.notes.join(" · ") || `${draft.name}已在天地间留下名字`); close(); }} />}
     {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} />}
     {type === "saves" && <SavePanel state={state} setState={setState} download={downloadSave} importNow={() => importRef.current?.click()} setNotice={setNotice} />}
     {type === "help" && <HelpPanel />}
   </section></div>;
+}
+
+function CharacterDrawer({ state }: { state: GameState }) {
+  return <div className="character-drawer"><span className="eyebrow">CHARACTER · 行者</span><h2>{state.player.name}</h2><p>{originName(state.player.origin)} · 年十八 · {state.location} · 第一日{state.period}</p><div className="character-drawer-resources"><Meter label="生息" value={state.resources.life} max={12} tone="red" /><Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" /><Meter label="定力" value={state.resources.resolve} max={10} tone="blue" /></div><dl><div><dt>天性</dt><dd>{natureName(state.player.nature)}</dd></div><div><dt>缺陷</dt><dd>{flawName(state.player.flaw)}</dd></div><div><dt>当前状态</dt><dd>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</dd></div></dl><p className="drawer-note">选择会改变你看到的信息、承担的代价与他人对你的回应。</p></div>;
 }
 
 function CharacterCreator({ state, complete }: { state: GameState; complete: (d: CharacterDraft) => void }) {
@@ -326,12 +353,13 @@ function CharacterCreator({ state, complete }: { state: GameState; complete: (d:
 }
 
 function SettingsPanel({ value, setValue }: { value: Settings; setValue: (s: Settings) => void }) {
-  return <div className="settings-panel"><span className="eyebrow">ACCESSIBILITY · 阅读</span><h2>阅读与感官设置</h2><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></div>;
+  return <div className="settings-panel"><span className="eyebrow">ACCESSIBILITY · 阅读</span><h2>阅读与感官设置</h2><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></div>;
 }
 
 function SavePanel({ state, setState, download, importNow, setNotice }: { state: GameState; setState: (s: GameState) => void; download: () => void; importNow: () => void; setNotice: (s: string) => void }) {
-  const slots = ["manual-1", "manual-2", "manual-3"];
-  return <div className="save-panel"><span className="eyebrow">LOCAL FIRST · 本地存档</span><h2>命数留痕</h2><div className="auto-save"><div><small>自动存档</small><b>{state.player.name} · {state.location}</b><span>{state.lastSavedAt ? new Date(state.lastSavedAt).toLocaleString("zh-CN") : "尚未写入"}</span></div><button onClick={() => { const e = saveGame(state); setState(e.payload); setNotice("自动存档已更新"); }}>覆写</button></div>{slots.map((slot, i) => <div className="save-slot" key={slot}><span>{i + 1}</span><div><b>手动命数槽 {i + 1}</b><small>可写入当前状态或读取已有记录</small></div><button onClick={() => { const e = saveGame(state, slot); setState(e.payload); setNotice(`命数槽 ${i + 1} 已写入`); }}>存</button><button onClick={() => { try { const e = loadGame(slot); if (e) { setState(e.payload); setNotice(`命数槽 ${i + 1} 已读取`); } else setNotice("此命数槽尚为空"); } catch { setNotice("存档损坏，未覆盖当前进度"); } }}>读</button></div>)}<div className="save-actions"><button onClick={download}>导出 JSON</button><button onClick={importNow}>导入 JSON</button></div><p>存档保存在当前浏览器设备。本版本不接入账号、云同步或第三方服务。</p></div>;
+  const slots = ["manual-1", "manual-2", "manual-3", "manual-4", "manual-5"];
+  const latestChoice = state.storyHistory?.filter((entry) => entry.kind.startsWith("player-")).at(-1)?.text ?? "尚未作出关键选择";
+  return <div className="save-panel"><span className="eyebrow">LOCAL FIRST · 本地存档</span><h2>命数留痕</h2><div className="auto-save"><div><small>自动存档 · 当前内容 v{state.contentVersion}</small><b>{state.player.name} · {state.location} · 年十八</b><span>{state.lastSavedAt ? new Date(state.lastSavedAt).toLocaleString("zh-CN") : "尚未写入"} · 最近：{latestChoice}</span></div><button onClick={() => { const e = saveGame(state); setState(e.payload); setNotice("自动存档已更新"); }}>写入当前进度</button></div>{slots.map((slot, i) => <div className="save-slot" key={slot}><span>{i + 1}</span><div><b>命数槽 {i + 1}</b><small>可写入当前章节，或读取该槽已有记录</small></div><button onClick={() => { const e = saveGame(state, slot); setState(e.payload); setNotice(`命数槽 ${i + 1} 已写入`); }}>写入</button><button onClick={() => { try { const e = loadGame(slot); if (e) { setState(e.payload); setNotice(`命数槽 ${i + 1} 已读取`); } else setNotice("此命数槽尚为空"); } catch { setNotice("存档损坏，未覆盖当前进度"); } }}>读取</button></div>)}<div className="save-actions"><button onClick={download}>导出 JSON</button><button onClick={importNow}>导入 JSON</button></div><p>进度保存在此设备；本版本不接入账号或云同步。导入失败不会覆盖当前存档。</p></div>;
 }
 
 function HelpPanel() { return <div className="help-panel"><span className="eyebrow">ABOUT · 系统说明</span><h2>这是一册会记得你的书</h2><p>当前版本已加载第一卷《黑雨》v{blackRainContent.manifest.contentVersion}：剧情按节点呈现，选择会写入本地存档并解锁对应的任务、物品、关系与山海志见闻。</p><div><b>当前内容来源</b><span>仅读取“剧情/第一卷_黑雨/第一章_黑雨”的内容包与正文；备份目录不会参与游戏加载。</span></div><div><b>后续平台化</b><span>领域状态不直接依赖浏览器界面；存档与平台服务经适配层隔离，可在后续对接微信小游戏的文件、触摸、音频与生命周期 API。</span></div><small>剧情内容更新后，以内容包的 manifest 版本和当前节点 ID 为准重新载入。</small></div>; }
