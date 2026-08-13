@@ -1,0 +1,19 @@
+* text=auto
+
+# Office and final publishing artifacts are binary.
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.pdf binary
+
+# Normalize text files across Windows and automation environments.
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.csv text eol=lf
+*.tsv text eol=lf
+*.py text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
