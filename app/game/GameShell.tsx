@@ -72,7 +72,7 @@ export function GameShell() {
   }
 
   return (
-    <main className="game-shell">
+    <main className="game-shell mythic-shell">
       <header className="topbar">
         <button className="brand" aria-label="返回卷册" onClick={() => setPanel("story")}>
           <span className="brand-seal">异</span><span><strong>山海异闻录</strong><small>天地未定</small></span>
@@ -89,7 +89,7 @@ export function GameShell() {
         <CharacterRail state={state} onCreate={() => setOverlay("create")} />
         <section className="reader" aria-live="polite">
           <div className="reader-heading">
-            <span className="eyebrow">SYSTEM PREVIEW · 系统预演</span>
+            <span className="eyebrow">赤水北岸 · 黑雨将至</span>
             <h1>{panel === "story" ? "静候一场黑雨" : navItems.find((x) => x.id === panel)?.label}</h1>
             <div className="brush-rule"><i /></div>
           </div>
