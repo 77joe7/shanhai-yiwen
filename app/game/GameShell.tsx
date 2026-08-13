@@ -148,7 +148,7 @@ function Panel({ panel, state, selectedCodex, setSelectedCodex, mutate, openOver
 function StoryPanel({ state, mutate, openCreate }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openCreate: () => void }) {
   return <div className="story-panel">
     <p className="lead">雨还没有落下。</p>
-    <p>第一卷《黑雨》的剧情节点、人物对白与正式关卡将由后续内容包接入。这里暂不替故事作主，只展示游戏系统如何承接一段尚未写下的神话。</p>
+    <p className="chapter-handoff">第一卷《黑雨》的剧情节点、人物对白与正式关卡将由后续内容包接入。这里暂不替故事作主，只展示游戏系统如何承接一段尚未写下的神话。</p>
     <div className="empty-chapter"><span className="giant-one">一</span><div><small>第一章 · 内容席位</small><h3>等待故事抵达</h3><p>StoryNode、选择条件、状态效果与余响接口均已预留。补充内容后无需重做界面和存档结构。</p></div></div>
     <div className="system-callout"><b>可先试玩系统</b><p>建立角色后，可在舆图、山海志、行囊与人物页体验探索消耗、材料认知、装备、关系和世界状态反馈。</p></div>
     <div className="choices">
