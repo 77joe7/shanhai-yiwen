@@ -12,6 +12,19 @@ export interface CharacterDraft {
   flaw: FlawId;
 }
 
+export interface CharacterSummary {
+  id: string;
+  name: string;
+  origin: string;
+  nature: string;
+  flaw: string;
+  location: string;
+  day: number;
+  period: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Settings {
   fontScale: number;
   lineHeight: number;
