@@ -6,11 +6,12 @@ import manifest from "../../剧情/第一卷_黑雨/第一章_黑雨/内容包/m
 import originsDocument from "../../剧情/第一卷_黑雨/第一章_黑雨/内容包/player-origins.json";
 import questsDocument from "../../剧情/第一卷_黑雨/第一章_黑雨/内容包/quests.json";
 import storyDocument from "../../剧情/第一卷_黑雨/第一章_黑雨/内容包/story-nodes.json";
+import storyExpansionDocument from "../../剧情/第一卷_黑雨/第一章_黑雨/内容包/story-nodes-expansion.json";
 import worldStateDocument from "../../剧情/第一卷_黑雨/第一章_黑雨/内容包/world-state.json";
 
 export const blackRainContent = {
   manifest,
-  story: storyDocument.nodes,
+  story: [...storyDocument.nodes, ...storyExpansionDocument.nodes],
   characters: charactersDocument.characters,
   codex: codexDocument.entries,
   encounters: encountersDocument.encounters,

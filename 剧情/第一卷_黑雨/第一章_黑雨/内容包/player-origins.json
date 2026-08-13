@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1.0",
-  "contentVersion": "1.0.0",
+  "contentVersion": "3.0.0",
   "origins": [
     {"id": "hunter", "name": "猎户", "originScene": "给一支受潮的骨箭换箭羽", "statBonuses": {"agility": 1, "craft": 1}, "startingItems": ["IT-GENERIC-HUNTING-KNIFE"], "knowledge": ["tracks", "animal_fear"], "relationSeeds": [{"npcId": "NPC-AHE", "axis": "trust", "value": 1}], "choiceTags": ["猎户"]},
     {"id": "mountain_folk", "name": "山民", "originScene": "替邻家屋顶压上最后一块石头", "statBonuses": {"body": 1, "agility": 1}, "startingItems": ["IT-GENERIC-HEMP-ROPE"], "knowledge": ["weather", "terrain"], "relationSeeds": [{"npcId": "NPC-WEIQING", "axis": "respect", "value": 1}], "choiceTags": ["山民"]},

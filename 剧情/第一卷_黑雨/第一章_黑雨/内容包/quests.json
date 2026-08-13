@@ -1,0 +1,459 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "3.0.0",
+  "quests": [
+    {
+      "id": "Q-V01-SIDE-026",
+      "name": "怕什么就别让别人替你付",
+      "type": "side",
+      "summary": "在雨棚熄灯前听宿沙、青芽、隗青、砚伯与缄婆讲出不肯承认的恐惧，并把各自的个人边界转写为可在终局追问的承诺。",
+      "objectives": [
+        {"id": "open_truth_talk", "text": "开启雨棚里的恐惧谈话", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N174"}]},
+        {"id": "hear_one_personal_boundary", "text": "听取至少一人的个人边界", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N175", "V01-C01-N176", "V01-C01-N177", "V01-C01-N178"]}]},
+        {"id": "keep_lamp_lit", "text": "完成谈话并带回前夜准备", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N179"}]}
+      ],
+      "optionalObjectives": [{"id": "hear_three_truths", "text": "听完三条以上的恐惧与边界", "completion": [{"type": "atLeastFlagsTrue", "keys": ["susha.opening_witness_rule", "qingya.hero_ration_ledger", "weiqing.shared_watch_training", "yanbo_jianpo_named_responsibility"], "value": 3}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N023", "tag": "character_truths_completed"}],
+      "failure": {"kind": "fail_forward", "result": "可离开雨棚直接进入终局；未说出的恐惧将成为人物结局中的沉默与误解"},
+      "relatedNpcIds": ["NPC-SUSHA", "NPC-QINGYA", "NPC-WEIQING", "NPC-YANBO", "NPC-JIANPO", "NPC-AHE"],
+      "relatedItemIds": ["IT-V01-MAT-WATCHWICK", "IT-V01-MAT-VOICECRYSTAL", "IT-V01-MAT-RETURNKNOT"]
+    },
+    {
+      "id": "Q-V01-SIDE-025",
+      "name": "物件不能替人作证",
+      "type": "side",
+      "summary": "在祠屋雨棚进行一次材料显形：以昼盐浮尘、返潮绳结、囚雨芦、扶桑烬与人话盐晶互证资源、退路和命令，并为使用代价建立可追溯记录。",
+      "objectives": [
+        {"id": "open_material_table", "text": "摆开雨棚下的材料台", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N169"}]},
+        {"id": "verify_one_material_chain", "text": "完成一项资源、退路或证词显形", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N170", "V01-C01-N171", "V01-C01-N172"]}]},
+        {"id": "record_material_cost", "text": "完成材料使用记录", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N173"}]}
+      ],
+      "optionalObjectives": [{"id": "make_a_cost_visible", "text": "为至少一项材料选择留下明确代价", "completion": [{"type": "anyFlagTrue", "keys": ["material.allocation_gap_public", "material.return_route_cost_written", "material.first_command_verified"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "material_chain_completed"}],
+      "failure": {"kind": "fail_forward", "result": "可携带未显形材料进入终局；它们仍可使用，但缺少公开核验与对应人物回响"},
+      "relatedNpcIds": ["NPC-QINGYA", "NPC-SUSHA", "NPC-JIANPO", "NPC-YANBO", "NPC-AHE"],
+      "relatedItemIds": ["IT-V01-MAT-DAYSALTDUST", "IT-V01-MAT-RETURNKNOT", "IT-V01-MAT-RAINREED", "IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-VOICECRYSTAL"]
+    },
+    {
+      "id": "Q-V01-SIDE-024",
+      "name": "雨替谁做小事",
+      "type": "side",
+      "summary": "在最终会议前进行一次夜巡，调查昼盐空碗、迟归影子或避雨门槛，决定小异象应被留样、听取还是暂时封存。",
+      "objectives": [
+        {"id": "begin_patrol", "text": "开始村巷夜巡", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N164"}]},
+        {"id": "resolve_one_anomaly", "text": "处理一处雨后小异象", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N165", "V01-C01-N166", "V01-C01-N167"]}]},
+        {"id": "close_patrol", "text": "完成夜巡记录", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N168"}]}
+      ],
+      "optionalObjectives": [{"id": "retain_a_question", "text": "留下至少一项可供后续核验的异常记录", "completion": [{"type": "anyFlagTrue", "keys": ["night.salt_bowl_sampled", "clue.unspoken_departure_found", "evidence.additional_ledger_page"]}]}],
+      "rewards": [{"type": "unlockCodex", "codexId": "CX-V01-MAT-DAYSALTDUST", "layer": "first_sight"}],
+      "failure": {"kind": "fail_forward", "result": "可结束巡夜并回到主线；未处理的异常会以雨后环境余响存在"},
+      "relatedNpcIds": ["NPC-WEIQING", "NPC-QINGYA", "NPC-YANBO", "NPC-YANTONG"],
+      "relatedItemIds": ["IT-V01-MAT-DAYSALTDUST", "IT-V01-MAT-SHADOWMUD", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-SIDE-023",
+      "name": "大事落到湿衣裳上",
+      "type": "side",
+      "summary": "在最终取箭前完成一次杳湾雨前回访，处理药锅、避雨布、守夜灯或羊圈去向，使灾难中的日常照护也成为被记录的选择。",
+      "objectives": [
+        {"id": "walk_last_round", "text": "回到杳湾处理雨前小事", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N150"}]},
+        {"id": "settle_one_daily_need", "text": "完成一项粮种、避雨、守夜或羊圈选择", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N151", "V01-C01-N152", "V01-C01-N153", "V01-C01-N154"]}]},
+        {"id": "bring_small_matters_back", "text": "将小事带回北滩", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N155"}]}
+      ],
+      "optionalObjectives": [{"id": "leave_a_record", "text": "让至少一项照护选择拥有可追问记录", "completion": [{"type": "anyFlagTrue", "keys": ["village.rations_public", "dyeworks.cloth_for_evidence", "weiqing.watch_lamp_waits", "ahe.sheepfold_watch_written"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N023", "tag": "village_last_round_completed"}],
+      "failure": {"kind": "fail_forward", "result": "可直接进入最终会议；未处理的小事会成为对应角色与地点的遗憾余响，而不阻断结局"},
+      "relatedNpcIds": ["NPC-QINGYA", "NPC-WEIQING", "NPC-AHE", "NPC-LIWEI", "NPC-YANTONG"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-SHADOWMUD", "IT-V01-MAT-NIGHTFEATHER"]
+    },
+    {
+      "id": "Q-V01-SIDE-022",
+      "name": "箭落下以前的四条底线",
+      "type": "side",
+      "summary": "在最终取箭前要求杳湾、盐泽、北方与羿/三影者各自写下不能被交易的事，使终局不再只由最后一次选择决定。",
+      "objectives": [
+        {"id": "open_boundary_table", "text": "摆下四张底线纸", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N144"}]},
+        {"id": "hear_one_nonnegotiable", "text": "听取至少一方不可交易的立场", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N145", "V01-C01-N146", "V01-C01-N147", "V01-C01-N148"]}]},
+        {"id": "write_before_arrow", "text": "带着底线回到最终会议", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N149"}]}
+      ],
+      "optionalObjectives": [{"id": "hear_all_four", "text": "听完四方的底线", "completion": [{"type": "atLeastFlagsTrue", "keys": ["finale.names_not_goods", "finale.saltmarsh_co_decides", "jili.final_guarantee_signed", "finale.arrow_accountability"], "value": 3}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N023", "tag": "four_boundaries_written"}],
+      "failure": {"kind": "fail_forward", "result": "可跳过底线谈判直接决定箭的归属；未写下的立场会在结局中以沉默或反对出现"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-YANBO", "NPC-LIWEI", "NPC-JILI", "NPC-YI", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-CLUE-ARROWMOLD", "IT-V01-CLUE-DAYTOKEN", "IT-V01-MAT-WATERGUESTTOOTH"]
+    },
+    {
+      "id": "Q-V01-SIDE-021",
+      "name": "开井以前，谁先听见",
+      "type": "side",
+      "summary": "昼盐池开闸前回到旧盐井棚，决定证词先回到家属耳中、井水如何分配，以及砚童能否以自己的意愿被写进记录。",
+      "objectives": [
+        {"id": "return_to_well_shed", "text": "回到旧盐井棚", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N139"}]},
+        {"id": "settle_one_public_cost", "text": "处理一项家属核验、井水分配或梦行证词问题", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N140", "V01-C01-N141", "V01-C01-N142"]}]},
+        {"id": "share_the_key", "text": "建立井钥匙共同保管规则", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N143"}]}
+      ],
+      "optionalObjectives": [{"id": "protect_truth_and_survival", "text": "同时保留一项证词程序与一项当夜照护记录", "completion": [{"type": "allFlagsTrue", "keys": ["well.families_heard_first", "well.water_by_need_public"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "well_revisit_completed"}],
+      "failure": {"kind": "fail_forward", "result": "可直接进入昼盐池；井口尚未回答的问题会以含晦资源与终局台词代价继续存在"},
+      "relatedNpcIds": ["NPC-JIANPO", "NPC-YANBO", "NPC-QINGYA", "NPC-YANTONG", "NPC-SUSHA"],
+      "relatedItemIds": ["IT-V01-MAT-VOICECRYSTAL", "IT-V01-MAT-RETURNKNOT", "IT-V01-MAT-EMBERLEAF"]
+    },
+    {
+      "id": "Q-V01-SIDE-020",
+      "name": "第十巢问不问",
+      "type": "side",
+      "summary": "雨势稍缓后重返东桑十巢，处理留下的名字、慢行队伍与『可离开』的路标，决定撤离是否仍允许具体的人拒绝被安排。",
+      "objectives": [
+        {"id": "return_to_ten_nests", "text": "重返东桑十巢", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N134"}]},
+        {"id": "settle_one_route_question", "text": "处理慢行名单、未问羽墙或可离开路标之一", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N135", "V01-C01-N136", "V01-C01-N137"]}]},
+        {"id": "name_the_tenth_nest", "text": "完成第十巢的回访结算", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N138"}]}
+      ],
+      "optionalObjectives": [{"id": "keep_choice_visible", "text": "让慢行或可离开的选择成为公开记录", "completion": [{"type": "anyFlagTrue", "keys": ["grove.slow_route_public", "grove.leave_permission_public", "grove.stayers_self_signed"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "grove_revisit_completed"}],
+      "failure": {"kind": "fail_forward", "result": "可不进入回访直接前往旧井；未被问及的人将以缺席状态进入终局，不阻断主线"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-LIWEI", "NPC-YANTONG", "NPC-JIANPO"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-SHADOWMUD", "IT-V01-TOOL-DARKNEST"]
+    },
+    {
+      "id": "Q-V01-SIDE-019",
+      "name": "渡口不替人收尾",
+      "type": "side",
+      "summary": "在归还者号暂且靠岸后清点最后一次回潮：决定要保住路线、药物、未来证词，还是承认有些脚印只能带着缺口进入下一处调查。",
+      "objectives": [
+        {"id": "return_to_shallows", "text": "回到归还者号浅滩", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N127"}]},
+        {"id": "settle_one_shore_debt", "text": "处理一项名单、药物或倒潮路线问题", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N128", "V01-C01-N129", "V01-C01-N130"]}]},
+        {"id": "choose_the_lamp_keeper", "text": "决定渡灯的去向", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N131"}]}
+      ],
+      "optionalObjectives": [{"id": "preserve_a_route_and_a_person", "text": "同时保全一条可回溯路线与一项具体照护记录", "completion": [{"type": "allFlagsTrue", "keys": ["well.return_knot_ready", "boat.triage_recorded"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "boat_revisit_completed"}],
+      "failure": {"kind": "fail_forward", "result": "可带着未核验的脚印离开；缺口将转化为旧盐井与卷末的条件文本，而非阻断后续"},
+      "relatedNpcIds": ["NPC-SUSHA", "NPC-QINGYA", "NPC-WEIQING", "NPC-YANTONG", "NPC-LIWEI"],
+      "relatedItemIds": ["IT-V01-MAT-RETURNKNOT", "IT-V01-MAT-RAINREED", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-SIDE-018",
+      "name": "门槛上的四张嘴",
+      "type": "side",
+      "summary": "在北滩最终会议之前，把儿童梦税、旧船蜡印与撤离配给摆到同一张桌上，决定谁能说话、谁要署名、谁得到先活下去的资格。",
+      "objectives": [
+        {"id": "open_threshold_talk", "text": "进入北滩门槛谈话", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N122"}]},
+        {"id": "hear_one_account", "text": "核验至少一条儿童记录、北方责任或撤离配给证词", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N123", "V01-C01-N124", "V01-C01-N125"]}]},
+        {"id": "bring_disagreement_to_council", "text": "带着未被抹平的分歧进入最终会议", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N126"}]}
+      ],
+      "optionalObjectives": [{"id": "hear_all_accounts", "text": "完整听取三类前置证词", "completion": [{"type": "visitedNodes", "nodeIds": ["V01-C01-N123", "V01-C01-N124", "V01-C01-N125"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "threshold_talk_completed"}, {"type": "unlockCodex", "codexId": "CX-V01-EVENT-THRESHOLDTALK", "layer": "first_sight"}],
+      "failure": {"kind": "fail_forward", "result": "可直接进入最终会议；未被听见的证词会由拥有权力的一方替其解释"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-JILI", "NPC-LIWEI", "NPC-YANBO", "NPC-YANTONG", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-MAT-WATERGUESTTOOTH", "IT-V01-MAT-VOICECRYSTAL", "IT-V01-CLUE-DAYTOKEN"]
+    },
+    {
+      "id": "Q-V01-SIDE-017",
+      "name": "大事前先认小事",
+      "type": "side",
+      "summary": "终局前重访粮仓、染坊或祠屋，处理配给、守夜与砚童如何被写进证词的问题。",
+      "objectives": [
+        {"id": "return_to_unlisted_people", "text": "回到未被写进撤离木牌的人身边", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N117"}]},
+        {"id": "complete_one_social_choice", "text": "完成一项粮、守夜或证词决定", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N118", "V01-C01-N119", "V01-C01-N120"]}]},
+        {"id": "put_small_matters_first", "text": "将回访结果带入终局准备", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N121"}]}
+      ],
+      "optionalObjectives": [{"id": "complete_all_social_choices", "text": "完成全部三项社会回访", "completion": [{"type": "allFlagsTrue", "keys": ["village.rations_public", "weiqing.shared_watch_lamp", "yantong.own_words_recorded"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "small_matters_prepared"}],
+      "failure": {"kind": "time_cost", "result": "未完成的社会问题仍会进入终局，但由各阵营按自身利益解释"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-QINGYA", "NPC-WEIQING", "NPC-YANTONG", "NPC-YANBO", "NPC-YI"],
+      "relatedItemIds": ["IT-V01-MAT-NIGHTFEATHER", "IT-V01-MAT-SHADOWMUD", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-SIDE-016",
+      "name": "井底有人还没说完",
+      "type": "side",
+      "summary": "在旧盐井盐层深处处理被封住的人话、梦税名单与倒流暗渠，决定谁拥有证词、退路与钥匙。",
+      "objectives": [
+        {"id": "enter_voice_layer", "text": "进入人话盐层", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N112"}]},
+        {"id": "resolve_one_deep_well_route", "text": "调查人话室、梦税名单室或暗渠之一", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N113", "V01-C01-N114", "V01-C01-N115"]}]},
+        {"id": "share_well_key", "text": "完成盐层深处的证词结算", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N116"}]}
+      ],
+      "optionalObjectives": [{"id": "secure_two_truth_lines", "text": "保全两条独立的井下证词", "completion": [{"type": "atLeastFlagsTrue", "keys": ["evidence.well_first_words_copied", "clue.first_well_command_revealed", "evidence.tenth_night_list", "jianpo.name_added_to_ledger"], "value": 2}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N017", "tag": "well_deep_truth"}],
+      "failure": {"kind": "fail_forward", "result": "可封层或撤回；未带出的声音会成为含晦的资源，主线不被阻断"},
+      "relatedNpcIds": ["NPC-JIANPO", "NPC-YANBO", "NPC-SUSHA", "NPC-WEIQING", "NPC-YANTONG"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-NIGHTFEATHER", "IT-V01-MAT-VOICECRYSTAL"]
+    },
+    {
+      "id": "Q-V01-SIDE-015",
+      "name": "路不替人删名",
+      "type": "side",
+      "summary": "在东桑十巢寻找阿禾失去的命名簿缺页，并决定梦壳是否有权替杳湾安排一条更快的撤离路。",
+      "objectives": [
+        {"id": "open_namebook_route", "text": "检查阿禾命名簿的缺页", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N107"}]},
+        {"id": "resolve_nest_choice", "text": "处理鸟影、梦壳或扶桑烬显出的缺页", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N108", "V01-C01-N109", "V01-C01-N110"]}]},
+        {"id": "return_with_route", "text": "完成十巢深层结算", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N111"}]}
+      ],
+      "optionalObjectives": [{"id": "make_route_visible", "text": "留下可被后人追问的撤离选择", "completion": [{"type": "anyFlagTrue", "keys": ["ahe.names_rejoined", "village.evacuation_truth_exposed", "ahe_and_yantong_hold_copies"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N056", "tag": "route_not_erasure"}],
+      "failure": {"kind": "fail_forward", "result": "可暂离桑林；缺页和梦壳会以撤离压力或井下线索的形式继续作用"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-LIWEI", "NPC-JIANPO", "NPC-YANTONG", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-SHADOWMUD", "IT-V01-TOOL-DARKNEST"]
+    },
+    {
+      "id": "Q-V01-SIDE-014",
+      "name": "归还者不替人签字",
+      "type": "side",
+      "summary": "深入倒船腹舱，核对宿沙之子、儿童名牌、北方蜡印和旧盐井暗渠的关联，并决定证据如何保管。",
+      "objectives": [
+        {"id": "open_deep_hold", "text": "进入归还者号的深腹舱", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N100"}]},
+        {"id": "investigate_one_deep_layer", "text": "调查逆潮廊道、名牌舱或船底暗渠之一", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N101", "V01-C01-N102", "V01-C01-N103"]}]},
+        {"id": "settle_boat_evidence", "text": "完成归还者号结算", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N106"}]}
+      ],
+      "optionalObjectives": [
+        {"id": "preserve_two_evidence_lines", "text": "保全至少两条可核验的证据线", "completion": [{"type": "atLeastFlagsTrue", "keys": ["evidence.dream_tax_names_copied", "evidence.old_ship_seal_kept", "susha.admits_fear", "boat.double_copy_made"], "value": 2}]}
+      ],
+      "rewards": [{"type": "unlockLocation", "locationId": "LOC-DAYSALT-WELL-CHANNEL"}],
+      "failure": {"kind": "fail_forward", "result": "可撤回渡口；水客、暗渠与缺失证词会转为旧盐井和终局中的条件代价"},
+      "relatedNpcIds": ["NPC-SUSHA", "NPC-WEIQING", "NPC-QINGYA", "NPC-JIANPO", "NPC-LIWEI"],
+      "relatedItemIds": ["IT-V01-MAT-RAINREED", "IT-V01-TOOL-CRACKEDWHISTLE", "IT-V01-MAT-WATERGUESTTOOTH"]
+    },
+    {
+      "id": "Q-V01-SIDE-009",
+      "name": "第七口井不收回声",
+      "type": "side",
+      "summary": "在黑雨井病扩散前，区分被归还的失物、被遗忘的亲人和可救治的病人。",
+      "objectives": [
+        {"id": "inspect_seventh_well", "text": "调查第七口井", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N078"}]},
+        {"id": "choose_well_response", "text": "决定隔离、留样或追查井底回声", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N079", "V01-C01-N080"]}]}
+      ],
+      "optionalObjectives": [{"id": "document_well_rule", "text": "确认井病与梦税回声的关联", "completion": [{"type": "anyFlagTrue", "keys": ["clue.well_sand_tracks_river", "clue.well_knocking_is_dream_tax"]}]}],
+      "rewards": [{"type": "unlockLocation", "locationId": "LOC-DAYSALT-WELL"}],
+      "failure": {"kind": "fail_forward", "result": "井病仍会推进，但井口处置会留下后续回声"},
+      "relatedNpcIds": ["NPC-QINGYA", "NPC-WEIQING", "NPC-AHE", "NPC-YANBO"],
+      "relatedItemIds": ["IT-V01-TOOL-CRACKEDWHISTLE", "IT-V01-MAT-RAINREED"]
+    },
+    {
+      "id": "Q-V01-SIDE-010",
+      "name": "河床不替人销账",
+      "type": "side",
+      "summary": "在倒流浅滩的渔网、药箱与逃路中，决定优先救人、保全证据还是留下可走的路。",
+      "objectives": [
+        {"id": "reach_shallow_net", "text": "调查赤水浅滩的归还渔网", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N082"}]},
+        {"id": "resolve_river_cache", "text": "处理药箱、脚印或失物登记", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N085"}]}
+      ],
+      "optionalObjectives": [{"id": "keep_one_trace", "text": "保全一项可追溯的河道证据", "completion": [{"type": "anyFlagTrue", "keys": ["evidence.river_trial_seal_kept", "evidence.river_trial_box_sealed", "clue.river_route_to_well", "clue.saltmarsh_escape_route"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N050", "tag": "river_route_prepared"}],
+      "failure": {"kind": "fail_forward", "result": "河床会继续归还失物，但未登记的名字将转作传闻"},
+      "relatedNpcIds": ["NPC-SUSHA", "NPC-QINGYA", "NPC-LIWEI"],
+      "relatedItemIds": ["IT-V01-MAT-RAINREED", "IT-V01-MAT-EMBERLEAF"]
+    },
+    {
+      "id": "Q-V01-SIDE-011",
+      "name": "鸟影替谁留门",
+      "type": "side",
+      "summary": "追踪东桑林归巢的鸟影，在旧历页、撤离之门和冷巢梦壳之间选择。",
+      "objectives": [
+        {"id": "wait_for_shadow_birds", "text": "在东桑林守到鸟影回巢", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N086"}]},
+        {"id": "leave_a_route", "text": "为被删去的人留下证据、门或名字", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N090"}]}
+      ],
+      "optionalObjectives": [{"id": "restore_tenth_slot", "text": "找回第十格轮值的实证", "completion": [{"type": "anyFlagTrue", "keys": ["evidence.tenth_slot_calendar", "yanbo.restores_child_name"]}]}],
+      "rewards": [{"type": "unlockCodex", "codexId": "CX-V01-EVENT-TENTH-NIGHT", "layer": "evidence"}],
+      "failure": {"kind": "fail_forward", "result": "鸟影继续移动撤离路，但不会阻断旧盐井主线"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-YANBO", "NPC-LIWEI", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-TOOL-DARKNEST", "IT-V01-MAT-EMBERLEAF"]
+    },
+    {
+      "id": "Q-V01-SIDE-012",
+      "name": "井口的人也要回来",
+      "type": "side",
+      "summary": "进入旧盐井前，安排药物、留守与绳结，以准备换取替代解法而非无代价优势。",
+      "objectives": [
+        {"id": "prepare_well_team", "text": "在井口确认药物与撤退优先级", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N092"}]},
+        {"id": "set_retreat_protocol", "text": "完成绳结、留守或暗渠准备", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N094"}]}
+      ],
+      "optionalObjectives": [{"id": "secure_return_route", "text": "建立可验证的回拉信号或暗渠通路", "completion": [{"type": "anyFlagTrue", "keys": ["well.three_pull_protocol", "well.river_rope_connected"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N017", "tag": "well_prepared"}],
+      "failure": {"kind": "fail_forward", "result": "未准备时仍可下井，但撤退与水病代价更高"},
+      "relatedNpcIds": ["NPC-JIANPO", "NPC-QINGYA", "NPC-SUSHA", "NPC-WEIQING"],
+      "relatedItemIds": ["IT-V01-TOOL-CRACKEDWHISTLE", "IT-V01-MAT-RAINREED"]
+    },
+    {
+      "id": "Q-V01-SIDE-013",
+      "name": "大话落到小事上",
+      "type": "side",
+      "summary": "终局会议前处理名单、配给与账册公开，使结局选择从口号变成可见的社会后果。",
+      "objectives": [
+        {"id": "visit_unfinished_lives", "text": "回访第七日前的未结事项", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N095"}]},
+        {"id": "bring_one_commitment", "text": "完成至少一项名单、配给或账册决定", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N096", "V01-C01-N097", "V01-C01-N098"]}]}
+      ],
+      "optionalObjectives": [{"id": "complete_all_commitments", "text": "完成全部三项终局前回访", "completion": [{"type": "allFlagsTrue", "keys": ["ahe.xiaoman_listed", "village.rations_public", "ledger.community_hearing_first"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "community_prepared"}],
+      "failure": {"kind": "time_cost", "result": "未处理事项会在终局由各阵营自行解释"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-QINGYA", "NPC-YANBO", "NPC-JIANPO", "NPC-LIWEI", "NPC-YI"],
+      "relatedItemIds": ["IT-V01-MAT-SHADOWMUD", "IT-V01-CLUE-ARROWMOLD"]
+    },
+    {
+      "id": "Q-V01-SIDE-008",
+      "name": "赤水暂且记账",
+      "type": "side",
+      "summary": "沿退水河床追查沉船、失物与梦税工牌，决定让河还回的证词归谁保管。",
+      "objectives": [{"id": "follow_river_return", "text": "调查沉船、封舱或河退失物之一", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N061", "V01-C01-N062", "V01-C01-N063"]}]}, {"id": "resolve_river_debt", "text": "完成河床调查结算", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N064"}]}],
+      "optionalObjectives": [{"id": "keep_traceable_record", "text": "保全一项可追溯的河运或梦税证据", "completion": [{"type": "anyFlagTrue", "keys": ["susha.accepted_nameplates", "clue.river_voice_preserved", "boat.seal_witnessed", "clue.dream_tax_record", "clue.river_returns_by_debt"]}]}],
+      "rewards": [{"type": "unlockLocation", "locationId": "LOC-DAYSALT-WELL"}],
+      "failure": {"kind": "fail_forward", "result": "河水继续倒流，未带走的失物将转化为后续传闻与村中压力"},
+      "relatedNpcIds": ["NPC-SUSHA", "NPC-QINGYA", "NPC-JIANPO"],
+      "relatedItemIds": ["IT-V01-MAT-RAINREED", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-SIDE-007",
+      "name": "第七日之前",
+      "type": "side",
+      "summary": "在最终会议前协助杳湾、盐泽流民、北方收储使与羿准备各自的明日。",
+      "objectives": [{"id": "hear_one_faction", "text": "完成至少一条阵营前夜协商", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N054", "V01-C01-N056", "V01-C01-N058", "V01-C01-N060"]}]}],
+      "optionalObjectives": [{"id": "prepare_all_factions", "text": "听完四方立场", "completion": [{"type": "allFlagsTrue", "keys": ["side.yanbo_preparation_done", "side.liwei_preparation_done", "side.jili_preparation_done", "yi.publicly_names_fear"]}]}],
+      "rewards": [{"type": "unlockDialogue", "nodeId": "V01-C01-N022", "tag": "prepared_assembly"}],
+      "failure": {"kind": "time_cost", "result": "未沟通的阵营将在最终会议中按自身利益推进"},
+      "relatedNpcIds": ["NPC-YANBO", "NPC-LIWEI", "NPC-JILI", "NPC-YI"],
+      "relatedItemIds": ["IT-V01-CLUE-ARROWRUBBING", "IT-V01-CLUE-ARROWMOLD"]
+    },
+    {
+      "id": "Q-V01-SIDE-006",
+      "name": "井底没有亏欠",
+      "type": "side",
+      "summary": "在井壁、暗渠与账室中保全一份昼盐证据，并决定先带出真相还是带着真相面对含晦。",
+      "objectives": [{"id": "enter_well_routes", "text": "进入旧盐井的任一调查路线", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N049", "V01-C01-N050", "V01-C01-N051"]}]}, {"id": "reach_salt_gate", "text": "抵达白昼盐池前的盐门", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N052"}]}],
+      "optionalObjectives": [{"id": "preserve_well_evidence", "text": "保全至少一份井下行证", "completion": [{"type": "anyFlagTrue", "keys": ["clue.well_child_labor_proven", "clue.channel_names_copied", "evidence.daysalt_ledger_complete", "evidence.daysalt_ledger_partial"]}]}],
+      "rewards": [{"type": "unlockCodex", "codexId": "CX-V01-PLACE-DAYSALTWELL", "layer": "evidence"}],
+      "failure": {"kind": "fail_forward", "result": "撤回井口并推进黑雨；已收集的证据与关系保留"},
+      "relatedNpcIds": ["NPC-JIANPO", "NPC-YANBO", "NPC-SUSHA"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-RAINREED", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-SIDE-005",
+      "name": "十巢不在同一棵树上",
+      "type": "side",
+      "summary": "与阿禾进入异生桑林，决定无名梦壳该被命名、封存还是烧毁。",
+      "objectives": [{"id": "enter_ten_nests", "text": "抵达十巢入口", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N041"}]}, {"id": "resolve_dream_shell", "text": "决定梦壳的去处", "completion": [{"type": "anyFlagTrue", "keys": ["grove.dream_shell_named", "grove.dream_shell_contained", "grove.dream_shell_burned"]}]}],
+      "optionalObjectives": [{"id": "learn_root_rule", "text": "理解桑根连结了村中三条旧路", "completion": [{"type": "flagTrue", "key": "clue.grove_roots_link_village"}]}],
+      "rewards": [{"type": "unlockCodex", "codexId": "CX-V01-PLACE-EASTGROVE", "layer": "insight"}],
+      "failure": {"kind": "fail_forward", "result": "阿禾先行离开，梦壳继续偷取周边名字并改变后续路线"},
+      "relatedNpcIds": ["NPC-AHE", "NPC-JIANPO", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-SHADOWMUD", "IT-V01-TOOL-DARKNEST"]
+    },
+    {
+      "id": "Q-V01-MAIN-001",
+      "name": "雨在落下以前",
+      "type": "main",
+      "summary": "黑雨降临杳湾，处理第一场危机并参加村中议事。",
+      "objectives": [
+        {"id": "choose_first_response", "text": "回应村中第一场危机", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N002", "V01-C01-N003", "V01-C01-N004", "V01-C01-N005"]}]},
+        {"id": "reach_council", "text": "前往祠屋参加议事", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N006"}]}
+      ],
+      "rewards": [{"type": "unlockQuest", "questId": "Q-V01-MAIN-002"}],
+      "failure": null,
+      "relatedNpcIds": ["NPC-AHE", "NPC-YANBO", "NPC-JIANPO"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-MAIN-002",
+      "name": "三影尸体",
+      "type": "main",
+      "summary": "调查北滩无名尸的箭、三道影子与残日骨牌。",
+      "objectives": [
+        {"id": "inspect_one_clue", "text": "至少确认一项核心异状", "completion": [{"type": "anyFlagTrue", "keys": ["clue.arrow_name_yi", "clue.shadow_memory_ten", "clue.bone_token_fusang"]}]},
+        {"id": "survive_second_moon", "text": "见证第二个月亮升起", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N012"}]}
+      ],
+      "optionalObjectives": [
+        {"id": "collect_all_corpse_clues", "text": "在证据受损前确认全部三项异状", "completion": [{"type": "allFlagsTrue", "keys": ["clue.arrow_name_yi", "clue.shadow_memory_ten", "clue.bone_token_fusang"]}]}
+      ],
+      "rewards": [{"type": "unlockCodex", "codexId": "CX-V01-PERSON-THREESHADOW", "layer": "rumor"}],
+      "failure": {"kind": "fail_forward", "result": "corpse_clues_incomplete"},
+      "relatedNpcIds": ["NPC-WEIQING", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-CLUE-ARROWRUBBING", "IT-V01-CLUE-DAYTOKEN"]
+    },
+    {
+      "id": "Q-V01-MAIN-003",
+      "name": "赤水倒流",
+      "type": "main",
+      "summary": "在倒流河床、异生桑林或尸祭传闻中求证黑雨的去向。",
+      "objectives": [
+        {"id": "follow_one_route", "text": "完成一条求证路线", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N013", "V01-C01-N014", "V01-C01-N015"]}]},
+        {"id": "verify_material", "text": "完成一次材料显形", "completion": [{"type": "itemRecognitionAtLeast", "itemId": "IT-V01-MAT-EMBERLEAF", "stage": "verified"}], "optional": true}
+      ],
+      "rewards": [{"type": "unlockLocation", "locationId": "LOC-DAYSALT-WELL"}],
+      "failure": {"kind": "time_cost", "worldEffects": [{"type": "changeWorldVar", "key": "village.water_sickness", "delta": 1}]},
+      "relatedNpcIds": ["NPC-AHE", "NPC-SUSHA", "NPC-YANTONG"],
+      "relatedItemIds": ["IT-V01-MAT-RAINREED", "IT-V01-MAT-NIGHTFEATHER", "IT-V01-MAT-EMBERLEAF"]
+    },
+    {
+      "id": "Q-V01-MAIN-004",
+      "name": "井底白昼",
+      "type": "main",
+      "summary": "进入旧盐井，以战斗、诱离、过载或揭言解决含晦。",
+      "objectives": [
+        {"id": "enter_well", "text": "抵达昼盐池", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}]},
+        {"id": "resolve_hanhui", "text": "解决含晦遭遇", "completion": [{"type": "worldVarIn", "key": "hanhui.fate", "values": ["contained", "dispersed", "killed"]}, {"type": "anyFlagTrue", "keys": ["hanhui.first_words_revealed"]}]}
+      ],
+      "rewards": [{"type": "addItemConditional", "itemIds": ["IT-V01-CLUE-ARROWMOLD", "IT-V01-UNIQUE-VOICEJAR", "IT-V01-MAT-WORDLESSBONE"]}],
+      "failure": {"kind": "fail_forward", "result": "retreat_and_village_sickness"},
+      "relatedNpcIds": ["NPC-JIANPO"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-MAT-RAINREED", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-MAIN-005",
+      "name": "让谁先知道",
+      "type": "main",
+      "summary": "在黑雨第七日决定三影者、赤金箭与杳湾的去向。",
+      "objectives": [
+        {"id": "hear_yi", "text": "向羿交代调查所得", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N021"}]},
+        {"id": "choose_final_plan", "text": "决定谁承担守护或夺取尸体的代价", "completion": [{"type": "worldVarExists", "key": "finale.plan"}]},
+        {"id": "resolve_arrow", "text": "决定赤金箭的归属", "completion": [{"type": "worldVarExists", "key": "unique.red_arrow.owner"}]}
+      ],
+      "rewards": [{"type": "unlockContent", "contentId": "V02-PREVIEW"}],
+      "failure": null,
+      "relatedNpcIds": ["NPC-YI", "NPC-THREESHADOW", "NPC-JILI", "NPC-LIWEI"],
+      "relatedItemIds": ["IT-V01-CLUE-ARROWMOLD", "IT-V01-UNIQUE-REDARROWHEAD"]
+    },
+    {
+      "id": "Q-V01-SIDE-003",
+      "name": "替尸体做梦的人",
+      "type": "side",
+      "summary": "查明夜间供物的来源，决定是否公开砚童被梦操纵的事实。",
+      "objectives": [{"id": "follow_offerings", "text": "在双月重合时守候供物", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N015"}]}],
+      "rewards": [{"type": "addItem", "itemId": "IT-V01-MAT-NIGHTFEATHER", "quantity": 1}],
+      "failure": {"kind": "expiry", "when": [{"type": "chapterAfter", "chapter": "ACT4_NIGHT_WITHOUT_SUN"}], "result": "yantong_remains_dream_bound"},
+      "relatedNpcIds": ["NPC-YANTONG", "NPC-YANBO"],
+      "relatedItemIds": ["IT-V01-MAT-NIGHTFEATHER"]
+    },
+    {
+      "id": "Q-V01-SIDE-001",
+      "name": "白灰圈以外",
+      "type": "side",
+      "summary": "随隗青夜巡，发现黑雨如何借由饥饿、恐惧与习惯进入每一户人家。",
+      "objectives": [{"id": "walk_one_night_route", "text": "完成至少一条夜巡路线", "completion": [{"type": "visitedAnyNode", "nodeIds": ["V01-C01-N030", "V01-C01-N031", "V01-C01-N033", "V01-C01-N035"]}]}],
+      "optionalObjectives": [{"id": "learn_shadow_rule", "text": "确认影子会沿人的习惯行动", "completion": [{"type": "flagTrue", "key": "clue.shadows_follow_habit"}]}],
+      "rewards": [{"type": "changeRelation", "npcId": "NPC-WEIQING", "axis": "trust", "delta": 1}],
+      "failure": {"kind": "time_cost", "result": "第二个月亮提前出现，未巡查地点留下后续风险"},
+      "relatedNpcIds": ["NPC-WEIQING", "NPC-AHE", "NPC-QINGYA"],
+      "relatedItemIds": ["IT-V01-MAT-SHADOWMUD", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    },
+    {
+      "id": "Q-V01-SIDE-002",
+      "name": "归还者的三响",
+      "type": "side",
+      "summary": "进入倒流沉船，决定宿沙之子留下的名册是公开、暂缓还是由玩家背负。",
+      "objectives": [{"id": "enter_returned_boat", "text": "进入倒船腹舱", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N036"}]}, {"id": "hear_debt_signal", "text": "听完报债之人的话", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N039"}]}],
+      "optionalObjectives": [{"id": "preserve_one_record", "text": "保全至少一份河运证据", "completion": [{"type": "anyFlagTrue", "keys": ["clue.susha_son_carried_children_records", "item.north_manifest_kept", "susha.son_record_public"]}]}],
+      "rewards": [{"type": "unlockLocation", "locationId": "LOC-DAYSALT-WELL-CHANNEL"}],
+      "failure": {"kind": "fail_forward", "result": "船舱退回河中，宿沙仍提供暗渠线索但不再信任公开程序"},
+      "relatedNpcIds": ["NPC-SUSHA", "NPC-JILI", "NPC-THREESHADOW"],
+      "relatedItemIds": ["IT-V01-MAT-RAINREED", "IT-V01-CLUE-DAYTOKEN"]
+    },
+    {
+      "id": "Q-V01-SIDE-004",
+      "name": "黑粟不记饥年",
+      "type": "side",
+      "summary": "查明粮仓黑粟为何筛选人名，并决定以隔离、追踪或焚毁回应饥荒。",
+      "objectives": [{"id": "inspect_black_millet", "text": "进入黑粟粮仓", "completion": [{"type": "visitedNode", "nodeId": "V01-C01-N034"}]}, {"id": "choose_grain_fate", "text": "决定黑粟的处置", "completion": [{"type": "anyFlagTrue", "keys": ["granary.mouse_alive", "granary.black_millet_isolated", "granary.evidence_burned"]}]}],
+      "rewards": [{"type": "changeRelation", "npcId": "NPC-QINGYA", "axis": "respect", "delta": 1}],
+      "failure": {"kind": "fail_forward", "result": "粮仓封闭，村中口粮下降而黑粟线索延后"},
+      "relatedNpcIds": ["NPC-QINGYA", "NPC-AHE"],
+      "relatedItemIds": ["IT-V01-MAT-EMBERLEAF", "IT-V01-TOOL-CRACKEDWHISTLE"]
+    }
+  ]
+}

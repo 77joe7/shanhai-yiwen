@@ -12,8 +12,10 @@ from typing import Any, Iterable
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PACK_DIR = ROOT / "content" / "volume01-black-rain"
-MANUSCRIPT = PACK_DIR / "黑雨_完整游戏小说.md"
+CHAPTER_DIR = ROOT / "剧情" / "第一卷_黑雨" / "第一章_黑雨"
+PACK_DIR = CHAPTER_DIR / "内容包"
+MANUSCRIPT = CHAPTER_DIR / "正文" / "黑雨_完整游戏小说.md"
+EXPANSION_DOCUMENT = "story-nodes-expansion.json"
 
 
 def load(name: str) -> dict[str, Any]:
@@ -42,6 +44,8 @@ def walk(value: Any) -> Iterable[tuple[str, Any]]:
 def validate() -> dict[str, Any]:
     manifest = load("manifest.json")
     story_doc = load("story-nodes.json")
+    expansion_doc = load(EXPANSION_DOCUMENT)
+    story_doc["nodes"] = [*story_doc["nodes"], *expansion_doc["nodes"]]
     characters_doc = load("characters.json")
     origins_doc = load("player-origins.json")
     items_doc = load("items.json")
@@ -81,6 +85,10 @@ def validate() -> dict[str, Any]:
             speaker = block.get("speaker")
             if speaker and speaker not in npc_ids:
                 errors.append(f"{node['id']} references missing speaker {speaker}")
+            if block.get("type") == "dialogue":
+                text = block.get("text", "").strip()
+                if not (text.startswith("“") and text.endswith("”")):
+                    errors.append(f"{node['id']} has dialogue without Chinese quotation marks")
 
     all_docs: list[Any] = [story_doc, characters_doc, origins_doc, items_doc, quests_doc, encounters_doc, codex_doc]
     singular_refs = {
@@ -174,8 +182,10 @@ def render_manuscript(data: dict[str, Any]) -> str:
         "本稿是可阅读的全节点小说母稿。正文中的 `{{player.originScene}}` 由角色出身接口在运行时替换；带条件的余响段落在实际游戏中按世界状态显示。分支选项、数值效果和精确接口以同目录 JSON 为准。",
         "",
     ]
+    act_order = {act: index for index, act in enumerate(act_names)}
+    nodes = sorted(data["nodes"], key=lambda node: act_order.get(node["chapter"], len(act_order)))
     current_act = None
-    for node in data["nodes"]:
+    for node in nodes:
         if node["chapter"] != current_act:
             current_act = node["chapter"]
             lines.extend(["---", "", f"## {act_names[current_act]}", ""])

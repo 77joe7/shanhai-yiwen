@@ -1,0 +1,7039 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "3.0.0",
+  "volume": "V01",
+  "title": "黑雨",
+  "subtitle": "赤水有尸，天上少了一轮太阳",
+  "nodes": [
+    {
+      "id": "V01-C01-N001",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "雨在落下以前",
+      "presentation": "prologue",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "后来杳湾的人把那一年叫作黑雨元年，仿佛世界从前没有年岁，只有庄稼熟过多少回、赤水淹死过多少人。事实上，雨落下以前，村里刚丢了一只白羊，砚伯还在晒他那本被虫吃空了半边的历书，渡口的宿沙为一枚贝币同商旅争吵。每个人都忙着一件足以占满一生的小事，因此谁也没有抬头。"
+        },
+        {
+          "type": "narration",
+          "text": "你正在{{player.originScene}}。第一滴雨落在手背上，凉得像井底捞出的铜。它没有立刻散开，而是伏在皮肤上，映出一个比正午更亮的天空；那天空中没有太阳，只有十个尚未睁开的红点。你眨眼时，水珠已经黑了。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“别擦。鸡沾了这个，刚才把自己的影子啄死了。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“你看我做什么？先看天。平常下雨，羊往家跑；今天它们全朝东边跪。”"
+        },
+        {
+          "type": "narration",
+          "text": "说话的是牧羊女阿禾。她抱着那只失踪的白羊，羊还活着，四蹄却各踩着一小片夜。远处有人敲起避雨的木梆，第一声从村东传来，第二声却从赤水底下回答。"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "weather.black_rain.day",
+          "value": 1
+        },
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-MAIN-001"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-EVENT-BLACKRAIN",
+          "layer": "first_sight"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N001-A",
+          "label": "护送阿禾和白羊回村",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N002"
+        },
+        {
+          "id": "V01-C01-N001-B",
+          "label": "赶往正在进水的粮仓",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.granary.saved",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N003"
+        },
+        {
+          "id": "V01-C01-N001-C",
+          "label": "跑向赤水渡口",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N004"
+        },
+        {
+          "id": "V01-C01-N001-D",
+          "label": "【灵识】观察雨滴里的十个红点",
+          "sourceTag": "灵识",
+          "visibleWhen": [
+            {
+              "type": "playerStatAtLeast",
+              "stat": "spirit",
+              "value": 4
+            }
+          ],
+          "effects": [
+            {
+              "type": "addKnowledge",
+              "subjectId": "CX-V01-EVENT-BLACKRAIN",
+              "amount": 1
+            },
+            {
+              "type": "addStatus",
+              "statusId": "ST-RainMarked",
+              "duration": "ACT1"
+            }
+          ],
+          "next": "V01-C01-N005"
+        }
+      ],
+      "tags": [
+        "main",
+        "black_rain",
+        "origin_hook"
+      ]
+    },
+    {
+      "id": "V01-C01-N002",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "羊有四片夜",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "回村的路不过三百步，黑雨却把它下得比冬天还长。阿禾不肯把羊放下。羊腹沉重，像吞了一块石头，每走几步便回头望东边。它的四道影子并不随身体移动，留在泥里慢慢挣扎。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“它叫小满。我娘说，叫了名字的东西就不能随便死。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“他们若叫我把它扔下，我就问：粮仓也有名字，怎么没人舍得扔？”"
+        },
+        {
+          "type": "narration",
+          "text": "你们经过桑树时，小满突然咬住一片叶。叶背粘着细小的金灰，雨浇不灭，反而发出晒热被褥的气味。你用布裹住它，掌心立刻浮出一圈温暖的光，像有人在很远的地方记住了你。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“东边的桑林昨晚也亮过。不是火。火不会一边烧，一边长叶子。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“我数过鸟巢。以前九只，昨夜十只。你若告诉砚伯，他会说小孩子数错；你若跟我去数，他就得换个谎。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-MAT-EMBERLEAF",
+          "quantity": 1
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-MAT-EMBERLEAF",
+          "layer": "first_sight"
+        },
+        {
+          "type": "setFlag",
+          "key": "clue.east_mulberry_glow",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N002-A",
+          "label": "替小满洗去蹄上的黑泥",
+          "costs": [
+            {
+              "type": "time",
+              "minutes": 10
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "npc.goat_xiaoman.alive",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "debt",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N006"
+        },
+        {
+          "id": "V01-C01-N002-B",
+          "label": "保留黑泥作证",
+          "effects": [
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-MAT-SHADOWMUD",
+              "quantity": 1
+            }
+          ],
+          "next": "V01-C01-N006"
+        }
+      ],
+      "tags": [
+        "main",
+        "first_material",
+        "ahe"
+      ]
+    },
+    {
+      "id": "V01-C01-N003",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "湿粮",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "粮仓的茅顶没有漏，水却从谷粒内部往外渗。青芽和两个老人把麻袋拖到高处，袋缝里流出的不是水，是黑得发亮的细线。你割开最重的一袋，看见粟米都长出了透明的根，根须一致指向东方。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“别丢。毒死人的粮也是粮。先记住它怎么毒，再决定给谁吃。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“你去门外看影子。我留在这里看粮。两样都不对时，别急着挑更吓人的那样信。”"
+        },
+        {
+          "type": "narration",
+          "text": "你们用陶片和干沙隔开湿粮。黑线碰到陶土便蜷缩，发出婴儿梦呓般的轻响。直到最后一袋搬完，你才发现自己的影子留在仓门外，没有跟进来。青芽拿灯照了照你脚下，什么也没说，只把一枚烧裂的陶哨塞进你手里。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“拿着。哨子破了以后，吹不响，却能听出哪里是空的。人也一样——越不肯说的地方，回声越大。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
+          "quantity": 1
+        },
+        {
+          "type": "setWorldVar",
+          "key": "village.food_supply",
+          "value": 3
+        },
+        {
+          "type": "changeRelation",
+          "npcId": "NPC-QINGYA",
+          "axis": "respect",
+          "delta": 1
+        },
+        {
+          "type": "setFlag",
+          "key": "clue.roots_point_east",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N003-A",
+          "label": "去祠屋参加议事",
+          "next": "V01-C01-N006"
+        }
+      ],
+      "tags": [
+        "main",
+        "granary",
+        "world_echo_seed"
+      ]
+    },
+    {
+      "id": "V01-C01-N004",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "倒着到来的船",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "赤水仍向东流，浪花却一朵接一朵退回上游。宿沙站在齐腰深的水里，用缆绳套住一条倒退而来的空船。船头朝东，船却从东边来，舱中铺满温热的红沙。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“三十年了，河带走的东西从不肯还。今日它大方，怕是要收利。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“你听见船底那三下没有？第一下求岸，第二下报姓名，第三下叫活人别替死人作主。”"
+        },
+        {
+          "type": "narration",
+          "text": "你拉住缆绳时，船底传来三下叩击。宿沙的手立刻松了半寸。那是渡工求岸的旧信号，而这条船半年前沉在下游，连同他的长子一起。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“若里面真是他，我便开舱。若不是他，我更该开。你替我记着：是我开的。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“还有一件事先说在前头：这船替北边运过东西。若舱里除了我儿还有货，你先问货是谁的，再问我儿怎么死。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N004-A",
+          "label": "拉船上岸，暂不启舱",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.returned_boat",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N006"
+        },
+        {
+          "id": "V01-C01-N004-B",
+          "label": "割断缆绳，让船退回东边",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "river.returned_boat_released",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N006"
+        }
+      ],
+      "tags": [
+        "main",
+        "river",
+        "susha"
+      ]
+    },
+    {
+      "id": "V01-C01-N005",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "被雨看见",
+      "presentation": "vision",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你没有擦去雨。十个红点在水珠里逐一睁开，其中九个照着你，最后一个照着你身后的空地。那空地先长出一棵通天的桑，再悬起一具胸口有箭的人。人的三道影子分别跪着、奔跑、张弓，动作互不相认。"
+        },
+        {
+          "type": "narration",
+          "text": "幻象只存在一息。醒来时阿禾正用袖口替你擦手。她的袖子被雨烧出十个小洞。你的皮肤没有伤，却多了一圈淡金色细纹，像一只没有瞳孔的眼。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“现在它认识你了。别怕，认识不等于喜欢。村里人都认识我，也没几个喜欢我。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“你刚才喊了一个名字，不是自己的。那十个红点里有一个应了。你还记得那个音吗？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“不记得就别编。大人一害怕，最爱拿编出来的话填空；填久了，连空原来是什么样都忘了。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.ten_red_points",
+          "value": true
+        },
+        {
+          "type": "addKnowledge",
+          "subjectId": "CX-V01-EVENT-BLACKRAIN",
+          "amount": 1
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N005-A",
+          "label": "带阿禾回村",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N006"
+        }
+      ],
+      "tags": [
+        "main",
+        "vision",
+        "foreshadowing"
+      ]
+    },
+    {
+      "id": "V01-C01-N006",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "第一夜的议事",
+      "presentation": "dialogue",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "祠屋里挤着四十七个人，祖灵牌被挪去堵漏。砚伯坚持说这是祖宗第一次替活人挡雨，因此不算不敬。缄婆坐在火塘边，往火里撒盐；盐没有炸响，像雪一样融进炭中。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“历上说今日晴。历若没错，就是天错了。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“天不会错。写天的人会。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“你若知道，便直说是谁写错。别拿一句玄话让全村陪你猜。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“我知道谁写错了，却不知道你们肯不肯听。知道和肯听之间，正好够埋一口井。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "village.granary.saved",
+              "value": true
+            }
+          ],
+          "text": "“粮保住了十二日的量。是他先去搬的。现在若要逃，先说清那十二日给谁。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "npc.goat_xiaoman.alive",
+              "value": true
+            }
+          ],
+          "text": "“小满没死。它蹄下的黑泥还在动。你们若肯少吵一句，我就把它带来。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "clue.returned_boat"
+            }
+          ],
+          "text": "“河退回来一条死了半年的船。诸位若还只想封井，就先解释船为何从下游倒着上岸。”"
+        },
+        {
+          "type": "narration",
+          "text": "村人争论该封井、宰牲、逃往南坡还是继续等雨停。你讲述自己所见。有人相信，有人不信，还有人只计算每一种说法会让自家少分多少粮。正在这时，屋外的木梆响了第三遍。守夜人隗青推门进来，雨水沿他的蓑衣滴落，在地上形成一个人形。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“北滩有东西。像人。胸口插着箭。它有三道影子。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“活的还是死的？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“这正是我不敢替它回答的事。箭在长，它没呼吸，可三道影子一路跟我回了村。”"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "completeObjective",
+          "questId": "Q-V01-MAIN-001",
+          "objectiveId": "reach_council"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N006-A",
+          "label": "立即前往北滩",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "village.council_choice",
+              "value": "investigate_now"
+            }
+          ],
+      "next": "V01-C01-N182"
+        },
+        {
+          "id": "V01-C01-N006-B",
+          "label": "先组织封井与接雨禁令",
+          "costs": [
+            {
+              "type": "time",
+              "minutes": 20
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.water_sickness",
+              "value": 0
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+      "next": "V01-C01-N180"
+        },
+        {
+          "id": "V01-C01-N006-C",
+          "label": "先让每户报人数与牲畜",
+          "costs": [
+            {
+              "type": "time",
+              "minutes": 15
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.missing_people_counted",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JIANPO",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+      "next": "V01-C01-N181"
+        }
+      ],
+      "tags": [
+        "main",
+        "council",
+        "first_relation"
+      ]
+    },
+    {
+      "id": "V01-C01-N007",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "北滩有尸",
+      "presentation": "reveal",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "北滩原是一片白石。黑雨把石头染得像未干的墨，只有滩心那个人仍是白的。他仰面躺在浅水中，长发没有漂动，衣袍既不像麻也不像丝，仿佛由正午最亮的那一刻织成。胸口贯着一支赤金箭，箭尾没有羽。"
+        },
+        {
+          "type": "narration",
+          "text": "火把在他身边照出三道影子。一道属于少年，蜷着膝；一道属于长翼的鸟，喙抵东方；最后一道没有头，双手仍在结一个未完的印。尸体本身却没有影子。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我没碰。不是因为敬神，是因为箭在往外长。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“三道影子，是三个人？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“若是三个人，地上就该有三具尸。它们是三句没说完的话。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“你又知道？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“不知道。我只比砚伯少装作知道。”"
+        },
+        {
+          "type": "narration",
+          "text": "你俯身看去。箭杆上每隔一息便生出一圈细小的金纹，如树记年轮。最新的一圈，恰在你靠近时合拢。尸体的左手攥着焦黑桑叶，右手腕系着一块写有陌生日名的骨牌。黑雨落到他的眼皮上，全部滑向东方。"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PERSON-THREESHADOW",
+          "layer": "first_sight"
+        },
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-MAIN-002"
+        },
+        {
+          "type": "setWorldVar",
+          "key": "corpse.integrity",
+          "value": 100
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N007-G",
+          "label": "在不触碰尸体的前提下，尝试让三道影子各自回应一次",
+          "effects": [{"type": "setFlag", "key": "north_beach.shadows_invited", "value": true}],
+          "next": "V01-C01-N250"
+        },
+        {
+          "id": "V01-C01-N007-A",
+          "label": "检查赤金箭",
+          "visibleWhen": [
+            {
+              "type": "flagFalse",
+              "key": "clue.arrow_name_yi"
+            }
+          ],
+          "next": "V01-C01-N008"
+        },
+        {
+          "id": "V01-C01-N007-B",
+          "label": "检查三道影子",
+          "visibleWhen": [
+            {
+              "type": "flagFalse",
+              "key": "clue.shadow_memory_ten"
+            }
+          ],
+          "next": "V01-C01-N009"
+        },
+        {
+          "id": "V01-C01-N007-C",
+          "label": "检查骨牌与桑叶",
+          "visibleWhen": [
+            {
+              "type": "flagFalse",
+              "key": "clue.bone_token_fusang"
+            }
+          ],
+          "next": "V01-C01-N010"
+        },
+        {
+          "id": "V01-C01-N007-D",
+          "label": "先封锁北滩，不触碰尸体",
+          "visibleWhen": [
+            {
+              "type": "allFlagsFalse",
+              "keys": [
+                "clue.arrow_name_yi",
+                "clue.shadow_memory_ten",
+                "clue.bone_token_fusang"
+              ]
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "corpse.contamination",
+              "value": 0
+            }
+          ],
+          "next": "V01-C01-N011"
+        },
+        {
+          "id": "V01-C01-N007-E",
+          "label": "结束调查，等待天象变化",
+          "visibleWhen": [
+            {
+              "type": "anyFlagTrue",
+              "keys": [
+                "clue.arrow_name_yi",
+                "clue.shadow_memory_ten",
+                "clue.bone_token_fusang"
+              ]
+            }
+          ],
+          "next": "V01-C01-N012"
+        },
+        {
+          "id": "V01-C01-N007-F",
+          "label": "和隗青巡查白灰圈外的夜路",
+          "visibleWhen": [
+            {
+              "type": "flagFalse",
+              "key": "side.nightwatch.done"
+            }
+          ],
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-001"
+            }
+          ],
+          "next": "V01-C01-N029"
+        }
+      ],
+      "tags": [
+        "main",
+        "corpse",
+        "investigation_hub"
+      ]
+    },
+    {
+      "id": "V01-C01-N008",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "尚未射出的箭",
+      "presentation": "investigation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你没有拔箭，只用陶哨的裂口贴近箭杆。金属内部传来弓弦震动，先是一声，随后又有九声从极远处依次应和。第十声响完，尸体胸腔里有东西轻轻翻身。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“箭伤四周没有血。不是死后插的，是这具身体从箭上长出来的。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“箭上刻了什么？”"
+        },
+        {
+          "type": "narration",
+          "text": "箭镞朝西，伤口里的灼痕却向东延伸。这意味着箭由西方射来，死者却在中箭以后继续朝东方燃烧。箭杆近镞处刻着一个极浅的‘羿’字，笔画末端崭新，仿佛刻字的人还没来得及把刀抬起。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“羿？那个传闻里能射穿山脊的人？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“传闻只说他会射，没说他射过这具尸。把能做的事当成做过的事，是给凶手省路。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“那就把字拓下来。明日若箭上换了名字，至少今日的罪名还有证人。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.arrow_name_yi",
+          "value": true
+        },
+        {
+          "type": "addKnowledge",
+          "subjectId": "CX-V01-ITEM-REDARROW",
+          "amount": 1
+        },
+        {
+          "type": "completeObjective",
+          "questId": "Q-V01-MAIN-002",
+          "objectiveId": "inspect_one_clue"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N008-A",
+          "label": "继续检查其他线索",
+          "next": "V01-C01-N007"
+        },
+        {
+          "id": "V01-C01-N008-B",
+          "label": "尝试拓下箭杆铭文",
+          "costs": [
+            {
+              "type": "itemDurability",
+              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
+              "amount": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-CLUE-ARROWRUBBING",
+              "quantity": 1
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "corpse.integrity",
+              "delta": -5
+            }
+          ],
+          "next": "V01-C01-N007"
+        }
+      ],
+      "tags": [
+        "main",
+        "clue",
+        "arrow"
+      ]
+    },
+    {
+      "id": "V01-C01-N009",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "影子各有旧事",
+      "presentation": "investigation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你绕尸体走了一圈，三道影子始终停在原处。少年影子的手指沾着河泥，鸟影的羽尖嵌有盐粒，无头影子的袖中则落下一点金灰。影子不是光造成的，它们更像三段被迫留在地上的证词。"
+        },
+        {
+          "type": "narration",
+          "text": "当你把自己的手叠在少年影上，一段不属于你的记忆涌来：有人在高桑之巅数兄弟，数到第九便不敢再数；远处一个女人驾着六龙之车，反复告诫他们轮流照临人间。记忆中的第十个位置一直空着。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“影子不会撒谎，因为它连自己是谁都不知道。人会替它撒。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我看见九个兄弟。你们看见几个？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“九个。第十处空着。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“空着不等于没有。也可能有人专门把它空出来，好让你相信少了一个。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“那尸体是第十个？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“你问得太快。它也可能是来告诉我们：第十个还没死。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.shadow_memory_ten",
+          "value": true
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PERSON-THREESHADOW",
+          "layer": "rumor"
+        },
+        {
+          "type": "completeObjective",
+          "questId": "Q-V01-MAIN-002",
+          "objectiveId": "inspect_one_clue"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N009-A",
+          "label": "松开影子，继续调查",
+          "next": "V01-C01-N007"
+        },
+        {
+          "id": "V01-C01-N009-B",
+          "label": "【心志】追问空缺的第十个位置",
+          "sourceTag": "心志",
+          "enabledWhen": [
+            {
+              "type": "playerStatAtLeast",
+              "stat": "will",
+              "value": 4
+            }
+          ],
+          "disabledHint": "你能感觉到记忆在排斥追问。",
+          "costs": [
+            {
+              "type": "resource",
+              "resource": "stress",
+              "amount": 2
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.shadow_says_not_dead",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N007"
+        }
+      ],
+      "tags": [
+        "main",
+        "clue",
+        "shadow_memory"
+      ]
+    },
+    {
+      "id": "V01-C01-N010",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "没有写完的日名",
+      "presentation": "investigation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "骨牌一面画桑，一面写日名。那字你不认得，却知道应该怎样读，像婴儿天生会寻找乳汁。读音抵达舌尖时，黑雨突然加重，周围所有人同时忘记自己方才说过的话。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“别念。名字是门，念出声就是替里面的人开。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“方才你还说天错了。如今一块骨牌就能让你闭嘴，看来天不如名字吓人。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“我怕的不是名字，是念完以后我们会把什么忘掉。刚才谁先说要封井？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“没人说过。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“说过。正因为你们都不记得，才证明别再念。”"
+        },
+        {
+          "type": "narration",
+          "text": "焦叶与阿禾在路上拾到的金灰气味相同。两片残叶拼在一起，叶脉组成一幅极简的水路：赤水向东，越盐泽，过无潮海，止于一棵托日的桑。地图末端被人用指甲划去，留下十道平行伤痕。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“路线过旧盐井。尸体不是碰巧落在杳湾，它沿着我们挖出来的路来的。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.bone_token_fusang",
+          "value": true
+        },
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-CLUE-DAYTOKEN",
+          "quantity": 1
+        },
+        {
+          "type": "completeObjective",
+          "questId": "Q-V01-MAIN-002",
+          "objectiveId": "inspect_one_clue"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N010-A",
+          "label": "收起骨牌，继续调查",
+          "next": "V01-C01-N007"
+        },
+        {
+          "id": "V01-C01-N010-B",
+          "label": "【无名之人】念出那个名字",
+          "sourceTag": "无名之人",
+          "visibleWhen": [
+            {
+              "type": "playerOriginIs",
+              "origin": "nameless"
+            }
+          ],
+          "irreversible": true,
+          "effects": [
+            {
+              "type": "addStatus",
+              "statusId": "ST-NameBorrowed",
+              "duration": "VOLUME"
+            },
+            {
+              "type": "setFlag",
+              "key": "clue.true_day_name_heard",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N007"
+        }
+      ],
+      "tags": [
+        "main",
+        "clue",
+        "fusang"
+      ]
+    },
+    {
+      "id": "V01-C01-N011",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "把未知留在原地",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你让隗青插下火把，沿北滩撒一圈白灰。没有人靠近，尸体的秘密便暂时完整；代价是秘密也得以自由生长。天亮前，杳湾已有七种说法：死者是落水的神、九黎的细作、被雷劈白的商人、羿失手射下的星、赤水长出的儿子、村人共同做的梦，以及一个专门来替大家承担灾祸的陌生人。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“先不碰是对的。没有证据时，克制也是一种证据。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“你封得住手，封不住嘴。明日它就会有七个名字，每个名字后面都跟着一群想从它身上得好处的人。”"
+        },
+        {
+          "type": "narration",
+          "text": "第七种说法最受欢迎。人们已经开始往封锁线外放粟米和旧衣。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“他们说供它吃饱，雨就会停。要赶走吗？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“先记下谁来。众人一旦希望尸体替他们受苦，便会恨任何试图查明尸体身份的人。下一次送来的就未必只是粟米。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "village.corpse_cult",
+          "value": 1
+        },
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-SIDE-003"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N011-A",
+          "label": "听取村人的七种说法",
+          "next": "V01-C01-N029"
+        }
+      ],
+      "tags": [
+        "main",
+        "rumor",
+        "world_state"
+      ]
+    },
+    {
+      "id": "V01-C01-N029",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "白灰圈以外",
+      "presentation": "exploration_hub",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "白灰圈画到村口便断了。圈内轮流看守尸体，圈外的雨把杳湾分成一间间不相认的黑屋：粮仓里有东西磨牙，渡口有船叩舱，祠屋后有人端粥朝北滩走。隗青把灯罩压低，灯焰缩成一颗黄豆。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我不是请你逞能。巡夜三条规矩：听不懂的话别替它答；看见熟人先看脚；真要跑，跑到有人能看见的地方。你选路，我跟。”"
+        },
+        {
+          "type": "system",
+          "text": "夜巡会推进时间。未处理的地点不会消失，但会留下可追溯的后果；可随时回北滩推进主线。"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "weather.black_rain.day",
+          "value": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N029-H",
+          "label": "召开白灰圈外的公开问询，先让每个目击者把话说完",
+          "effects": [
+            {"type": "setFlag", "key": "north_beach.public_hearing", "value": true},
+            {"type": "changeRelation", "npcId": "NPC-WEIQING", "axis": "trust", "delta": 1}
+          ],
+          "next": "V01-C01-N189"
+        },
+        {
+          "id": "V01-C01-N029-A",
+          "label": "查看白灰圈外不断增加的供碗",
+          "next": "V01-C01-N030"
+        },
+        {
+          "id": "V01-C01-N029-B",
+          "label": "沿白灰线巡查丢失的影子",
+          "next": "V01-C01-N031"
+        },
+        {
+          "id": "V01-C01-N029-C",
+          "label": "去粮仓查黑粟的磨牙声",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-004"
+            }
+          ],
+          "next": "V01-C01-N033"
+        },
+        {
+          "id": "V01-C01-N029-D",
+          "label": "去渡口听沉船的三响",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-002"
+            }
+          ],
+          "next": "V01-C01-N035"
+        },
+        {
+          "id": "V01-C01-N029-E",
+          "label": "结束夜巡，回北滩等第二个月亮",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "side.nightwatch.done",
+              "value": true
+            },
+            {
+              "type": "completeQuest",
+              "questId": "Q-V01-SIDE-001"
+            }
+          ],
+          "next": "V01-C01-N012"
+        },
+        {
+          "id": "V01-C01-N029-F",
+          "label": "沿村井逐户确认黑雨留下的病人与失物",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-009"
+            }
+          ],
+          "next": "V01-C01-N078"
+        }
+      ],
+      "tags": [
+        "side",
+        "exploration_hub",
+        "nightwatch",
+        "revisit"
+      ]
+    },
+    {
+      "id": "V01-C01-N030",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "给谁吃的粥",
+      "presentation": "micro_encounter",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "供碗从第一只排到第十三只，粥由稠到稀。碗边压着红线、断齿和孩子的虎头鞋。抱婴儿的妇人蹲在末尾，把自己的粥倒进泥里；泥中立刻伸出一条细黑的舌头。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“她白日说孩子病了，夜里却给尸体添饭。可她自己的碗是空的。我没碰她——问清楚会让人放心，也会让全村知道她家断粮。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“那不是给尸体。给饿的人留一碗，饿的人就会信明天还有东西吃。你们大人把同一只碗叫祭品，省得承认有人没饭。”"
+        },
+        {
+          "type": "narration",
+          "text": "碗底浮着半粒会蠕动的黑粟，触到白灰便缩成清水。妇人把孩子抱得更紧，等你决定这点秘密该归谁。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N030-A",
+          "label": "记录供碗与黑粟，匿名交给青芽",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.offerings_are_hunger",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-QINGYA",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N029"
+        },
+        {
+          "id": "V01-C01-N030-B",
+          "label": "当场撤掉供碗，要求众人回屋",
+          "effects": [
+            {
+              "type": "changeWorldVar",
+              "key": "village.corpse_cult",
+              "delta": -1
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "village.water_sickness",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N029"
+        },
+        {
+          "id": "V01-C01-N030-C",
+          "label": "用白灰试验黑粟的反应",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.black_millet_fears_salt",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        }
+      ],
+      "tags": [
+        "side",
+        "hunger",
+        "choice_consequence"
+      ]
+    },
+    {
+      "id": "V01-C01-N031",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "影子先回家",
+      "presentation": "micro_encounter",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "染坊的门紧闭。门外蹲着三道湿影，像三只狗贴住门槛；门内是孩子的喘息与药草苦味。罗娘不敢开门：她男人夜里寻药回来时，影子先到了。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我守了七年夜，见过偷谷的、偷人的、偷神像金漆的。今夜头一回看见有人把自己的影子锁在门外。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“药在我手里。真等到天亮，门里门外谁对谁错都没用。”"
+        },
+        {
+          "type": "narration",
+          "text": "影子听见‘药’字，同时按住门。雨水在灰线前凝成三枚小脚印，脚尖齐齐朝北滩。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N031-A",
+          "label": "用滞影泥把影子固定在门外",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-MAT-SHADOWMUD",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能暂时固定影迹的材料。",
+          "effects": [
+            {
+              "type": "removeItem",
+              "itemId": "IT-V01-MAT-SHADOWMUD",
+              "quantity": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "side.dyer_family_saved",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N032"
+        },
+        {
+          "id": "V01-C01-N031-B",
+          "label": "【灵识】分辨影子是否记得主人的步态",
+          "sourceTag": "灵识",
+          "enabledWhen": [
+            {
+              "type": "playerStatAtLeast",
+              "stat": "spirit",
+              "value": 4
+            }
+          ],
+          "disabledHint": "雨中的影迹太乱，无法靠肉眼判定。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.shadows_follow_habit",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N032"
+        },
+        {
+          "id": "V01-C01-N031-C",
+          "label": "让隗青守门，先从窗缝递药",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-WEIQING",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N032"
+        }
+      ],
+      "tags": [
+        "side",
+        "knowledge_combat",
+        "shadow"
+      ]
+    },
+    {
+      "id": "V01-C01-N032",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "守夜人的灯",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "药终究递进了屋。隗青背对门站着，直到孩子的哭声重新有力，才把灯举高。他的手一直按着腰刀，却没有拔。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我以前以为守夜，就是把坏东西挡在门外。后来才知道，门里的人也会害怕得像坏东西。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我爹死那年，村里说他喝多了跌进河。我知道不是。他守着一条不能过的船，最后连影子都没回来。我没本事查，只能把每一夜守得比他长。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“别替我编英勇。记成：有人没敢开门，有人还是把药递了进去。这样就够。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.weqing_confided",
+          "value": true
+        },
+        {
+          "type": "changeRelation",
+          "npcId": "NPC-WEIQING",
+          "axis": "trust",
+          "delta": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N032-A",
+          "label": "答应只记录亲眼所见",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "player.keeps_witness_record",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        },
+        {
+          "id": "V01-C01-N032-B",
+          "label": "追问那条不能过的船",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.weqing_father_boat",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        }
+      ],
+      "tags": [
+        "side",
+        "npc_arc",
+        "weqing"
+      ]
+    },
+    {
+      "id": "V01-C01-N033",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "会磨牙的粮仓",
+      "presentation": "exploration",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "粮仓门闩由外扣着，里面却有极轻的磨牙声。青芽把耳朵贴到门板，听很久，才用炭笔在掌心写：不是鼠。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“鼠找粮。里面这个挑籽，专挑被雨浸黑的，像替自己筛一碗更好的饭。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“我能一把火烧了。十二日粮变十二日灰，村里不会怕它，也会饿得很公平。别问该不该烧，先进去看它要什么。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N033-A",
+          "label": "用裂陶哨确认粮堆里的空腔",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能辨认空腔走向的工具。",
+          "next": "V01-C01-N034"
+        },
+        {
+          "id": "V01-C01-N033-B",
+          "label": "从屋顶放出湿气，再进入粮仓",
+          "costs": [
+            {
+              "type": "time",
+              "minutes": 20
+            }
+          ],
+          "effects": [
+            {
+              "type": "changeWorldVar",
+              "key": "village.food_supply",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N034"
+        },
+        {
+          "id": "V01-C01-N033-C",
+          "label": "封门标记风险，暂缓调查",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "granary.sealed_before_truth",
+              "value": true
+            },
+            {
+              "type": "completeQuest",
+              "questId": "Q-V01-SIDE-004"
+            }
+          ],
+          "next": "V01-C01-N029"
+        }
+      ],
+      "tags": [
+        "side",
+        "material",
+        "granary"
+      ]
+    },
+    {
+      "id": "V01-C01-N034",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "黑粟在数人",
+      "presentation": "puzzle",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "粮堆中央空出一条只能侧身通过的洞，洞壁由根须编成。根须碰过脚踝，像在清点人数。尽头蹲着无眼灰鼠，透明肚皮里有十七粒发芽黑粟，每粒旁都粘着一根头发。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“它不是吃粮，是替粮记号。旧年荒的时候，死人少一口，活人多一口。如今粮替我们记账，倒也公道得叫人恶心。”"
+        },
+        {
+          "type": "narration",
+          "text": "灰鼠闻到扶桑烬，肚中黑粟排成一线，指向北坡旧盐井；其中一粒逆线爬向阿禾家羊圈。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N034-A",
+          "label": "留下灰鼠，追踪它筛出的黑粟",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.black_millet_tracks_hunger",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "granary.mouse_alive",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        },
+        {
+          "id": "V01-C01-N034-B",
+          "label": "以白灰隔开黑粟与好粮",
+          "enabledWhen": [
+            {
+              "type": "flagTrue",
+              "key": "clue.black_millet_fears_salt"
+            }
+          ],
+          "disabledHint": "你尚未确认黑粟对什么有反应。",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.food_supply",
+              "value": 3
+            },
+            {
+              "type": "setFlag",
+              "key": "granary.black_millet_isolated",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        },
+        {
+          "id": "V01-C01-N034-C",
+          "label": "烧掉灰鼠与受染粮",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.food_supply",
+              "value": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "granary.evidence_burned",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-SIDE-004"
+        }
+      ],
+      "tags": [
+        "side",
+        "puzzle",
+        "knowledge",
+        "world_echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N035",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "三响不是敲门",
+      "presentation": "dungeon_entry",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "渡口没有水声，只有沉船隔雾叩舱：一长、两短，停一息，再来一遍。宿沙坐在缆桩旁磨一把钝刀，刀刃已薄得像纸。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“这是渡工回岸信号。第一声报活，第二声报货，第三声报债。船里若真是我儿，他会先报债，因为他觉得欠我的比欠命大。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“我不求你替我开门。只要你站在外头，万一出来的不是他，替我记得是我先松的缆。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N035-A",
+          "label": "随宿沙登船，从正门进入腹舱",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N036"
+        },
+        {
+          "id": "V01-C01-N035-B",
+          "label": "沿船底影迹寻找暗舱",
+          "visibleWhen": [
+            {
+              "type": "flagTrue",
+              "key": "clue.shadows_follow_habit"
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "boat.shadow_route_known",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N036"
+        },
+        {
+          "id": "V01-C01-N035-C",
+          "label": "暂不登船，重新系紧缆绳",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "boat.entry_delayed",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N029"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon",
+        "susha",
+        "river"
+      ]
+    },
+    {
+      "id": "V01-C01-N036",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "倒船腹舱",
+      "presentation": "dungeon_hub",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "踏进舱门，船向上游倾斜。明明搁在泥滩，舱内水却从脚边流向屋顶。每扇门贴着潮湿货单，日期从明日倒数到半年前；最深处有人用指节敲同样的三响。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“船在倒走，话也会倒走。听见‘别开’，别急着关门；那可能是他死前最后一句，也可能是活着时第一句。”"
+        },
+        {
+          "type": "system",
+          "text": "副本规则：处理一扇舱门，河水便倒流一刻钟。可调查、带证据撤退，或在风险过高时返回渡口。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N036-F",
+          "label": "在进入腹舱前，召集宿沙、黎苇与砚伯核验一份从未记全的船货单",
+          "effects": [{"type": "setFlag", "key": "boat.manifest_hearing_opened", "value": true}],
+          "next": "V01-C01-N264"
+        },
+        {
+          "id": "V01-C01-N036-A",
+          "label": "检查写着昨日水位的舱门",
+          "next": "V01-C01-N037"
+        },
+        {
+          "id": "V01-C01-N036-B",
+          "label": "检查盖有北方蜡印的货单门",
+          "next": "V01-C01-N038"
+        },
+        {
+          "id": "V01-C01-N036-C",
+          "label": "循三响前往最深处",
+          "next": "V01-C01-N039"
+        },
+        {
+          "id": "V01-C01-N036-D",
+          "label": "带现有线索撤回渡口",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "boat.retreat_with_evidence",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N040"
+        },
+        {
+          "id": "V01-C01-N036-E",
+          "label": "把三道门的线索叠在一起，寻找腹舱更深处",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-014"
+            }
+          ],
+          "next": "V01-C01-N100"
+        }
+      ],
+      "tags": [
+        "side",
+        "small_dungeon",
+        "multi_solution"
+      ]
+    },
+    {
+      "id": "V01-C01-N037",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "门一：昨日水位",
+      "presentation": "dungeon_room",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "门后是一段倒置河岸。你们踩在水面下的天空，头顶漂着半年前的渡口。宿沙的儿子站在旧船头，把木箱交给蒙面人；他回头望来，嘴唇先动，声音却从三个月后传来。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“他没收钱。看清没有？他把自己的渡牌塞给那人。这不是走私的手势，是求人带东西过关。可箱里是什么，还不能替他洗干净。”"
+        },
+        {
+          "type": "narration",
+          "text": "木箱裂开一道缝，渗出白盐和孩子写满歪字的木片。水位猛地翻转，旧日的宿沙在岸上大喊，姓氏却被河水吞掉。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.susha_son_carried_children_records",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N037-A",
+          "label": "记下渡牌编号，返回腹舱",
+          "next": "V01-C01-N036"
+        },
+        {
+          "id": "V01-C01-N037-B",
+          "label": "以囚雨芦收存一滴倒流水",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-MAT-RAINREED",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能保存逆流水势的容器。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.boat_water_preserved",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N036"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon_room",
+        "evidence"
+      ]
+    },
+    {
+      "id": "V01-C01-N038",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "门二：货单没有货名",
+      "presentation": "dungeon_room",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "蜡印门后堆满货单。每张都写着重量、路线和损耗，唯独货名被刮得发白。宿沙擦过纸面，指尖渗血；被刮掉的字从掌纹浮起：昼盐、梦羽、童声、无名。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“北边的人最会算。人不叫人，叫损耗；孩子不叫孩子，叫一斗昼盐省下的灯油。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“你凭倒流货单给北方定罪？若是真的，我也想知道是谁用我的印。印不是主人，正如船不是船夫。”"
+        },
+        {
+          "type": "narration",
+          "text": "季狸的声音不在舱内，却从每张纸背后传来。最底一张单据盖着尚未铸出的真印，收货地写作：杳湾旧井以下。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.north_trade_used_unborn_seal",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N038-A",
+          "label": "带走一张完整货单",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "item.north_manifest_kept",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N036"
+        },
+        {
+          "id": "V01-C01-N038-B",
+          "label": "把货单浸进黑雨，验证字迹",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.manifest_survives_rain",
+              "value": true
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "corpse.contamination",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N036"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon_room",
+        "north"
+      ]
+    },
+    {
+      "id": "V01-C01-N039",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "门三：报债的人",
+      "presentation": "dungeon_climax",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "最深处的门半开。滴水的青年坐在里面，面目被水纹折得看不真切，胸前挂着渡牌。他每叩一下舱板，水面便浮出一个杳湾人的名字；第三下浮出的却是宿沙自己。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“别叫我爹。你若是我儿，就把没说的话说完；你若不是，就别借他的脸讨债。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“他不是你的儿子。他是你儿子没能送到岸的话。话沉得太久，便借了人的脸。”"
+        },
+        {
+          "type": "narration",
+          "text": "青年摊开裂木牌：井下缺一口白天，北方要十个孩子的梦。船若回不来，把名册交给能承受恨的人。宿沙的刀掉进水里，没有声音。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“我承受得住恨。可我不知道该恨谁：写名册的、运名册的、收名册的，还是只会骂他不肯回家的我。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N039-A",
+          "label": "让宿沙收下木牌，带回村中公开",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "susha.son_record_public",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N040"
+        },
+        {
+          "id": "V01-C01-N039-B",
+          "label": "请求水中人把木牌留在船里，暂不决定",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "susha.son_record_deferred",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "respect",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N040"
+        },
+        {
+          "id": "V01-C01-N039-C",
+          "label": "【言契】承诺替名册寻找每个名字的归处",
+          "sourceTag": "言契",
+          "enabledWhen": [
+            {
+              "type": "playerStatAtLeast",
+              "stat": "speech",
+              "value": 4
+            }
+          ],
+          "disabledHint": "你还没有足够的立场替那些名字承诺。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "player.oath_names_to_shore",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "river.flow",
+              "value": "stalled"
+            }
+          ],
+          "next": "V01-C01-N040"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon_climax",
+        "susha_arc"
+      ]
+    },
+    {
+      "id": "V01-C01-N040",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "船离开河床",
+      "presentation": "dungeon_resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "退出腹舱时，船不再倾斜，安静搁在泥滩上，像终于承认沉没的旧器物。宿沙把薄刀插回鞘，河面起了细纹，水却仍不知道该往哪边走。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“我还没原谅他。原谅不是把人从水里捞出来就算完。但我知道该去找谁问债。旧盐井的暗渠通船底，你们下井时带上这段缆绳；它受过倒流，记得怎么回来。”"
+        },
+        {
+          "type": "system",
+          "text": "副本完成：倒船腹舱。获得的证词会改变季狸、宿沙与旧盐井的对话；未调查的房间可在河流倒转前回访。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.boat_dungeon_completed",
+          "value": true
+        },
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-SIDE-002"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PLACE-DAYSALTWELL",
+          "layer": "rumor"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N040-A",
+          "label": "带着缆绳回夜巡路口",
+          "next": "V01-C01-N029"
+        },
+        {
+          "id": "V01-C01-N040-B",
+          "label": "立刻去北滩报告发现",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "side.nightwatch.done",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N012"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon_resolution",
+        "world_echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N012",
+      "chapter": "ACT2_THREE_SHADOWS",
+      "title": "第二个月亮",
+      "presentation": "act_break",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "黑雨第三日，太阳没有升起。正午的天色如旧铁，村民在无影的地上走来走去，人人显得比平时孤单。到黄昏，东边升起第二个月亮。它比原来的月亮更白、更近，表面没有桂影，只有一支缓慢旋转的箭。"
+        },
+        {
+          "type": "narration",
+          "text": "三影尸体在双月下坐了起来。不是复活，只是三道影子一齐站直，把尸身从水中托起。它张开嘴，吐出一条活着的黑线。黑线钻入河中，赤水随即停流。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“现在可以怕了。河一旦想起自己从哪里来，就会倒着回去。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“河没有记性。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“那你解释它为何专往东边找。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“尸体吐出的线进了河。先查河，还是守尸？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“分开查。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“人手不够。查河就会漏掉桑林，去桑林就没人盯供物。别装作什么都能保住，让他选。”"
+        },
+        {
+          "type": "system",
+          "text": "主线更新：在赤水倒流前查明黑雨如何进入村落。你无法在一次流程中保存所有证据与所有人。"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "sky.moons.count",
+          "value": 2
+        },
+        {
+          "type": "setWorldVar",
+          "key": "river.flow",
+          "value": "stalled"
+        },
+        {
+          "type": "advanceTime",
+          "days": 2
+        },
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-MAIN-003"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N012-D",
+          "label": "在第二个月亮升起前，带村人确认它究竟照见了谁",
+          "effects": [
+            {"type": "setFlag", "key": "moon.public_observation", "value": true},
+            {"type": "startQuest", "questId": "Q-V01-SIDE-024"}
+          ],
+          "next": "V01-C01-N210"
+        },
+        {
+          "id": "V01-C01-N012-A",
+          "label": "去河床追那条黑线",
+          "next": "V01-C01-N013"
+        },
+        {
+          "id": "V01-C01-N012-B",
+          "label": "去东桑林求证焦叶",
+          "next": "V01-C01-N014"
+        },
+        {
+          "id": "V01-C01-N012-C",
+          "label": "留在村中追查供尸之人",
+          "visibleWhen": [
+            {
+              "type": "worldVarAtLeast",
+              "key": "village.corpse_cult",
+              "value": 1
+            }
+          ],
+          "next": "V01-C01-N015"
+        }
+      ],
+      "tags": [
+        "main",
+        "moon",
+        "act_break"
+      ]
+    },
+    {
+      "id": "V01-C01-N041",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "十巢不在同一棵树上",
+      "presentation": "dungeon_entry",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "阿禾带你走到第十只空巢下。它看似挂在最高枝，走近却落到脚边；再退一步，又悬到林深处。新桑没有名字，风穿叶片时像许多婴儿在不同房间哭。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“巢不爱被找到，只爱被叫对。别笑我给树取名。砍掉没名字的树，谁知道砍掉的是树，还是一条回去的路？”"
+        },
+        {
+          "type": "system",
+          "text": "副本规则：无名树会改写路径。可命名、观察鸟巢温度、用扶桑烬显影或砍伐开路；每种方法都会留下不同后果。"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-SIDE-005"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N041-H",
+          "label": "跟随空巢里的湿纸深入第十巢，寻找那个要求被问而不愿被命名的声音",
+          "effects": [{"type": "setFlag", "key": "grove.unanswered_voice_sought", "value": true}],
+          "next": "V01-C01-N268"
+        },
+        {
+          "id": "V01-C01-N041-G",
+          "label": "协助阿禾召集十巢边的失散家人，先把活人的路接上",
+          "effects": [
+            {"type": "startQuest", "questId": "Q-V01-SIDE-020"},
+            {"type": "changeRelation", "npcId": "NPC-AHE", "axis": "trust", "delta": 1}
+          ],
+          "next": "V01-C01-N193"
+        },
+        {
+          "id": "V01-C01-N041-A",
+          "label": "跟阿禾逐棵确认已有的名字",
+          "next": "V01-C01-N042"
+        },
+        {
+          "id": "V01-C01-N041-B",
+          "label": "观察九只温巢与一只冷巢",
+          "next": "V01-C01-N043"
+        },
+        {
+          "id": "V01-C01-N041-C",
+          "label": "攀向看似最远的第十巢",
+          "next": "V01-C01-N044"
+        },
+        {
+          "id": "V01-C01-N041-D",
+          "label": "带现有发现前往旧盐井",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "side.ten_nests_deferred",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N016"
+        },
+        {
+          "id": "V01-C01-N041-E",
+          "label": "在林缘守到鸟影回巢",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-011"
+            }
+          ],
+          "next": "V01-C01-N086"
+        }
+      ],
+      "tags": [
+        "side",
+        "small_dungeon",
+        "ahe",
+        "fusang"
+      ]
+    },
+    {
+      "id": "V01-C01-N042",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "名字会长根",
+      "presentation": "puzzle",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "阿禾每叫一个旧名，脚下便有一根桑根松开。叫到二十七时，新树全垂下枝条，等一个从未在杳湾出现过的称呼。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“别叫第一棵、第二棵，那是砍树的人才用的名字。取一个你愿意隔很多年还记得的。”"
+        },
+        {
+          "type": "narration",
+          "text": "你想起白灰圈外没被吃掉的粥，也想起逆着饥饿爬向羊圈的黑粟。叶背同时翻起金灰。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N042-A",
+          "label": "以‘留饭’‘回家’‘未迟’命名",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.names_are_promises",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "respect",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N045"
+        },
+        {
+          "id": "V01-C01-N042-B",
+          "label": "用扶桑烬照见旧名",
+          "enabledWhen": [
+            {
+              "type": "itemRecognitionAtLeast",
+              "itemId": "IT-V01-MAT-EMBERLEAF",
+              "stage": "verified"
+            }
+          ],
+          "disabledHint": "需要先理解金灰如何照见被抹去的言语。",
+          "costs": [
+            {
+              "type": "memory",
+              "amount": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.grove_erased_names",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N045"
+        },
+        {
+          "id": "V01-C01-N042-C",
+          "label": "以编号绳强行标路",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.numbered_not_named",
+              "value": true
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "grove.stability",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N045"
+        }
+      ],
+      "tags": [
+        "side",
+        "puzzle",
+        "naming"
+      ]
+    },
+    {
+      "id": "V01-C01-N043",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "九暖一冷",
+      "presentation": "exploration",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "九只巢捂着余温，像九枚刚离手的鸟蛋；第十只冷得结霜，黑雨落进去没有水声。冷巢底部有一枚梦壳，里面十个少年轮流从桑上跃下，第十个总在落地前被一只看不见的手擦去。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“不是鸟走了，是鸟还没来。九只等明天，第十只等一个被删掉的明天。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“别把没发生的事养大。井里那块白天，也是我们拿‘以后再还’一点点养出来的。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N043-A",
+          "label": "以受雨空巢遮住梦壳",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-TOOL-DARKNEST",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能遮蔽太阳性气息的器物。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.dream_shell_hidden",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N046"
+        },
+        {
+          "id": "V01-C01-N043-B",
+          "label": "让阿禾以羊铃引鸟归巢",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.nine_birds_called",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N046"
+        },
+        {
+          "id": "V01-C01-N043-C",
+          "label": "敲碎冷巢，阻止孵化",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.cold_nest_broken",
+              "value": true
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "grove.stability",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N046"
+        }
+      ],
+      "tags": [
+        "side",
+        "exploration",
+        "sun_omen"
+      ]
+    },
+    {
+      "id": "V01-C01-N044",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "第十巢在脚下",
+      "presentation": "hazard",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你攀上最高枝，林子翻了个面。第十巢不在天上，而在每个人的影子脚下。阿禾站在对面，脚下没有影子，拇指却反复摩挲羊铃裂口。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“别叫我名字。它听见名字会把人塞进巢里。先看我的脚，我还踩着泥，说明我还在这边。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N044-A",
+          "label": "确认泥、铃与伤口",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.ahe_grounded_by_details",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N046"
+        },
+        {
+          "id": "V01-C01-N044-B",
+          "label": "以滞影泥封住影巢",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-MAT-SHADOWMUD",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能把影迹钉在原地的材料。",
+          "costs": [
+            {
+              "type": "item",
+              "itemId": "IT-V01-MAT-SHADOWMUD",
+              "quantity": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.shadow_nest_pinned",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N046"
+        },
+        {
+          "id": "V01-C01-N044-C",
+          "label": "后退离开枝梢，让阿禾先回村",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.ahe_sent_away",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "trust",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N047"
+        }
+      ],
+      "tags": [
+        "side",
+        "hazard",
+        "ahe_arc"
+      ]
+    },
+    {
+      "id": "V01-C01-N045",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "树根指向谁",
+      "presentation": "rule_reveal",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "名字、旧名或编号落定后，树根让出窄路。根须并不指向巢，而是分别伸往北滩、旧盐井和赤水东去的方向，像把村子绑在同一件旧事上的网。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“树没有要我们选一条路。它说三条都在。人砍掉一条，剩下的就会以为自己从来没走过。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“路多，不等于代价会替你分摊。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.grove_roots_link_village",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N045-A",
+          "label": "沿根路去冷巢",
+          "next": "V01-C01-N046"
+        },
+        {
+          "id": "V01-C01-N045-B",
+          "label": "回入口改查别的路径",
+          "next": "V01-C01-N041"
+        }
+      ],
+      "tags": [
+        "side",
+        "rule_discovery",
+        "revisit"
+      ]
+    },
+    {
+      "id": "V01-C01-N046",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "梦壳里没有第十个孩子",
+      "presentation": "dungeon_climax",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "梦壳裂开，里面没有鸟也没有日，只悬着一张缺了名字的孩子脸。它叫出你不记得的乳名；每叫一次，林外就有一棵无名桑枯下去。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“它怕自己没被算进去。可怕也不能拿别人的名字填。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“第十个位置不是孩子，是被留下看门的空。空太久，便想成为人。”"
+        },
+        {
+          "type": "narration",
+          "text": "给它名字，它会占据一段未来；留它无名，它会偷取身边的人；毁掉它，它会化作扶桑方向的警讯。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N046-A",
+          "label": "取名‘迟日’，让它留在村中学习成为人",
+          "irreversible": true,
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.dream_shell_named",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "npc.chiri.seeded",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N047"
+        },
+        {
+          "id": "V01-C01-N046-B",
+          "label": "封进受雨空巢，延后选择",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-TOOL-DARKNEST",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能隐藏太阳性痕迹的器物。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.dream_shell_contained",
+              "value": true
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "grove.stability",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N047"
+        },
+        {
+          "id": "V01-C01-N046-C",
+          "label": "烧毁梦壳，让扶桑收到警讯",
+          "irreversible": true,
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "grove.dream_shell_burned",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "faction.fusang.warning_received",
+              "value": "yes"
+            }
+          ],
+          "next": "V01-C01-N047"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon_climax",
+        "future_echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N047",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "留下来的鸟鸣",
+      "presentation": "dungeon_resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "桑林静下去时，九只巢先后传出鸟鸣，第十只始终无声。阿禾把羊铃系回腕上，塞给你一片金灰，像替未来留一盏小灯。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“以后有人问这里死过什么、活过什么，别说一棵树。说一群人怕得要命，还是给东西取了名字。”"
+        },
+        {
+          "type": "system",
+          "text": "副本完成：东桑十巢。阿禾的信任、扶桑预警和三影者后续状态已写入世界变量。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.ten_nests_completed",
+          "value": true
+        },
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-SIDE-005"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PLACE-EASTGROVE",
+          "layer": "insight"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N047-A",
+          "label": "前往旧盐井",
+          "next": "V01-C01-N016"
+        },
+        {
+          "id": "V01-C01-N047-B",
+          "label": "回十巢入口，检查未走的路径",
+          "next": "V01-C01-N041"
+        }
+      ],
+      "tags": [
+        "side",
+        "dungeon_resolution",
+        "ahe_arc",
+        "world_echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N013",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "河床下的路",
+      "presentation": "exploration",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "赤水停流后，河床像一条被剖开的兽腹。鱼悬在半空摆尾，水退到两侧，露出历年淹没的东西：陶罐、牛角、半扇门、三十七枚不同朝向的牙齿。宿沙在最深处找到儿子的船，舱门仍从里面叩响。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“活人敲门是求开，死人敲门是劝你别开。我儿从小懂事，死了也该懂。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“可他死前替北边运昼盐。若他敲门不是劝我，是怕我看见货呢？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“你来选。我若选开，像是盼他活；我若选封，像是怕他有罪。你没有生过他，反倒能听清第三下。”"
+        },
+        {
+          "type": "narration",
+          "text": "黑线从船底穿过，通往上游旧盐井。线旁生着一簇透明芦苇，每一节都囚着一滴黑雨。你割下一节，雨在芦腔里发出许多人的低语：‘不是从天上来的，是天上不要了。’"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“天上不要，人间就得接着？这话我听过。北边收走好东西时说替我们保管，坏东西掉下来时便说是我们的命。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-MAT-RAINREED",
+          "quantity": 1
+        },
+        {
+          "type": "setFlag",
+          "key": "clue.black_line_saltwell",
+          "value": true
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-MAT-RAINREED",
+          "layer": "first_sight"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N013-F",
+          "label": "沿倒流的赤水设立失物认领桌，让归还之物先被人确认而非被人抢走",
+          "effects": [{"type": "setFlag", "key": "river.return_table_opened", "value": true}],
+          "next": "V01-C01-N286"
+        },
+        {
+          "id": "V01-C01-N013-E",
+          "label": "带上月线图与失散者细节网，沿河床逐段确认被归还的东西",
+          "effects": [
+            {"type": "setFlag", "key": "riverbed.returned_items_survey", "value": true},
+            {"type": "startQuest", "questId": "Q-V01-SIDE-025"}
+          ],
+          "next": "V01-C01-N214"
+        },
+        {
+          "id": "V01-C01-N013-A",
+          "label": "打开沉船舱门",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "susha.son_truth_opened",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N061"
+        },
+        {
+          "id": "V01-C01-N013-B",
+          "label": "尊重宿沙的迟疑，封住舱门",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "susha.son_boat_sealed",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N062"
+        },
+        {
+          "id": "V01-C01-N013-C",
+          "label": "沿黑线追查被河退回的旧物",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-008"
+            }
+          ],
+          "next": "V01-C01-N063"
+        },
+        {
+          "id": "V01-C01-N013-D",
+          "label": "沿浅滩查找倒流留下的渔网、药箱与脚印",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-010"
+            }
+          ],
+          "next": "V01-C01-N082"
+        }
+      ],
+      "tags": [
+        "main",
+        "exploration",
+        "river"
+      ]
+    },
+    {
+      "id": "V01-C01-N061",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "舱门里先出来的是名字",
+      "presentation": "exploration",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "宿沙割开舱门外的水草，门却自己向内开了一掌宽。没有尸身，也没有货箱，先漂出来的是一块块湿木牌，上面是杳湾人早已不用的乳名。每一块碰到河床，河水便倒退半尺。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“这是过河时交的名牌。渡工怕夜里叫错人，就让客人写个小名留在船上。可这批人根本没到过渡口。”"
+        },
+        {
+          "type": "narration",
+          "text": "舱底蜷着一团人形水草，怀里抱着宿沙儿子的渡牌。它一抬头便用青年声音说：‘爹，别把名单给北边。他们只要会做梦的。’说完又把脸埋回水里。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“我知道它不是他。可它说的每个停顿都像他。人死了以后，连假的声音都比活人的话好听。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N061-A",
+          "label": "让宿沙认下渡牌，带走名牌作证",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "susha.accepted_nameplates",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N064"
+        },
+        {
+          "id": "V01-C01-N061-B",
+          "label": "以囚雨芦收住水草的话，暂不让宿沙回答",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-MAT-RAINREED",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能保存倒流话语的容器。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.river_voice_preserved",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N064"
+        },
+        {
+          "id": "V01-C01-N061-C",
+          "label": "关闭舱门，承认此刻无法分辨真假",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "susha.truth_deferred",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N064"
+        }
+      ],
+      "tags": [
+        "main",
+        "river",
+        "susha_arc",
+        "evidence"
+      ]
+    },
+    {
+      "id": "V01-C01-N062",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "封舱的人听见水下哭",
+      "presentation": "exploration",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "宿沙用沥青和白灰封住舱缝。第三道封泥刚抹平，船底便传来孩子哭声，一声接一声，不叫任何人名字。围在河床边的人开始动摇，有人说你们把活人封进了船。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“我封的是门，不是罪。若里面真有活人，我该进去；若里面是拿孩子声骗我开门的东西，我更该进去。可我现在进去，只是想让自己少欠一点。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“欠债的人最爱挑自己付得起的那一笔。外头还有人断粮，里头是真是假，都不能替你把别的事抹掉。”"
+        },
+        {
+          "type": "narration",
+          "text": "封泥上慢慢浮出一条赤金细线，线头穿过河床，指向旧盐井。它没有破门，只像在提醒：被封住的东西会自己找路。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N062-A",
+          "label": "在封泥上刻下日期与在场者姓名",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "boat.seal_witnessed",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N064"
+        },
+        {
+          "id": "V01-C01-N062-B",
+          "label": "留一枚裂陶哨在缝边，监听水下回声",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "需要能听出空腔与回声的工具。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.boat_echo_monitored",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N064"
+        },
+        {
+          "id": "V01-C01-N062-C",
+          "label": "离开河床，避免围观者把恐惧变成祭祀",
+          "effects": [
+            {
+              "type": "changeWorldVar",
+              "key": "village.corpse_cult",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N064"
+        }
+      ],
+      "tags": [
+        "main",
+        "river",
+        "susha_arc",
+        "social_pressure"
+      ]
+    },
+    {
+      "id": "V01-C01-N063",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "河把失物排成一行",
+      "presentation": "investigation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "黑线绕过沉船，来到一片退水泥滩。陶哨、针线、婚书、断齿、婴儿摇铃被河排成直线，像有人替杳湾整理了一次从未办过的葬礼。每件失物旁都压着一滴黑雨。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“河从不还东西。今日归还，说明它不是想做好人，是想让我们看见自己欠下什么。”"
+        },
+        {
+          "type": "narration",
+          "text": "你找到一张被泡烂的旧井工牌，背面刻着‘梦够十夜，盐出一两’。最后三个字被谁的指甲反复刮过，刮痕里嵌着黑羽粉末。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“别急着问是谁写的。先问谁看过。写字的人一个，默许它的人一村。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N063-A",
+          "label": "带走井工牌，追问昼盐的梦税",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.dream_tax_record",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N064"
+        },
+        {
+          "id": "V01-C01-N063-B",
+          "label": "将失物按户名归还，先安抚村中恐慌",
+          "costs": [
+            {
+              "type": "time",
+              "minutes": 45
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "river.lost_property_returned",
+              "value": true
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "village.corpse_cult",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N064"
+        },
+        {
+          "id": "V01-C01-N063-C",
+          "label": "保留失物原位，画下河退回的顺序",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.river_returns_by_debt",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N064"
+        }
+      ],
+      "tags": [
+        "main",
+        "river",
+        "material_reveal",
+        "collective_guilt"
+      ]
+    },
+    {
+      "id": "V01-C01-N064",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "赤水暂且记账",
+      "presentation": "resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "无论你带走、封存还是归还，河床最深处那条黑线始终朝北坡游去。宿沙把手指浸进泥里，捻出一粒细白的昼盐，随后用力攥碎。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“我还会回来开船。不是为了把谁送走，是为了让该过河的人有路。可下一次上船，先写清楚船替谁运什么。”"
+        },
+        {
+          "type": "system",
+          "text": "河床调查完成。宿沙对证词、封存和公开的态度已写入关系与世界状态；所得线索可在旧盐井、季狸交涉与结局余响中触发。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-SIDE-008"
+        },
+        {
+          "type": "setFlag",
+          "key": "side.river_investigation_complete",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N064-A",
+          "label": "沿黑线前往旧盐井",
+          "next": "V01-C01-N016"
+        },
+        {
+          "id": "V01-C01-N064-B",
+          "label": "返回河床，检查仍未处理的沉船",
+          "next": "V01-C01-N013"
+        }
+      ],
+      "tags": [
+        "main",
+        "river",
+        "world_echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N065",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "祖父听见孙子的梦",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "砚伯没有立刻责骂砚童。他将历书放到火塘旁，先问孩子梦里走过几次北滩、每次鞋底沾什么泥。问到第四次，老人忽然把笔折断。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“你不是偷粥。你替大人做了我们不敢承认的事。可我若说不是你的错，便像把错又丢回天上。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“那你别说。你把账翻到有孩子名字那页，让我看一眼。我想知道梦里的哥哥为什么总说‘轮到我’。”"
+        },
+        {
+          "type": "narration",
+          "text": "砚伯的手停在封皮上。那本账里确有一页被他父亲用蜡封住，蜡印上是已经废弃的井栏纹。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N065-A",
+          "label": "让砚伯当着砚童的面拆开蜡封",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yanbo.opens_child_ledger",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N067"
+        },
+        {
+          "id": "V01-C01-N065-B",
+          "label": "先带砚童远离历书，保护他不再梦行",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yantong.protected_from_ledger",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N068"
+        },
+        {
+          "id": "V01-C01-N065-C",
+          "label": "要求砚伯承认自己不知道，而不是继续解释",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yanbo.admits_ignorance",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N067"
+        }
+      ],
+      "tags": [
+        "main",
+        "dream",
+        "yanbo_arc",
+        "family"
+      ]
+    },
+    {
+      "id": "V01-C01-N066",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "把梦藏在衣领里",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你没有叫来砚伯。砚童坐在枣树根边，捧着被焚过的黑卵灰，灰里仍有一点极细的鸟鸣。梦钉羽在他后颈轻轻震动，像有人隔着很远的地方拉扯一根线。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“我不怕他罚。我怕他看见我以后，又把那一页撕掉。你们大人喜欢把吓人的东西藏起来，藏到最后就说从来没有。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“那就别让他一个人藏。你告诉我梦里哪块石头会发热，我去给它取名。取了名字，至少它不能假装没在那儿。”"
+        },
+        {
+          "type": "narration",
+          "text": "砚童抬起头，第一次没有看向东方。他说梦里有一口井，井边有十个空碗，第十个碗里盛着所有人不肯承认的那句话。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N066-A",
+          "label": "把梦钉羽交给砚童自己保管",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yantong.keeps_dream_feather",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANTONG",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N068"
+        },
+        {
+          "id": "V01-C01-N066-B",
+          "label": "替他保管梦钉羽，承诺日后归还",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "player.holds_yantong_feather",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N068"
+        },
+        {
+          "id": "V01-C01-N066-C",
+          "label": "请求阿禾用树名标出梦里热石的位置",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.dream_hot_stone_marked",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N068"
+        }
+      ],
+      "tags": [
+        "main",
+        "dream",
+        "yantong_arc",
+        "secrecy"
+      ]
+    },
+    {
+      "id": "V01-C01-N067",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "蜡封下是第十夜",
+      "presentation": "investigation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "蜡封剥开，纸页没有孩子姓名，只有一列列‘第十夜’。每一行后面是某户借走的灯油、换得的盐和一个被涂黑的年龄。砚童找出最后一行，涂黑处被雨水冲开，露出砚伯自己十岁时的名字。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“原来我也下过井。父亲说那是做梦，不算真的。可账比我记得清楚。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“所以你不是不知道。你只是把自己也忘掉了。”"
+        },
+        {
+          "type": "narration",
+          "text": "砚伯没有辩解。他把那页纸平铺在火塘前，让每一个敢看的人看见。屋外黑雨敲瓦，像有人用指节一次次确认这页纸仍在。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N067-A",
+          "label": "抄录第十夜名单，带往旧盐井求证",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "evidence.tenth_night_list",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N068"
+        },
+        {
+          "id": "V01-C01-N067-B",
+          "label": "让砚伯把名单交给砚童决定是否公开",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yantong.holds_tenth_night_list",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANTONG",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N068"
+        }
+      ],
+      "tags": [
+        "main",
+        "dream",
+        "evidence",
+        "yanbo_arc"
+      ]
+    },
+    {
+      "id": "V01-C01-N068",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "谁替孩子醒来",
+      "presentation": "resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "砚童终于睡着了，这一次影子没有先走。阿禾守在门槛边数他的呼吸，砚伯坐在更远处，一夜没有翻历书。梦钉羽仍指向东方，却不再把孩子往那里拉。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“我醒着的时候也能记住梦。那以后就别说是它逼我做的。我要自己决定要不要去井边。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“好。但决定之前先吃早饭。人饿着的时候，连做梦都容易被别人借走。”"
+        },
+        {
+          "type": "system",
+          "text": "梦行调查完成。砚童的知情、砚伯的旧账与梦钉羽归属将影响旧盐井、村中公开与卷末人物余响。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.dream_investigation_complete",
+          "value": true
+        },
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-SIDE-003"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N068-A",
+          "label": "前往旧盐井",
+          "next": "V01-C01-N016"
+        },
+        {
+          "id": "V01-C01-N068-B",
+          "label": "回祠屋复查供物线索",
+          "next": "V01-C01-N015"
+        }
+      ],
+      "tags": [
+        "main",
+        "dream",
+        "world_echo",
+        "family"
+      ]
+    },
+    {
+      "id": "V01-C01-N014",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "一夜长成的桑林",
+      "presentation": "exploration",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "东桑林原本只有二十七棵树，阿禾说她逐一给树取过名字。如今林中挤着二百七十棵，每十棵共用一团根，枝头的叶子一面焦黑、一面新绿。林子中央悬着十只空鸟巢，九只尚温，最小的一只落满黑雨。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“多出来的树没有名字。没名字的东西会不会比较容易被砍？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“我给第一棵叫早饭，第二棵叫小满，叫到二十九就想不出了。你来。名字不好听也行，别让它们只剩第几棵。”"
+        },
+        {
+          "type": "narration",
+          "text": "你将先前拾到的焦叶贴上树皮。金灰沿叶脉亮起，正式的名字从认知深处浮现：扶桑烬。它不是树烧剩的灰，而是某段白昼被抹去后留下的余温。用清水浸泡，它能让被黑雨洗去的一句话重新显现；每显现一次，持有者会忘记一件与那句话无关的小事。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“所以它拿你的一句话，换别人一句话？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“别急着说值得。先想好哪件小事丢了以后，世上是不是就再没人记得。”"
+        },
+        {
+          "type": "system",
+          "text": "材料显形：IT-V01-MAT-EMBERLEAF 已由【初见】提升至【实证】。解锁行动：照见被洗去的言语。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "revealItem",
+          "itemId": "IT-V01-MAT-EMBERLEAF",
+          "stage": "verified"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-MAT-EMBERLEAF",
+          "layer": "evidence"
+        },
+        {
+          "type": "setFlag",
+          "key": "clue.fusang_ash_verified",
+          "value": true
+        },
+        {
+          "type": "completeObjective",
+          "questId": "Q-V01-MAIN-003",
+          "objectiveId": "verify_material"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N014-A",
+          "label": "带走落满黑雨的空巢",
+          "effects": [
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-TOOL-DARKNEST",
+              "quantity": 1
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "grove.stability",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N041"
+        },
+        {
+          "id": "V01-C01-N014-B",
+          "label": "替多出的桑树逐一系上名字",
+          "costs": [
+            {
+              "type": "time",
+              "minutes": 60
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "grove.named_trees",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-AHE",
+              "axis": "respect",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N041"
+        },
+        {
+          "id": "V01-C01-N014-C",
+          "label": "采集更多扶桑烬",
+          "effects": [
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-MAT-EMBERLEAF",
+              "quantity": 2
+            },
+            {
+              "type": "addStatus",
+              "statusId": "ST-MemoryFray",
+              "duration": "VOLUME"
+            }
+          ],
+          "next": "V01-C01-N041"
+        }
+      ],
+      "tags": [
+        "main",
+        "material_reveal",
+        "fusang"
+      ]
+    },
+    {
+      "id": "V01-C01-N015",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "替尸体做梦的人",
+      "presentation": "investigation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "供物每天都多，守夜人却从未看见谁来。你伏在祠屋后的枣树下，直到双月走到同一片云里，才看见十二岁的砚童抱着一碗粟粥穿过雨。他闭着眼，脚步却准确避开每一块石。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“不是我要喂他。梦里的哥哥说，他饿了就会想起自己是谁；想起来，天上便少一个。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“我问他少一个有什么不好。他说，少的是他，活下来的也是他。我听不懂，可他哭的时候，三张脸一起哭。”"
+        },
+        {
+          "type": "narration",
+          "text": "砚童的后颈粘着一枚黑色羽片。羽片没有重量，却把他的影子钉向东方。你叫醒他时，碗中粟粥已变成细小的、尚未孵化的黑卵。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "text": "“别告诉祖父我偷了粥。他会先罚我偷粥，再花一辈子躲开我为什么偷。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "clue.dream_feeding"
+            }
+          ],
+          "text": "“砚童，你看着我。梦里的声音有没有提过旧井？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANTONG",
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "clue.dream_feeding"
+            }
+          ],
+          "text": "“它说井里有人替太阳挖坟。祖父，你那本账上为什么没有孩子的名字？”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-MAT-NIGHTFEATHER",
+          "quantity": 1
+        },
+        {
+          "type": "setFlag",
+          "key": "clue.dream_feeding",
+          "value": true
+        },
+        {
+          "type": "setWorldVar",
+          "key": "village.corpse_cult",
+          "value": 0
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N015-A",
+          "label": "把真相告诉砚伯",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "trust",
+              "delta": 2
+            },
+            {
+              "type": "setWorldVar",
+              "key": "yantong.publicly_blamed",
+              "value": false
+            }
+          ],
+          "next": "V01-C01-N065"
+        },
+        {
+          "id": "V01-C01-N015-B",
+          "label": "隐去砚童姓名，只焚毁黑卵",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANTONG",
+              "axis": "debt",
+              "delta": 2
+            },
+            {
+              "type": "setFlag",
+              "key": "clue.feather_kept_secret",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N066"
+        }
+      ],
+      "tags": [
+        "main",
+        "dream",
+        "rumor"
+      ]
+    },
+    {
+      "id": "V01-C01-N016",
+      "chapter": "ACT3_RIVER_REVERSED",
+      "title": "旧盐井",
+      "presentation": "dungeon_entry",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "所有线索最终都指向旧盐井。井在村北荒坡，封了二十年，井栏刻着‘水下有天，不可仰看’。黑雨沿石缝向下流，井口却不断吹出干燥热风。风里夹着鸟羽焦糊的气味。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“我年轻时下过一次。井底没有盐，只有一小块白天。我们封井，不是怕里面的东西出来，是怕村里人把白天挖完拿去卖。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“‘我们’是谁？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“你父亲，我丈夫，宿沙的兄长，还有我。你要名字，我可以一个个说；说完别把死人的名字当成活人的免责书。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“你守了二十年，为何偏等今日开口？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“因为从前说出来，只会让你们换个地方挖。今日井先来找你们，我才有证人。”"
+        },
+        {
+          "type": "narration",
+          "text": "缄婆承认杳湾数代人都从井中偷取‘昼盐’，掺进灯油与药膏。三年前产量断绝，村里却继续向北方使者交货。有人开始用牲血和孩子的梦催井。黑雨不是第一场报复，只是第一场所有人都能看见的报复。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“孩子的梦是谁提的？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“你父亲。执行的人包括我。现在你可以恨一个死人，也可以带着绳子下井，让活人把这件事做完。”"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PLACE-DAYSALTWELL",
+          "layer": "rumor"
+        },
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-MAIN-004"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N016-E",
+          "label": "在井口召开失踪者家属问询，先决定谁有资格替谁说话",
+          "effects": [
+            {"type": "setFlag", "key": "well.family_hearing_opened", "value": true},
+            {"type": "startQuest", "questId": "Q-V01-SIDE-021"}
+          ],
+          "next": "V01-C01-N197"
+        },
+        {
+          "id": "V01-C01-N016-A",
+          "label": "准备绳索、陶哨与净水后下井",
+          "enabledWhen": [
+            {
+              "type": "hasAnyItem",
+              "itemIds": [
+                "IT-V01-TOOL-CRACKEDWHISTLE",
+                "IT-V01-MAT-RAINREED"
+              ]
+            }
+          ],
+          "disabledHint": "缺少能辨认井下风向或储存黑雨的工具。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "well.descent_prepared",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N048"
+        },
+        {
+          "id": "V01-C01-N016-D",
+          "label": "先在井口安排留守、药物与撤退绳",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-012"
+            }
+          ],
+          "next": "V01-C01-N092"
+        },
+        {
+          "id": "V01-C01-N016-B",
+          "label": "立刻沿井绳下去",
+          "effects": [
+            {
+              "type": "addStatus",
+              "statusId": "ST-BlackRainExposure",
+              "duration": "ACT4"
+            }
+          ],
+          "next": "V01-C01-N048"
+        },
+        {
+          "id": "V01-C01-N016-C",
+          "label": "要求缄婆先公开昼盐旧账",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.day_salt_truth_public",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JIANPO",
+              "axis": "trust",
+              "delta": -1
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N048"
+        }
+      ],
+      "tags": [
+        "main",
+        "dungeon",
+        "collective_guilt"
+      ]
+    },
+    {
+      "id": "V01-C01-N048",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "井绳记得谁回来",
+      "presentation": "dungeon_entry",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "缄婆把旧井绳绕在你腰上。绳皮上有一段颜色更深，像被许多人抓过又洗不掉。宿沙送来的倒流缆绳在旁边轻轻发颤，仿佛两条路正认出彼此。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“下去前听好：井壁会让人看见想看的，暗渠会让人听见想听的，账室会让人相信该相信的。三样都不能当真，也都不能不看。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“账室里若真有旧账，带回来。别再用‘当年’两个字把所有人的手洗干净。”"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-SIDE-006"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N048-A",
+          "label": "沿井壁开采痕下降",
+          "next": "V01-C01-N049"
+        },
+        {
+          "id": "V01-C01-N048-B",
+          "label": "循倒流缆绳钻入船底暗渠",
+          "visibleWhen": [
+            {
+              "type": "flagTrue",
+              "key": "side.boat_dungeon_completed"
+            }
+          ],
+          "next": "V01-C01-N050"
+        },
+        {
+          "id": "V01-C01-N048-C",
+          "label": "进入封存昼盐账的侧室",
+          "next": "V01-C01-N051"
+        },
+        {
+          "id": "V01-C01-N048-D",
+          "label": "检查绳结后撤回井口",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "well.retreat_prepared",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N016"
+        },
+        {
+          "id": "V01-C01-N041-F",
+          "label": "摊开阿禾记下的旧名，追查被鸟影叼走的那一页",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-015"
+            }
+          ],
+          "next": "V01-C01-N107"
+        }
+      ],
+      "tags": [
+        "main",
+        "dungeon",
+        "well",
+        "exploration_hub"
+      ]
+    },
+    {
+      "id": "V01-C01-N049",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "井壁的晨光",
+      "presentation": "dungeon_room",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "井壁凹痕里凝着微弱晨光。每一道光都照出一种尚未发生的选择：砚伯看见自己烧掉历书，阿禾看见小满被抬上祭台，缄婆看见年轻的自己拿起第一把盐凿。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“别信它给你的好结局。昼盐最会把代价放在画面外。看凿痕——一深一浅，是孩子手和大人手交替留下的。”"
+        },
+        {
+          "type": "narration",
+          "text": "光缝中嵌着一枚小指骨，系着褪色红线。它不是遗骸，而是一张被当作工具保存的‘梦税’凭记。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N049-A",
+          "label": "取下红线与指骨，保全梦税证据",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.well_child_labor_proven",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N052"
+        },
+        {
+          "id": "V01-C01-N049-B",
+          "label": "用扶桑烬照见凿痕的最初一日",
+          "enabledWhen": [
+            {
+              "type": "itemRecognitionAtLeast",
+              "itemId": "IT-V01-MAT-EMBERLEAF",
+              "stage": "verified"
+            }
+          ],
+          "disabledHint": "需要先确认扶桑烬的实证层。",
+          "costs": [
+            {
+              "type": "memory",
+              "amount": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.first_day_salt_lie",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N052"
+        },
+        {
+          "id": "V01-C01-N049-C",
+          "label": "不碰井壁，原路返回",
+          "next": "V01-C01-N048"
+        }
+      ],
+      "tags": [
+        "main",
+        "dungeon_room",
+        "evidence",
+        "memory_cost"
+      ]
+    },
+    {
+      "id": "V01-C01-N050",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "船底通向井底",
+      "presentation": "dungeon_room",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "暗渠窄得只能匍匐。倒流缆绳带着你们穿过一段干燥河床，壁上满是船钉和童谣刻痕。每隔十步，水里便浮起一个没能送出杳湾的名字。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“原来不是船送货，是井借船出门。我们守的渡口，替它把债送得比人远。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“别替自己找一个没参与的地方。暗渠是村里人一凿一凿通的。知道通往哪里，不等于没人握过凿。”"
+        },
+        {
+          "type": "narration",
+          "text": "尽头堆着被水泡软的木牌。若把它们带走，暗渠会塌；若留在这里，名字会继续被水磨平。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N050-A",
+          "label": "抄下木牌名字，留牌稳住暗渠",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "clue.channel_names_copied",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N052"
+        },
+        {
+          "id": "V01-C01-N050-B",
+          "label": "带走木牌，封死这段暗渠",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "well.channel_sealed",
+              "value": true
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "river.flow",
+              "value": "stalled"
+            }
+          ],
+          "next": "V01-C01-N052"
+        },
+        {
+          "id": "V01-C01-N050-C",
+          "label": "撤回渡口，保住所有人的退路",
+          "effects": [
+            {
+              "type": "advanceTime",
+              "hours": 2
+            }
+          ],
+          "next": "V01-C01-N048"
+        }
+      ],
+      "tags": [
+        "main",
+        "dungeon_room",
+        "susha_arc",
+        "retreat"
+      ]
+    },
+    {
+      "id": "V01-C01-N051",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "账室不写亏欠",
+      "presentation": "dungeon_room",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "侧室里整齐码着昼盐账。每页都写天气、灯油和送往北方的箱数，唯独‘来源’一栏用朱砂盖住。砚伯用湿指腹擦开一页，露出的是熟悉的村姓与年龄。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“这些不是账，是人名。父亲把人名写在来源栏，又把来源盖住。原来他不是没记，是记得太清楚。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“现在你终于有一份能把死人钉在纸上的东西。拿出去，别只钉死人。写的人、看的人、没看的人，都在这间屋里。”"
+        },
+        {
+          "type": "narration",
+          "text": "最末页没有盖印，留着一行尚未填写的空格，像在等这一次黑雨给它补足。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N051-A",
+          "label": "带走完整账册，准备在村中宣读",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "evidence.daysalt_ledger_complete",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "village.day_salt_truth_public",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N052"
+        },
+        {
+          "id": "V01-C01-N051-B",
+          "label": "只抄与旧井有关的页，保护仍在世的人",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "evidence.daysalt_ledger_partial",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N052"
+        },
+        {
+          "id": "V01-C01-N051-C",
+          "label": "把空白末页交给砚伯填写",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yanbo.writes_his_name",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N052"
+        }
+      ],
+      "tags": [
+        "main",
+        "dungeon_room",
+        "yanbo_arc",
+        "evidence"
+      ]
+    },
+    {
+      "id": "V01-C01-N052",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "白昼盐池之前",
+      "presentation": "dungeon_hub",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "三条路在井底汇成一座盐门。门后传来数十张嘴的低语，言语彼此啃咬，像饥荒中的鼠群。缄婆把手按在门上，掌心的旧伤亮起晨光。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“含晦已经听见我们带了什么。证据越多，它越会拿真话当牙。你可以现在进去，也可以先把东西送回井口。两边都有代价。”"
+        },
+        {
+          "type": "system",
+          "text": "已获得的井下证据会改变含晦、羿和村中公开旧账时的文本；撤退不会断主线，但会推进黑雨与水病状态。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N052-A",
+          "label": "推开盐门，进入白昼盐池",
+          "next": "V01-C01-N017"
+        },
+        {
+          "id": "V01-C01-N052-B",
+          "label": "沿井绳撤回，先保全证据",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "well.evidence_delivered_before_boss",
+              "value": true
+            },
+            {
+              "type": "advanceTime",
+              "hours": 3
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "village.water_sickness",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N016"
+        },
+        {
+          "id": "V01-C01-N048-E",
+          "label": "循井壁回声寻找被盐层封住的人话",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-016"
+            }
+          ],
+          "next": "V01-C01-N112"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-SIDE-006"
+        }
+      ],
+      "tags": [
+        "main",
+        "dungeon_hub",
+        "fail_forward"
+      ]
+    },
+    {
+      "id": "V01-C01-N017",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "井底的一小块白天",
+      "presentation": "dungeon",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "井深七十丈。前十丈听见雨，二十丈听见河，三十丈以后只听见自己的骨头。井壁嵌满挖昼盐留下的凹痕，每一道都亮着微弱晨光。光照在人脸上，使人看见自己尚未做出的选择：有人看见富贵，有人看见逃亡，你看见一座被十个太阳同时照亮的空村。"
+        },
+        {
+          "type": "narration",
+          "text": "井底果然有一小块白天，铺在盐池上，薄得像冰。白昼中央伏着一头由黑雨、鱼骨和人声聚成的兽。它没有眼，背上却长着数十张熟人的嘴。每张嘴都在讲述同一件事的不同版本。它把被雨洗掉的言语吃进腹中，所以村人越遗忘，它越肥大。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“含晦。我们造的东西，总要等它能吃人了，才肯给它取名。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“它背上那张年轻的嘴是我。别应它。它会拿我没说出口的话，装成我现在的意思。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“看盐池。它每撒一次谎，脚就往光里沉一寸。你若只顾着砍嘴，先碎的是我们要找的证词。”"
+        },
+        {
+          "type": "system",
+          "text": "遭遇：含晦。可观察、封井、诱离、交涉、战斗或撤退。击杀并非默认目标。"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "startEncounter",
+          "encounterId": "EN-V01-ELITE-HANHUI"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-BEAST-HANHUI",
+          "layer": "first_sight"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N017-G",
+          "label": "不攻击也不诱离，先让含晦背上的嘴按‘亲见、转述、猜测’各说一次",
+          "effects": [{"type": "setFlag", "key": "hanhui.testimony_sorted", "value": true}],
+          "next": "V01-C01-N277"
+        },
+        {
+          "id": "V01-C01-N017-F",
+          "label": "先安置被白昼盐光灼伤的人，再决定是否深入追问",
+          "effects": [
+            {"type": "setFlag", "key": "saltwell.rescue_before_truth", "value": true},
+            {"type": "startQuest", "questId": "Q-V01-SIDE-026"}
+          ],
+          "next": "V01-C01-N218"
+        },
+        {
+          "id": "V01-C01-N017-A",
+          "label": "用扶桑烬照见它吞下的第一句话",
+          "enabledWhen": [
+            {
+              "type": "itemRecognitionAtLeast",
+              "itemId": "IT-V01-MAT-EMBERLEAF",
+              "stage": "verified"
+            }
+          ],
+          "costs": [
+            {
+              "type": "item",
+              "itemId": "IT-V01-MAT-EMBERLEAF",
+              "quantity": 1
+            },
+            {
+              "type": "memory",
+              "amount": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "hanhui.first_words_revealed",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N018"
+        },
+        {
+          "id": "V01-C01-N017-B",
+          "label": "用陶哨引它离开白昼盐池",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
+              "quantity": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "hanhui.displaced",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N019"
+        },
+        {
+          "id": "V01-C01-N017-C",
+          "label": "割破雨芦，让黑雨倒灌进它体内",
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-MAT-RAINREED",
+              "quantity": 1
+            }
+          ],
+          "costs": [
+            {
+              "type": "item",
+              "itemId": "IT-V01-MAT-RAINREED",
+              "quantity": 1
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "hanhui.overfed",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N019"
+        },
+        {
+          "id": "V01-C01-N017-D",
+          "label": "正面攻击含晦",
+          "effects": [
+            {
+              "type": "beginCombat",
+              "encounterId": "EN-V01-ELITE-HANHUI",
+              "solution": "force"
+            }
+          ],
+          "next": "V01-C01-N020"
+        },
+        {
+          "id": "V01-C01-N017-E",
+          "label": "撤回井口，准备后再来",
+          "effects": [
+            {
+              "type": "advanceTime",
+              "hours": 6
+            },
+            {
+              "type": "changeWorldVar",
+              "key": "village.water_sickness",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N016"
+        }
+      ],
+      "tags": [
+        "main",
+        "elite_encounter",
+        "multi_solution"
+      ]
+    },
+    {
+      "id": "V01-C01-N018",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "第一句谎话",
+      "presentation": "revelation",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "扶桑烬落在白昼上，像一滴火落回太阳。含晦背上的嘴依次闭合，只剩最小的一张。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“井里的光取之不尽。——这是我二十岁说的。那时我不是不知道会挖空，我只是不肯让别人先富。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“孩子做梦不算受苦。——这是我父亲？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“是。别替他把问句说成辩解。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“天上的日不会知道。只要账目仍叫盐。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“季狸还没到杳湾。为何这里有他的声音？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“也许说话的不是他。也许他来过，只是我们被拿走了那一日。继续照。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“让他带箭逃。逃得越远，追来的人越晚看见东方。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“谁让你逃？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“一个已经被弟弟们忘掉的兄长。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“你是死者，还是信使？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“我不是死者。我是路。”"
+        },
+        {
+          "type": "narration",
+          "text": "你失去了一件记忆。也许是母亲某次呼唤你的声调，也许是幼年院墙的颜色。空缺很小，却有风从里面吹过。你终于明白扶桑烬的代价从不宏大；它只拿走那些没人能替你证明的小事。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“它拿走你什么？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“想不起来就对了。记住你付过，不必编一个损失来安慰自己。现在决定：让它把所有话吐回村里，还是只拿箭的证词。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "clue.corpse_is_road",
+          "value": true
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-BEAST-HANHUI",
+          "layer": "evidence"
+        },
+        {
+          "type": "resolveEncounter",
+          "encounterId": "EN-V01-ELITE-HANHUI",
+          "result": "released_words"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N018-A",
+          "label": "让含晦吐出所有被洗去的话",
+          "irreversible": true,
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.memories_restored",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "village.day_salt_truth_public",
+              "value": true
+            },
+            {
+              "type": "addStatus",
+              "statusId": "ST-MemoryFray",
+              "duration": "VOLUME"
+            }
+          ],
+          "next": "V01-C01-N021"
+        },
+        {
+          "id": "V01-C01-N018-B",
+          "label": "只取与三影尸体有关的证词",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "evidence.corpse_words_preserved",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N021"
+        }
+      ],
+      "tags": [
+        "main",
+        "truth",
+        "memory_cost"
+      ]
+    },
+    {
+      "id": "V01-C01-N019",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "让怪物换一个饥饿",
+      "presentation": "encounter_resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "含晦追逐陶哨中的空声，或贪婪吞下雨芦里储存的黑雨。它离开白昼盐池，身体便失去形状，散成数百句没有主人的话。你们用陶罐逐一收拢，罐子里有人认罪、有人求饶、有人只说今晚想吃一碗热粥。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“世上最难封的不是妖，是一句终于有人肯听的话。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“若把话罐带回去，谁保管？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“问反了。该问谁有权不让原主听见。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“全放回去会死人。旧债、私情、告密，哪一句都可能是一把刀。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“封起来也会。只不过刀在保管者手里，看上去像秩序。”"
+        },
+        {
+          "type": "narration",
+          "text": "盐池下露出一枚赤金箭镞的铸范。范上没有羿名，只有十只足印，其中一只被人为磨去。箭不是为杀某个人打造的；它的尺寸从一开始就属于天上的东西。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“十只足印。箭只要一支？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“一支箭可以先教人该射什么。剩下九支，就有人照着造了。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-CLUE-ARROWMOLD",
+          "quantity": 1
+        },
+        {
+          "type": "setFlag",
+          "key": "clue.arrow_made_for_sun",
+          "value": true
+        },
+        {
+          "type": "resolveEncounter",
+          "encounterId": "EN-V01-ELITE-HANHUI",
+          "result": "contained"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N019-A",
+          "label": "封存话罐，保留证词",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "hanhui.fate",
+              "value": "contained"
+            },
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-UNIQUE-VOICEJAR",
+              "quantity": 1
+            }
+          ],
+          "next": "V01-C01-N021"
+        },
+        {
+          "id": "V01-C01-N019-B",
+          "label": "打开话罐，让言语回到村里",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.memories_restored",
+              "value": true
+            },
+            {
+              "type": "setWorldVar",
+              "key": "hanhui.fate",
+              "value": "dispersed"
+            }
+          ],
+          "next": "V01-C01-N021"
+        }
+      ],
+      "tags": [
+        "main",
+        "nonlethal",
+        "evidence"
+      ]
+    },
+    {
+      "id": "V01-C01-N020",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "杀死由遗忘组成的兽",
+      "presentation": "combat_resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "武器每击中含晦一次，便有一句话永远消失。它用死者的求救扰乱你，用亲人的声音诱你回头，用你自己的声音承诺只要停手便可得到清白。井底白昼在搏斗中碎裂，光片割伤皮肤，伤口流出的血先红后黑。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“别砍那张孩子的嘴！那是井绳断时留下的——”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“……没了。方才我在护什么？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“继续！它再开口，我们就分不清哪句是真的！”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“分不清不等于该让它们全消失！”"
+        },
+        {
+          "type": "narration",
+          "text": "最后一击落下时，含晦缩成一枚无字的舌骨。村里所有人同时停顿片刻，却没人知道自己忘了什么。你赢了，胜利干净得令人害怕。盐池下露出赤金箭铸范，十只足印中有一只被磨掉；除此之外，再没有证词能够解释它。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“至少怪物死了。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“至少？你连‘除此之外’是什么都不记得，就敢说至少。把舌骨收好。以后有人夸这场胜利，让他含着说。”"
+        },
+        {
+          "type": "system",
+          "text": "含晦已被击杀。获得材料【无辞舌骨】；与其吞噬的部分证词永久失去。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-MAT-WORDLESSBONE",
+          "quantity": 1
+        },
+        {
+          "type": "addItem",
+          "itemId": "IT-V01-CLUE-ARROWMOLD",
+          "quantity": 1
+        },
+        {
+          "type": "setWorldVar",
+          "key": "hanhui.fate",
+          "value": "killed"
+        },
+        {
+          "type": "setWorldVar",
+          "key": "village.memories_restored",
+          "value": false
+        },
+        {
+          "type": "resolveEncounter",
+          "encounterId": "EN-V01-ELITE-HANHUI",
+          "result": "killed"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N020-A",
+          "label": "带铸范返回井口",
+          "next": "V01-C01-N021"
+        }
+      ],
+      "tags": [
+        "main",
+        "combat",
+        "costly_victory"
+      ]
+    },
+    {
+      "id": "V01-C01-N021",
+      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "title": "羿从西边来",
+      "presentation": "character_entrance",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你们出井时，黑雨已下到第六日。一个高瘦男人站在井栏旁，蓑衣下背着空箭囊，手里那张弓没有弦。他像赶了很远的路，又像只是从隔壁屋檐下避雨回来。村里的狗不叫，三影尸体的三道影子却同时朝他跪下。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“谁动过箭？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-WEIQING",
+          "text": "“我守了六日，没人拔过。你为何一来只问箭，不问尸体？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“因为尸体在等，箭在赶路。会赶路的东西更危险。”"
+        },
+        {
+          "type": "narration",
+          "text": "他自称羿。说出名字时没有雷，也没有神光，只是第二个月亮停转了一瞬。你出示拓印、铸范或讲述尸体异状。羿逐一听完，始终望着自己的双手。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“箭上是我的名，手法也是我的。可我还没有造过这支箭，更没有射它。有人把将来的罪先送来，要我照着犯。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“名字、手法、箭范都在。你一句‘还没有’，要我们如何信？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“不要信我。查箭。真的证据不需要我品行高洁。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "clue.arrow_made_for_sun"
+            }
+          ],
+          "text": "“箭范有十足印，不是猎人的尺寸。你空囊里为何有九声？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "clue.arrow_made_for_sun"
+            }
+          ],
+          "text": "“因为梦里我放了九次弦。第十次，我醒了。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“尸体不是日。日若死，影子只有一道，因为天下万物都替它作影。这东西是送箭的路，是从东方逃出来的一段白昼。它死在这里，说明扶桑不想让消息走得更远。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“若它是路，路的另一头是谁？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“这就是它带着箭，而不是带着答案来的原因。”"
+        }
+      ],
+      "onEnterEffects": [
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PERSON-YI",
+          "layer": "first_sight"
+        },
+        {
+          "type": "completeObjective",
+          "questId": "Q-V01-MAIN-004",
+          "objectiveId": "resolve_hanhui"
+        },
+        {
+          "type": "startQuest",
+          "questId": "Q-V01-MAIN-005"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N021-D",
+          "label": "在交出证据前，要求羿说明空箭囊里为何有九次弦声",
+          "effects": [{"type": "setFlag", "key": "yi.nine_sounds_investigated", "value": true}],
+          "next": "V01-C01-N240"
+        },
+        {
+          "id": "V01-C01-N021-A",
+          "label": "把所有证据交给羿",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "trust",
+              "delta": 2
+            },
+            {
+              "type": "setFlag",
+              "key": "yi.has_full_evidence",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053"
+        },
+        {
+          "id": "V01-C01-N021-B",
+          "label": "隐去昼盐旧账，只谈扶桑",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "trust",
+              "delta": -1
+            },
+            {
+              "type": "setFlag",
+              "key": "yi.village_crime_hidden",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053"
+        },
+        {
+          "id": "V01-C01-N021-C",
+          "label": "质问羿为何带着空箭囊",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "respect",
+              "delta": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "clue.yi_dreamed_shots",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053"
+        }
+      ],
+      "tags": [
+        "main",
+        "yi",
+        "revelation"
+      ]
+    },
+    {
+      "id": "V01-C01-N053",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "第七日之前",
+      "presentation": "faction_hub",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "羿看完证据，没有立刻去北滩。他把无弦弓横在膝上，望着雨里来往的人。季狸的车队停在村外，黎苇领着盐泽流民搭起避雨棚，砚伯在祠屋抄写名单。每个人都在为明日做准备，只是准备的不是同一种活法。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“明日的箭会选一个最先知道的人。你若想让选择不只剩箭，今晚就去听他们各自想保什么。别替我跑，我会在北滩等。”"
+        },
+        {
+          "type": "system",
+          "text": "阵营前夜：完成任一协商线后可进入最终会议；完成更多线会提供额外信息、路线与人物余响。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N053-AC",
+          "label": "旁观一堂雨后初课：让孩子与守夜人亲手检验那些刚写下的规则",
+          "next": "V01-C01-N362"
+        },
+        {
+          "id": "V01-C01-N053-AB",
+          "label": "整理雨中未送达的回执：让失散、借用与拒绝也能留下可追问的去处",
+          "next": "V01-C01-N356"
+        },
+        {
+          "id": "V01-C01-N053-AA",
+          "label": "在终局前巡看六处普通人的小事：看它们怎样被写进能用的明日",
+          "next": "V01-C01-N348"
+        },
+        {
+          "id": "V01-C01-N053-Z",
+          "label": "翻阅黑雨七日记，重走那些决定村子没有立刻散掉的日常片段",
+          "next": "V01-C01-N340"
+        },
+        {
+          "id": "V01-C01-N053-Y",
+          "label": "回到第一夜的几处门槛，看看黑雨改变后人与人如何重新相认",
+          "next": "V01-C01-N335"
+        },
+        {
+          "id": "V01-C01-N053-X",
+          "label": "在终局前参与第一次公开听证：让材料、证词与未决问题各有位置",
+          "next": "V01-C01-N325"
+        },
+        {
+          "id": "V01-C01-N053-W",
+          "label": "在第七日前完成一次公开准备演练，检验村约能否真的带人穿过混乱",
+          "next": "V01-C01-N320"
+        },
+        {
+          "id": "V01-C01-N053-V",
+          "label": "走进砚伯封存的旧档案间，重读那些把人写成代号的年份",
+          "next": "V01-C01-N315"
+        },
+        {
+          "id": "V01-C01-N053-U",
+          "label": "听砚童召集孩子们的短会：他们要决定大人没看见的三件事",
+          "next": "V01-C01-N311"
+        },
+        {
+          "id": "V01-C01-N053-T",
+          "label": "在村口设一张雨中书信桌，为失散的人写下不必立刻寄出的信",
+          "next": "V01-C01-N306"
+        },
+        {
+          "id": "V01-C01-N053-S",
+          "label": "追查船、林、井共同出现的红线，把三处异象并到一张可核验的路图上",
+          "next": "V01-C01-N296"
+        },
+        {
+          "id": "V01-C01-N053-R",
+          "label": "整理黑雨中被冲散的记忆碎片，决定哪些应当归还、哪些可以暂缓",
+          "next": "V01-C01-N291"
+        },
+        {
+          "id": "V01-C01-N053-Q",
+          "label": "参加黑雨第六日的共修：修屋、清沟、守灯与写下轮班表",
+          "effects": [{"type": "setFlag", "key": "village.day_six_common_repair", "value": true}],
+          "next": "V01-C01-N281"
+        },
+        {
+          "id": "V01-C01-N053-P",
+          "label": "接下雨后巡查板上的紧急求助，先处理一处正在发生的小危机",
+          "next": "V01-C01-N259"
+        },
+        {
+          "id": "V01-C01-N053-O",
+          "label": "在第七日前最后一个夜晚，分别听几个人说完没说出口的话",
+          "next": "V01-C01-N244"
+        },
+        {
+          "id": "V01-C01-N053-N",
+          "label": "在最终会议前，回应一件只有你出身能读懂的旧物",
+          "next": "V01-C01-N227"
+        },
+        {
+          "id": "V01-C01-N053-M",
+          "label": "在雨势稍歇时参与一轮村市：处理材料、借贷与夜行装备",
+          "effects": [{"type": "setFlag", "key": "village.rain_market_opened", "value": true}],
+          "next": "V01-C01-N222"
+        },
+        {
+          "id": "V01-C01-N053-L",
+          "label": "召集所有持有证词的人，先决定哪些事不能用来交换",
+          "effects": [
+            {"type": "setFlag", "key": "final.civic_compact_discussed", "value": true},
+            {"type": "startQuest", "questId": "Q-V01-SIDE-022"}
+          ],
+          "next": "V01-C01-N201"
+        },
+        {
+          "id": "V01-C01-N053-A",
+          "label": "协助砚伯核对撤村名册",
+          "next": "V01-C01-N054"
+        },
+        {
+          "id": "V01-C01-N053-B",
+          "label": "前往盐泽棚屋听黎苇的条件",
+          "next": "V01-C01-N056"
+        },
+        {
+          "id": "V01-C01-N053-C",
+          "label": "要求季狸解释真印与迁徙文书",
+          "next": "V01-C01-N058"
+        },
+        {
+          "id": "V01-C01-N053-D",
+          "label": "向羿询问第十次没有放开的弦",
+          "next": "V01-C01-N060"
+        },
+        {
+          "id": "V01-C01-N053-E",
+          "label": "召集众人进入北滩最终会议",
+          "next": "V01-C01-N022"
+        },
+        {
+          "id": "V01-C01-N053-F",
+          "label": "趁雨势稍缓，逐户处理未结的人情与缺口",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-013"
+            }
+          ],
+          "next": "V01-C01-N095"
+        },
+        {
+          "id": "V01-C01-N053-H",
+          "label": "召集四方代表，先把证据和代价摆到同一张桌上",
+          "effects": [
+            {
+              "type": "startQuest",
+              "questId": "Q-V01-SIDE-018"
+            }
+          ],
+          "next": "V01-C01-N122"
+        },
+        {
+          "id": "V01-C01-N053-I",
+          "label": "沿黑雨后的村巷巡一遍，找仍在发生的小异象",
+          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-024"}],
+          "next": "V01-C01-N164"
+        },
+        {
+          "id": "V01-C01-N053-J",
+          "label": "把现有材料带到雨棚，完成一次实地显形与互证",
+          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-025"}],
+          "next": "V01-C01-N169"
+        },
+        {
+          "id": "V01-C01-N053-K",
+          "label": "在雨棚熄灯前，听六个人把各自不肯说的话说完",
+          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-026"}],
+          "next": "V01-C01-N174"
+        }
+      ],
+      "tags": [
+        "main",
+        "faction_hub",
+        "revisit",
+        "day_seven"
+      ]
+    },
+    {
+      "id": "V01-C01-N054",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "木牌上没有归处",
+      "presentation": "faction_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "砚伯把迁徙木牌平码在祠屋长案上。每户一牌，正面是北地居住凭证，背面却留着‘原籍已清’的朱框。老人一笔一笔核对，笔尖在几个孤寡名字前停得太久。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“文书写得很好：给屋、给粮、给路引。它只不写谁能回。好文书最擅长把门画成路。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“我一生抄账，以为把名字写全就是尽责。可人若被写进一张不能回头的牌，名字越全，路越窄。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N054-A",
+          "label": "在每块木牌背面加刻原籍与亲属",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "village.evacuations_keep_roots",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N055"
+        },
+        {
+          "id": "V01-C01-N054-B",
+          "label": "只登记愿意离开的户，保留留村名册",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "village.split_evacuation_choice",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N055"
+        },
+        {
+          "id": "V01-C01-N054-C",
+          "label": "让砚伯先写下自己家欠下的名字",
+          "enabledWhen": [
+            {
+              "type": "anyFlagTrue",
+              "keys": [
+                "evidence.daysalt_ledger_complete",
+                "yanbo.writes_his_name"
+              ]
+            }
+          ],
+          "disabledHint": "需要一份能让旧账落到具体人名上的证据。",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yanbo.public_confession_started",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N055"
+        }
+      ],
+      "tags": [
+        "main",
+        "yanbo_arc",
+        "faction"
+      ]
+    },
+    {
+      "id": "V01-C01-N055",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "记历人改了一行字",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "砚伯把今日历页撕下，又重新写了一遍：黑雨第七日，杳湾尚未决定离开或留下。最末尾，他没有写‘天错’，只写‘人仍在问’。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“这是我能给后人的一点小麻烦。以后若有人说我们别无选择，至少得先把这行字刮掉。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.yanbo_preparation_done",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N055-A",
+          "label": "回到前夜路口",
+          "next": "V01-C01-N053"
+        }
+      ],
+      "tags": [
+        "main",
+        "yanbo_arc",
+        "echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N056",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "盐泽人不借命",
+      "presentation": "faction_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "黎苇的棚屋没有火，只有十几只倒扣的盐碗。流民围着湿衣取暖，没人伸手向村人要粮。黎苇正在给一个孩子缝鞋底，用的是从北方迁徙木牌上拆下的麻绳。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“别问我们愿不愿帮。问帮完以后算谁的人。北方说给你们住处，我们也听过；住进去的人，要先把故乡叫成旧址。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“我能带人走盐泽小路，路窄、难、不会有人替你记功。条件是村里不能拿流民去换尸体，也不能让孩子排在队尾。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N056-D",
+          "label": "与黎苇共同走一段盐泽路，核验她所说的路不是空头承诺",
+          "effects": [{"type": "setFlag", "key": "saltmarsh.route_walked", "value": true}],
+          "next": "V01-C01-N272"
+        },
+        {
+          "id": "V01-C01-N056-A",
+          "label": "承诺流民与村民同列撤离名单",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "liwei.equal_evacuation_pact",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-LIWEI",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N057"
+        },
+        {
+          "id": "V01-C01-N056-B",
+          "label": "请求黎苇先送孩子走，成年人留下守村",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "liwei.children_first_route",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N057"
+        },
+        {
+          "id": "V01-C01-N056-C",
+          "label": "拒绝交易，要求流民自行决定去留",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-LIWEI",
+              "axis": "respect",
+              "delta": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "liwei.autonomous_route",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N057"
+        }
+      ],
+      "tags": [
+        "main",
+        "liwei_arc",
+        "faction"
+      ]
+    },
+    {
+      "id": "V01-C01-N057",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "修骨的人把针收起来",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "黎苇把骨针别回发间。她递给你一枚盐泽路标，木片两面都没有方向，只有一处磨得发亮的指痕。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“路标不是给你认路的，是给后来的人认出有人走过。别把它插在尸体上；活人比尸体更需要方向。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.liwei_preparation_done",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N057-A",
+          "label": "回到前夜路口",
+          "next": "V01-C01-N053"
+        }
+      ],
+      "tags": [
+        "main",
+        "liwei_arc",
+        "echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N058",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "真印压不住雨",
+      "presentation": "faction_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "季狸的车棚里点着无烟灯。他把真印放在木案中央，印钮是一只闭眼的兽。黑雨滴到印面即刻蒸发，留下极细的白盐圈。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“我能给迁徙文书，也能给三日粮。两样都是真的。你们害怕的是它们后面会不会还有一张没人给看的纸——这害怕也是真的。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“有人盗用未来的印，不代表所有印都该碎。没有文书的人，走到哪里都只能被别人重新命名。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N058-D",
+          "label": "要求季狸带你看一眼文书生效后真正由谁执行",
+          "effects": [{"type": "setFlag", "key": "jili.execution_chain_checked", "value": true}],
+          "next": "V01-C01-N275"
+        },
+        {
+          "id": "V01-C01-N058-A",
+          "label": "要求季狸当众在文书上补写不可强制归属",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.public_limit_clause",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JILI",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N059"
+        },
+        {
+          "id": "V01-C01-N058-B",
+          "label": "出示倒船货单，要求他解释未铸之印",
+          "visibleWhen": [
+            {
+              "type": "anyFlagTrue",
+              "keys": [
+                "clue.north_trade_used_unborn_seal",
+                "item.north_manifest_kept"
+              ]
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.unborn_seal_confronted",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JILI",
+              "axis": "trust",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N059"
+        },
+        {
+          "id": "V01-C01-N058-C",
+          "label": "收下文书，但不交出尸体归属",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.documents_accepted_without_corpse",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N059"
+        }
+      ],
+      "tags": [
+        "main",
+        "jili_arc",
+        "faction"
+      ]
+    },
+    {
+      "id": "V01-C01-N059",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "印的背面",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "季狸翻过真印，背面刻着极浅的数字：九。那不是编号，更像有人提前给九次失败留下的空格。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“你可以不信我。只别把不信当成不用准备。明日有人会用没有印的暴力来拿尸体；到时你会发现纸也有它能挡住的刀。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.jili_preparation_done",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N059-A",
+          "label": "回到前夜路口",
+          "next": "V01-C01-N053"
+        }
+      ],
+      "tags": [
+        "main",
+        "jili_arc",
+        "echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N060",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "第十次没有放弦",
+      "presentation": "character_scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "羿坐在北滩外的石头上，空箭囊搁在膝头。你靠近时，囊中九声金属相击停了一瞬，像九个尚未下定决心的人同时屏住呼吸。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“第十次我醒了，因为梦里地上有人抬头。不是太阳在看我，是人。那一刻我知道箭一旦放开，不会只落在天上。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“你不必替我证明清白。我没有。一个人反复梦见同一种杀法，至少说明他身上有能学会它的地方。你只要帮我把那地方看紧。”"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N060-A",
+          "label": "请羿在众人面前说出这份恐惧",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yi.publicly_names_fear",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N053"
+        },
+        {
+          "id": "V01-C01-N060-B",
+          "label": "要求羿交出空箭囊，暂不让它靠近尸体",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yi.quiver_separated",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "respect",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N053"
+        },
+        {
+          "id": "V01-C01-N060-C",
+          "label": "保持沉默，与羿一同守到天亮",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yi.shared_watch",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053"
+        }
+      ],
+      "tags": [
+        "main",
+        "yi_arc",
+        "faction",
+        "knowledge"
+      ]
+    },
+    {
+      "id": "V01-C01-N022",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "第七日以前",
+      "presentation": "council",
+      "blocks": [
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "finale.threshold_talk_completed"}],
+          "text": "北滩的长桌还没摆稳，门槛上已经留着三处湿印：一枚儿童名牌、一块旧船蜡印、半只沾泥的量米瓢。它们谁也不能替代尸体和箭，却让所有人知道，今夜不止有神异要被决定。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "finale.child_records_shared"}],
+          "text": "阿禾把抄下的儿童名页压在灯盏下，手指仍沾着桑叶汁。砚童站在她身后，没有躲进大人腿边；他只是小声补了一句：『名字不是拿来换船位的。』"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "jili.transport_liability_written"}],
+          "text": "季狸面前多了一份写着自己名字的运输责任状。纸很薄，压不住风；他却第一次没有把它翻到背面。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "finale.rations_publicly_witnessed"}],
+          "text": "粮仓的量米瓢被放在最靠外的位置。青芽说，谁想拿尸体换撤离，先报出今晚哪一家少半碗；这不是反对撤离，只是不许任何人把饥饿藏进大词里。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "worldVarEquals", "key": "boat.evidence_custody", "value": "double_copy"}],
+          "text": "两份船舱抄本分别压在宿沙和缬婆手下。它们的字并不完全一样，正因如此，谁也无法轻易把另一份说成伪造。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "worldVarEquals", "key": "well.voice_layer_fate", "value": "revealed"}],
+          "text": "旧井第一句命令被写在残盐纸上：先记货，后记人。纸上的盐粒像尚未愈合的伤口，没人敢说这是祖辈留下的规矩，仿佛规矩就会因此变得轻一点。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.boat_revisit_completed"}],
+          "text": "北滩外多了一盏渡灯，灯柄上缠着还没干透的三色布。宿沙没有把它带进会里；他说灯该照门槛，不该替任何人把话照得更好看。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "boat.triage_recorded"}],
+          "text": "青芽把浅滩上没能喝足药的第三个孩子也写在配给板上。她不许任何人把那一行擦掉：『不是为了羞辱谁，是为了以后有人说药够时，知道该问哪一碗。』"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "grove.leave_permission_public"}],
+          "text": "阿禾把一块路标靠在长桌旁，背面写着『人、羊与守井者均可离开』。砚伯看了很久才说字太少；阿禾回他：『字够不够，你先问被留下的人。』"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "well.families_heard_first"}],
+          "text": "缄婆把半齿井钥匙放进木碗，碗边压着家属的布条。她说：『今夜若有人要讲井，就先对着听过的人讲；别再把他们请来当最后一排。』"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "well.water_by_need_public"}],
+          "text": "青芽把井水分配板也带到了北滩。她没让它成为谁的清白证，只让每个要求别人牺牲的人先看清：今晚的水，是按病势，不是按谁更像该受罚的人分的。"
+        },
+        {
+          "type": "narration",
+          "text": "羿说第七日雨停时，三影尸体会完成它最后的使命：箭将从尸体中脱出，替尚未发生的射击选择第一个目标。若封住箭，扶桑便不知道人间已经收到警告；若拔出箭，持箭者会被天上的目光看见；若毁尸，箭会在无人知道的地方重新长成。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“听起来每条路都坏。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“路本来不分好坏，只分代价由谁来付。神把两者混在一起讲，是为了让人付钱时还道谢。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“那就由全村付。尸体留在这里，箭封进井底。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“‘全村’里算不算三影的人？你们谈它的尸体，像谈一袋湿粮。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“因为湿粮和尸体在灾年都必须登记。季狸，北方联盟祭库收储使。昼盐、异箭、天尸，依旧约归库。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“你的旧约盖的是三年后的印。北方祭库今日连地基都没有。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“你识得未来的印？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“我识得用这枚印烧过我故乡的人。是未来先来，还是你们一直拿未来给今日定罪？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“我可以让全村撤离，给路引、口粮与居地。条件是尸体和箭。你们也可以留在这里，等待第十个太阳亲自解释归属。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“他说的价钱是真的。至于他替谁买，不是真的。”"
+        },
+        {
+          "type": "narration",
+          "text": "黎苇拔出骨锥，季狸身后的弩手抬臂。雨中第一次出现了人的刀光，竟比神异更令众人熟悉。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N022-F",
+          "label": "在定下最终方案前，让四方各自说明他们愿意承担、却不愿再转嫁的代价",
+          "next": "V01-C01-N254"
+        },
+        {
+          "id": "V01-C01-N022-A",
+          "label": "支持羿，在北滩守到雨停",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "finale.plan",
+              "value": "guard"
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N023"
+        },
+        {
+          "id": "V01-C01-N022-B",
+          "label": "公开全部旧账，迫使村民共同决定",
+          "visibleWhen": [
+            {
+              "type": "worldVarEquals",
+              "key": "village.day_salt_truth_public",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "finale.plan",
+              "value": "assembly"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "village.self_rule",
+              "value": 1
+            }
+          ],
+          "next": "V01-C01-N023"
+        },
+        {
+          "id": "V01-C01-N022-C",
+          "label": "与季狸交易，用尸体换取全村撤离",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "finale.plan",
+              "value": "trade"
+            },
+            {
+              "type": "setFlag",
+              "key": "corpse.claimed_by_north",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N023"
+        },
+        {
+          "id": "V01-C01-N022-D",
+          "label": "听从黎苇，连夜把尸体送进盐泽",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "finale.plan",
+              "value": "smuggle"
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-LIWEI",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N023"
+        },
+        {
+          "id": "V01-C01-N022-E",
+          "label": "让四方先各自写下不能被交易的事",
+          "effects": [
+            {"type": "startQuest", "questId": "Q-V01-SIDE-022"}
+          ],
+          "next": "V01-C01-N144"
+        }
+      ],
+      "tags": [
+        "main",
+        "final_plan",
+        "faction"
+      ]
+    },
+    {
+      "id": "V01-C01-N023",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "黑雨停了",
+      "presentation": "climax",
+      "blocks": [
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.four_boundaries_written"}],
+          "text": "四张底线纸仍压在北滩石上。雨水把墨洇进石纹，『名字不是货』『不在最后一排』『印不能替手说话』『箭先说明靶』彼此挨着，没有一条替另一条取胜。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "finale.saltmarsh_co_decides"}],
+          "text": "黎苇没有退到人群外。她与杳湾人并肩站在白灰线内，手里拿着一份有盐泽名字的撤离单；这次没人可以说她只是来讨价还价。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "finale.arrow_accountability"}],
+          "text": "羿把无弦弓放在所有人能看见的地方，先开口说：『谁把箭交给我，都可以在我松手前问我想射谁。』这不是保证，却让他第一次没能躲在未来后面。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.village_last_round_completed"}],
+          "text": "北滩桌角还压着一块未染完的布、一盏守夜灯和药锅的缺口记录。它们没有资格替箭作证，却让所有提议『牺牲少数』的人都不得不先看见少数今晚睡在哪里。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "material.allocation_gap_public"}],
+          "text": "昼盐浮尘在配给板空白处泛着微光。青芽没有把它擦掉：『这不是多出来的粮，是原本就被算没的人。谁谈撤离，先谈他们。』"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "material.first_command_verified"}],
+          "text": "缄婆把『先记货，后记人』的核验页放在所有文书上面。她说它不替任何人定罪，只负责让往后每一笔类似的账，都没法再假装是偶然。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "qingya.hero_ration_ledger"}],
+          "text": "青芽把北滩行动的粮账钉在柱上。她对羿说：『箭若要粮，就写下谁少吃几天。你不写，我就当你不饿。』羿没有反驳。"
+        },
+        {
+          "type": "narration",
+          "text": "第七日正午，黑雨停了。最后一滴悬在三影尸体眉心，迟迟不落。杳湾忽然明亮得像从未经历过夜，所有湿透的屋瓦一齐冒出白烟。赤水开始倒流，河中鱼群腹部朝天，却仍活着游向东方。"
+        },
+        {
+          "type": "narration",
+          "text": "尸体站起。三道影子先后回到他脚下：少年使他有了面容，鸟使他有了呼吸，无头者使他举起双手。他抓住胸口赤金箭，看向你。那双眼里没有瞳孔，各盛着一轮遥远的日。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“我替明日死在昨日。箭替后羿来，也替后羿回去。不要问我是谁；名字已被他们从第十棵桑上刮掉。问你愿意让谁先知道。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“若给我，我会看见什么？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“你会看见九次不得不射，与一次可以不射。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“若归库？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“他们会先给箭命名，再给敌人命名。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“若让你回东边？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“追我的人会知道人间已经听见。我的兄弟会知道我没有死透。两件事都可能让十日更早升起。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“若把箭折了呢？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“箭会失去原来的目标。持有箭镞的人，会变成它的新问题。”"
+        },
+        {
+          "type": "narration",
+          "text": "季狸的人举起弩，黎苇点燃盐草，村民围在白灰线外，羿把无弦之弓横在膝前。所有人都等你先动，仿佛普通人的第一个动作，能替神决定后来的传说。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N023-A",
+          "label": "拔出赤金箭，交给羿",
+          "irreversible": true,
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "NPC-YI"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "released"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_yi",
+              "value": true
+            }
+          ],
+      "next": "V01-C01-N236"
+        },
+        {
+          "id": "V01-C01-N023-B",
+          "label": "让尸体带箭继续向东",
+          "irreversible": true,
+          "enabledWhen": [
+            {
+              "type": "anyFlagTrue",
+              "keys": [
+                "clue.corpse_is_road",
+                "clue.bone_token_fusang"
+              ]
+            }
+          ],
+          "disabledHint": "你还不知道尸体究竟是一具人，还是一条路。",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "NPC-THREESHADOW"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "eastbound"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_east",
+              "value": true
+            }
+          ],
+      "next": "V01-C01-N237"
+        },
+        {
+          "id": "V01-C01-N023-C",
+          "label": "折断箭杆，把箭镞留给人间",
+          "irreversible": true,
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-CLUE-ARROWMOLD",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "你不知道赤金箭的受力与铸造弱点。",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "PLAYER"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "unmade"
+            },
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-UNIQUE-REDARROWHEAD",
+              "quantity": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_mortal",
+              "value": true
+            }
+          ],
+      "next": "V01-C01-N238"
+        },
+        {
+          "id": "V01-C01-N023-D",
+          "label": "允许季狸接管尸体，兑现撤村交易",
+          "irreversible": true,
+          "visibleWhen": [
+            {
+              "type": "worldVarEquals",
+              "key": "finale.plan",
+              "value": "trade"
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "FACTION-NORTH"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "seized"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_north",
+              "value": true
+            }
+          ],
+      "next": "V01-C01-N239"
+        }
+      ],
+      "tags": [
+        "main",
+        "climax",
+        "irreversible"
+      ]
+    },
+    {
+      "id": "V01-C01-N024",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "把未来交给射手",
+      "presentation": "ending",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你握住箭杆。它比人体温更暖，仿佛已经穿过许多个尚未发生的正午。拔箭时尸体没有流血，三道影子却各自惨叫一声：少年叫的是母亲，鸟叫的是东方，无头者叫的是你的名字。"
+        },
+        {
+          "type": "narration",
+          "text": "羿接箭后沉默很久。他把箭放进空箭囊，囊中立刻传出九支箭互相碰撞的声音。三影者向你行了一个无人见过的礼，身体散成白昼碎片，落进赤水。河水恢复东流，带走所有碎片，唯独一片停在阿禾掌心。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“我不会许诺射或不射。许诺是事情尚且容易时说的话。等天上真的有十个太阳，你若还活着，就来问我第二次。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“那你至少答应，射之前先数。别因为箭囊里有九声，就以为天上只该剩一个。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“我答应数。至于数完以后，我不骗你。”"
+        },
+        {
+          "type": "narration",
+          "text": "羿向东去了。后来村人争论是你把武器交给英雄，还是把罪交给一个尚未犯罪的人。两种说法都传得很远，而且都比事实动听。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "faction.yi_mission",
+          "value": "armed_by_future"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-ITEM-REDARROW",
+          "layer": "echo"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N024-A",
+          "label": "在羿东行前，先处理他留下的九道箭痕",
+          "next": "V01-C01-N156"
+        }
+      ],
+      "tags": [
+        "main",
+        "ending_yi"
+      ]
+    },
+    {
+      "id": "V01-C01-N025",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "让路继续走",
+      "presentation": "ending",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你没有拔箭，而是替三影者解开缠在脚踝上的水草。他向东迈步，第一步踏过北滩，第二步踏到赤水中央，第三步已在所有人的视线之外。河面上留下三条明亮的路，一条通往扶桑，一条通往还没到来的十日，一条回到你脚下。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“你放走了证据，也放走了警告。也许是慈悲，也许只是把选择推迟。天地最喜欢人把推迟叫慈悲。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“推迟也能救命。只有不用逃的人，才把及时逃走叫软弱。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“我没有说软弱。我是让他记住：今日没付的代价，会换个名字回来。”"
+        },
+        {
+          "type": "narration",
+          "text": "翌日，东桑林少了一棵没有名字的树。阿禾坚称那棵树昨夜变成人走了。砚伯把这句话记进历书，又在旁边写：小儿之言，不足为信。多年以后，他的后人只抄了前半句。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "faction.fusang.warning_received",
+          "value": "uncertain"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-PERSON-THREESHADOW",
+          "layer": "echo"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N025-A",
+          "label": "沿东行河岸处理三条留下的路",
+          "next": "V01-C01-N158"
+        }
+      ],
+      "tags": [
+        "main",
+        "ending_east"
+      ]
+    },
+    {
+      "id": "V01-C01-N026",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "人间留下一点锋利",
+      "presentation": "ending",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你把铸范垫在箭下，从第三圈金纹处折断箭杆。巨响并不来自手中，而来自天顶，仿佛有一扇门被人在另一侧踢了一脚。箭镞冷却成普通金属，箭杆则化为十只火鸟，九只向东，一只钻进你的影子。"
+        },
+        {
+          "type": "narration",
+          "text": "三影者第一次露出近似笑意的表情。他把失去箭镞的伤口合拢，身体缩成一个与阿禾年纪相仿的少年，却仍记不起名字。杳湾收留了他，给他取名‘迟日’，因为他总在日落后才觉得温暖。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“你让一支命定的箭变成了两件不确定的东西。神不会喜欢。人间也未必配得上。收好它，等你明白武器也会选择主人。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“他有三道影子的时候你们叫尸体，剩一道就叫人。大人的眼睛真省事。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“总得给他登记一个名字。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“先问他。若他还不会答，就叫迟日。日落以后他才暖，名字也该等他自己改。”"
+        },
+        {
+          "type": "narration",
+          "text": "从此你影中藏着一只不会鸣叫的火鸟。它每逢有人谈起命数便睁开眼，使你知道所谓命定，多半只是某个强者比别人更早写下的计划。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "npc.chiri.alive",
+          "value": true
+        },
+        {
+          "type": "addTrait",
+          "traitId": "TR-FirebirdShadow"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-ITEM-REDARROW",
+          "layer": "evidence"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N026-A",
+          "label": "在迟日被写进户册前，先问他想留下什么",
+          "next": "V01-C01-N160"
+        }
+      ],
+      "tags": [
+        "main",
+        "ending_mortal",
+        "hidden_route"
+      ]
+    },
+    {
+      "id": "V01-C01-N027",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "一村人的价钱",
+      "presentation": "ending",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "季狸用青铜匣收殓尸体，匣盖合拢时，三道影子仍留在滩上。他兑现诺言，给每户一枚迁徙木牌、三日口粮和北地居住的凭证。村人排队领取，队伍安静得像在参加一场没有死者的葬礼。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“活下来不是耻辱。把活命的代价说成耻辱，是没付钱的人才有的体面。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“你说得对。所以把买主写在木牌上，让他们将来知道该向谁讨这笔命债。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“木牌只证明居住，不记录怨恨。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“那怨恨就会自己认路。它比你的公文活得久。”"
+        },
+        {
+          "type": "narration",
+          "text": "七日后，护送青铜匣的队伍在盐泽失踪。北方公文说从未派过季狸，季狸的同伴却带着盖有真印的文书。杳湾人散居各地，把黑雨故事讲成十几个版本；共同之处只有一件：他们都说是自己最后离开村子。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "village.evacuated",
+          "value": true
+        },
+        {
+          "type": "setWorldVar",
+          "key": "faction.north.has_red_arrow",
+          "value": "missing_in_transit"
+        },
+        {
+          "type": "unlockCodex",
+          "codexId": "CX-V01-EVENT-BLACKRAIN",
+          "layer": "echo"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N027-A",
+          "label": "在迁徙队离开前，核对木牌上的住处与债主",
+          "next": "V01-C01-N162"
+        }
+      ],
+      "tags": [
+        "main",
+        "ending_north"
+      ]
+    },
+    {
+      "id": "V01-C01-N069",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "箭囊里有九个明日",
+      "presentation": "ending_echo",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "羿离开前，在北滩把箭囊倒扣在石上。里面没有箭，只有九道细小的金痕，像九个被迫等候的清晨。阿禾蹲在旁边，用树枝一根根数。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“你说先数，数错怎么办？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“那就从头数。人能做的不多，承认数错算一件。”"
+        },
+        {
+          "type": "narration",
+          "text": "若你曾给无名树取名，羿在第十处金痕旁写下一个空圈，不肯填字；若你带回第十夜名单，他向砚伯要走一份副本，说未来若真逼他放弦，至少要知道地上有谁曾替太阳付过钱。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YI",
+          "text": "“你交给我的不是武器，是一件会追问主人的东西。下次见面，别只问我射了没有；问我先替谁说了话。”"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "echo.yi_counts_before_shooting",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N069-A",
+          "label": "回看杳湾与众人的余响",
+          "next": "V01-C01-N028"
+        }
+      ],
+      "tags": [
+        "echo_route",
+        "yi",
+        "revisit"
+      ]
+    },
+    {
+      "id": "V01-C01-N070",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "东行的人没有回头",
+      "presentation": "ending_echo",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "三影者东行后的第三日，赤水岸边多出三串不同的脚印：少年脚印踩在泥里，鸟爪印停在水面，无头者的印痕却落在每个看见它的人心上。宿沙把渡船推回水中，第一次不问来客姓名。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“他走得快，是怕被谁追上；我开得慢，是怕把谁落下。两种路都得有人走。”"
+        },
+        {
+          "type": "narration",
+          "text": "若你在河床归还过失物，渡口陆续有人带着旧物来换一段河程；若你封过沉船，封泥上的赤金线每到黄昏便亮，提醒杳湾还有一笔债未开舱。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“东桑林少的那棵树没有死。它只是走得比我们早。你们别把走掉的都叫丢了。”"
+        },
+        {
+          "type": "narration",
+          "text": "远东方向没有回应，只有一片比黑雨更亮的云。扶桑是否收到警讯无人知道；但从此杳湾的孩子会在数到九时停一下，再决定要不要数十。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "echo.eastbound_route_remembered",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N070-A",
+          "label": "回看杳湾与众人的余响",
+          "next": "V01-C01-N028"
+        }
+      ],
+      "tags": [
+        "echo_route",
+        "east",
+        "susha",
+        "revisit"
+      ]
+    },
+    {
+      "id": "V01-C01-N071",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "迟日先学会吃饭",
+      "presentation": "ending_echo",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "迟日留在杳湾的第一个傍晚，阿禾给他一碗温粥。他盯着粥看了很久，问这是不是供物。阿禾把勺子塞进他手里，说不是，饿的人吃饭不用向谁道谢。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“你可以不知道自己是谁，但先学会自己吃。以后有人要替你决定名字、归处和该死不该死，你就先问他吃没吃过这碗。”"
+        },
+        {
+          "type": "narration",
+          "text": "若梦壳曾被命名，迟日会在睡前认真复述那个名字；若它被封存或烧毁，他仍会在日落后朝东边发抖。砚童把第十夜名单藏进历书夹层，偶尔念给他听，两个孩子都不完全懂，只知道大人欠过一笔很长的账。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“我会给他登记。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“登记可以。先留一行空白，让他以后自己改。”"
+        },
+        {
+          "type": "narration",
+          "text": "你影中的火鸟没有鸣叫。它只是每逢有人说‘命定’就睁开眼，让你记起锋利不是自由，自由也不会替人免除后果。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "echo.chiri_has_blank_name",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N071-A",
+          "label": "回看杳湾与众人的余响",
+          "next": "V01-C01-N028"
+        }
+      ],
+      "tags": [
+        "echo_route",
+        "mortal",
+        "ahe",
+        "yantong"
+      ]
+    },
+    {
+      "id": "V01-C01-N072",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "木牌背面有人刻路",
+      "presentation": "ending_echo",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "北迁队伍出发前，黎苇把每一块木牌翻到背面。季狸没有阻止。她用骨针刻下原籍、亲属和一枚细小的盐泽路标，刻得很慢，像在把被文书抹平的人重新刻回人间。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JILI",
+          "text": "“这会让文书变得不合规。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“那就让它少合一点规，多像一点人。”"
+        },
+        {
+          "type": "narration",
+          "text": "若你曾逼季狸写下限制条款，他亲手在最末页盖印；若你只接受了文书，队伍仍有路可走，但每个人都记得那条路是谁开的。砚伯站在最后一辆车旁，把一页没烧的旧账塞给一位老人，叫他到北地后也别忘记读。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-LIWEI",
+          "text": "“活下来不是给谁的恩。你们走到哪儿，就把这句话带到哪儿。”"
+        },
+        {
+          "type": "narration",
+          "text": "车队消失在盐泽雾里。很久以后，北方的档案会说杳湾人自愿迁徙；杳湾人则会说自己是带着名字走的。两种说法都不全真，却都留下了回去的方向。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "echo.northbound_keeps_names",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N072-A",
+          "label": "回看杳湾与众人的余响",
+          "next": "V01-C01-N028"
+        }
+      ],
+      "tags": [
+        "echo_route",
+        "north",
+        "liwei",
+        "jili"
+      ]
+    },
+    {
+      "id": "V01-C01-N073",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "雨后仍在响的陶哨",
+      "presentation": "material_experiment",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "黑雨停后，青芽把裂陶哨放进晒谷坪的水盆。哨子仍吹不出声，盆底却出现一圈圈细纹，纹路绕开所有实心石子，只停在空心谷壳与旧井带回的盐片旁。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“它不是叫东西出来，是让空的地方承认自己空。以前我拿它赶鼠，原来鼠只是不肯住在没粮的地方。”"
+        },
+        {
+          "type": "narration",
+          "text": "你将囚雨芦贴近哨口，芦中那滴黑雨没有流出，反而把一段被洗掉的声音推回盆水：一名孩子在井下数到十，随后有人说‘够了’。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N073-A",
+          "label": "记录哨声与井下计数的关系",
+          "effects": [
+            {
+              "type": "revealItem",
+              "itemId": "IT-V01-MAT-RAINREED",
+              "stage": "verified"
+            },
+            {
+              "type": "setFlag",
+              "key": "clue.whistle_hears_empty_records",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N076"
+        },
+        {
+          "id": "V01-C01-N073-B",
+          "label": "用陶哨为砚童确认梦羽的拉扯方向",
+          "effects": [
+            {
+              "type": "revealItem",
+              "itemId": "IT-V01-MAT-NIGHTFEATHER",
+              "stage": "verified"
+            },
+            {
+              "type": "setFlag",
+              "key": "clue.feather_points_to_command",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N076"
+        },
+        {
+          "id": "V01-C01-N073-C",
+          "label": "不再试验，免得把更多声音拖回来",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "material.experiment_declined",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N076"
+        }
+      ],
+      "tags": [
+        "side",
+        "material",
+        "recognition",
+        "post_rain"
+      ]
+    },
+    {
+      "id": "V01-C01-N074",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "一罐话该归谁",
+      "presentation": "material_experiment",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "若含晦被封存，话罐便放在祠屋最暗的角落。入夜后罐盖会轻轻顶起，里面不是哭声，而是一句句没来得及说出口的日常话：借盐、道歉、让孩子回家、别再下井。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“封住话不难。难的是谁有资格说，哪句话现在放出来会害死人，哪句话永远不放才是害人。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“我可以立册。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“你可以立。别把册子锁在只有你有钥匙的柜里。”"
+        }
+      ],
+      "enterConditions": [
+        {
+          "type": "hasItem",
+          "itemId": "IT-V01-UNIQUE-VOICEJAR",
+          "quantity": 1
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N074-A",
+          "label": "让原主在场时各自开一次罐",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "voicejar.community_witness",
+              "value": true
+            },
+            {
+              "type": "unlockCodex",
+              "codexId": "CX-V01-BEAST-HANHUI",
+              "layer": "echo"
+            }
+          ],
+          "next": "V01-C01-N076"
+        },
+        {
+          "id": "V01-C01-N074-B",
+          "label": "交由砚伯保管并登记开封理由",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "voicejar.ledger_custody",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YANBO",
+              "axis": "trust",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N076"
+        },
+        {
+          "id": "V01-C01-N074-C",
+          "label": "将话罐交给缄婆，封回井口",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "voicejar.well_custody",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JIANPO",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N076"
+        }
+      ],
+      "tags": [
+        "side",
+        "material",
+        "hanhui",
+        "ethics"
+      ]
+    },
+    {
+      "id": "V01-C01-N075",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "无辞舌骨不回答",
+      "presentation": "material_experiment",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "若含晦死去，无辞舌骨便像一小片干白的月，贴近喉间时能让最尖刻的话失去声音。青芽试着骂黑粟，嘴唇动了半天，只吐出一口热气。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“好东西。能让人少说一句伤人的。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“也能让证人少说一句救人的。别因为它安静，就以为它善良。”"
+        },
+        {
+          "type": "narration",
+          "text": "舌骨朝北滩微微转动，像仍想吞掉某个未出口的结论。"
+        }
+      ],
+      "enterConditions": [
+        {
+          "type": "hasItem",
+          "itemId": "IT-V01-MAT-WORDLESSBONE",
+          "quantity": 1
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N075-A",
+          "label": "将舌骨封进静言符，留作一次拒绝誓约的工具",
+          "effects": [
+            {
+              "type": "revealItem",
+              "itemId": "IT-V01-MAT-WORDLESSBONE",
+              "stage": "verified"
+            },
+            {
+              "type": "setFlag",
+              "key": "wordlessbone.used_as_warning",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N076"
+        },
+        {
+          "id": "V01-C01-N075-B",
+          "label": "把舌骨埋在诚实碑下，不再使用",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "wordlessbone.buried",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N076"
+        }
+      ],
+      "tags": [
+        "side",
+        "material",
+        "hanhui",
+        "cost"
+      ]
+    },
+    {
+      "id": "V01-C01-N076",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "山海志不替人原谅",
+      "presentation": "codex_hub",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "雨停后，祠屋里多了一张空木案。阿禾说应把看见的东西记下来，砚伯说应先核对，缄婆说记下也别把它们写成一件件没人负责的怪事。于是你们把材料、地点、异兽与人的话放到同一张案上。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-AHE",
+          "text": "“写清楚是谁说的。要是以后有人把我说成胆小鬼，我就拿这本去找他。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“也写清楚谁没说。空白不是清白，只是还没找到肯开口的人。”"
+        },
+        {
+          "type": "system",
+          "text": "山海志更新：材料、地点与人物条目按初见、众口、行证与余响并置。它提供后续认知条件，不替任何人裁定唯一真相。"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N076-A",
+          "label": "整理黑雨、河床与旧井的行证",
+          "effects": [
+            {
+              "type": "unlockCodex",
+              "codexId": "CX-V01-EVENT-BLACKRAIN",
+              "layer": "evidence"
+            },
+            {
+              "type": "unlockCodex",
+              "codexId": "CX-V01-PLACE-DAYSALTWELL",
+              "layer": "evidence"
+            }
+          ],
+          "next": "V01-C01-N077"
+        },
+        {
+          "id": "V01-C01-N076-B",
+          "label": "整理阿禾、砚童与宿沙的证词",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "codex.people_testimony_sorted",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N077"
+        },
+        {
+          "id": "V01-C01-N076-C",
+          "label": "暂不归档，让每个人先保留自己的说法",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "codex.archive_delayed",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N077"
+        }
+      ],
+      "tags": [
+        "side",
+        "codex",
+        "knowledge",
+        "post_rain"
+      ]
+    },
+    {
+      "id": "V01-C01-N077",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "写在边上的人",
+      "presentation": "codex_resolution",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "木案最末端留着一行空白。砚伯想写‘编者’，阿禾说该写‘还活着的人’，缄婆沉默很久，在旁边添了一个小字：欠。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“欠什么？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“欠看不见的人一份不那么省事的说法。”"
+        },
+        {
+          "type": "narration",
+          "text": "你合上册页时，远处第十个太阳尚未升起。纸上的墨却在雨后慢慢变干，像终于愿意承认：被记下不是结束，只是将来有人追问的开始。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setFlag",
+          "key": "side.codex_table_established",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N077-A",
+          "label": "继续查看杳湾余响",
+          "next": "V01-C01-N028"
+        }
+      ],
+      "tags": [
+        "side",
+        "codex",
+        "world_echo"
+      ]
+    },
+    {
+      "id": "V01-C01-N028",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "杳湾余响",
+      "presentation": "echo_summary",
+      "blocks": [
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.boat_revisit_completed"}],
+          "text": "归还者号后来没有被拖走。它被留在浅滩当渡口的坏榜样：船骨上既刻失踪者，也刻分药、守灯和没有署名的路线。宿沙说，船不能替人还债，最多替人把欠着什么露在水面上。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "boat.last_tide_unchecked"}],
+          "text": "浅滩仍留着一串没清完的半脚印。每逢水涨，村里就有人争论那是鬼、车夫，还是一个终于没有被写进名单的人；争到最后，总有谁把渡灯提过去。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.grove_revisit_completed"}],
+          "text": "东桑第十巢外的路标背面还留着『可离开』。雨后它被许多人抄走，有人拿来救自己，有人用来质问家里；阿禾说这比把路标钉得笔直有用得多。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.well_revisit_completed"}],
+          "text": "旧盐井棚下的木碗后来一直没有收走。半齿钥匙、药勺、黑羽和家属布条在那里碰响，让每次开井或封井都再也不能被说成只是守井人的事。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "granary.black_millet_trial_kept"}],
+          "text": "粮仓留下了半袋没有煮掉的黑粟。青芽把它种在离井最远的坡地，谁也不许把这叫作希望；她只说，明年若还有人，就能看见它到底长出什么。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "dyeworks.cloth_for_shelter"}],
+          "text": "染坊的半匹布被裁成许多不一样大的避雨披。罗娘说它们不够漂亮，却足够让几个人在夜里不因发冷而忘了自己要说什么。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.material_chain_completed"}],
+          "text": "祠屋雨棚的材料记录仍被钉在墙上。它没有告诉后人哪一件器物最神，只留下谁使用、谁反对、谁承担代价的笔迹，让神异第一次不得不带着人的签名离开杳湾。"
+        },
+        {
+          "type": "conditional",
+          "when": [{"type": "flagTrue", "key": "side.character_truths_completed"}],
+          "text": "雨棚那一夜说出的害怕后来传成不同版本。唯一没被改掉的是阿禾那句话：谁害怕得说不出口，谁就不该拿这份害怕去让别人死。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "well.voice_layer_fate",
+              "value": "copied"
+            }
+          ],
+          "text": "人话盐晶被带出井后，几户人家终于听见亲人当年没说完的求救。有人因此原谅不了守井者，也有人第一次不再怀疑自己曾被遗弃。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "well.voice_layer_fate",
+              "value": "revealed"
+            }
+          ],
+          "text": "第一句命令被照见后，杳湾再不能把昼盐叫作祖辈的手艺。砚伯把那句话写在账册扉页，谁想翻过去，便得先用手按住它。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "well.voice_layer_fate",
+              "value": "resealed"
+            }
+          ],
+          "text": "盐层重新封住后，井外的水病暂缓。缄婆却在每次夜深时听见墙里有人把同一句话练到一半；她知道自己只是替村子多借了一段不必回答的时间。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "grove.dream_shell_fate",
+              "value": "contained"
+            }
+          ],
+          "text": "冷巢被封后，杳湾多得了两日准备撤离。阿禾从不把这称作获救；她说只是把必须回答的问题从今天挪到了明天。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "grove.dream_shell_fate",
+              "value": "burned"
+            }
+          ],
+          "text": "梦壳烧毁后，撤离名单再也无法自称只是最优安排。路变得更慢，争吵更多，但被留在林影里的人第一次被逐个叫回名字。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "grove.dream_shell_fate",
+              "value": "named"
+            }
+          ],
+          "text": "阿禾给梦壳起名为‘未问’。后来每逢有人拿效率压过具体的人，村里便有人问一句：你问过未问吗？"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "boat.water_guest_fate",
+              "value": "released"
+            }
+          ],
+          "text": "归还者号留在浅滩。宿沙每月去擦一次舱门外的渡工旧规；他说水客再没出现过，但有人终于敢把‘我当时害怕’说出口。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "boat.evidence_custody",
+              "value": "double_copy"
+            }
+          ],
+          "text": "两份名牌抄本走上不同道路：一份留在祠屋，一份随黎苇进入盐泽。它们没有给出同一种结论，却使北方再无法独占‘那只是村里的旧事’这句话。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "boat.water_guest_fate",
+              "value": "scattered"
+            }
+          ],
+          "text": "水客被空声驱散后，赤水安静了很久。后来人们仍记得船曾沉过，却很难完整复述谁先把孩子的名字写成货号；这份安静成为杳湾最轻也最重的损失。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "village.granary.saved",
+              "value": true
+            }
+          ],
+          "text": "你最初救下的粮食撑过了断路的十二日。青芽把发根的黑粟单独埋下，翌年长出一小片只在夜里成熟的谷。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "npc.goat_xiaoman.alive",
+              "value": true
+            }
+          ],
+          "text": "小满活了下来。它此后拒绝踩自己的影子，总在灾祸到来前一天朝东方鸣叫。阿禾靠它救过许多人，也因此再没能把它当作一只普通羊。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "village.memories_restored",
+              "value": true
+            }
+          ],
+          "text": "被含晦吞下的话回到各自主人的梦中。有人道歉，有人逃亡，两户为旧债结仇，也有人终于知道失踪的亲人最后说了什么。真相没有使村子和睦，只使每个人重新拥有了选择恨谁的权利。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "hanhui.fate",
+              "value": "killed"
+            }
+          ],
+          "text": "含晦死后，村人变得异常善忘。他们过得更轻松，却再也无法完整复述昼盐旧账。缄婆把无辞舌骨称作你们赢来的败仗。"
+        },
+        {
+          "type": "conditional",
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "village.day_salt_truth_public",
+              "value": true
+            }
+          ],
+          "text": "昼盐旧账被刻在井栏上，没有删去任何一户的名字。多年以后，后人把石栏供为‘诚实之碑’，却很少提起那份诚实是在井枯之后才出现的。"
+        },
+        {
+          "type": "narration",
+          "text": "黑雨停后的第十天，寻常的太阳终于升起。村人走出屋门，先欢呼，随后一个接一个沉默。蓝天深处还有九枚极淡的圆影，像被布遮住的灯。它们从东方排到西方，每一枚都在缓慢变亮。"
+        },
+        {
+          "type": "narration",
+          "text": "羿站在很远的山脊上数它们。数到第九，他停了一次；再数时，天空已有十个太阳。最小的那一个尚未发光，只投下一道横跨山河的影子。影子的尽头，恰好落在你身上。"
+        },
+        {
+          "type": "system",
+          "text": "第一卷《黑雨》完。已解锁第二卷预告《十日：太阳从来不是一颗》。"
+        }
+      ],
+      "onExitEffects": [
+        {
+          "type": "setWorldVar",
+          "key": "sky.suns.count",
+          "value": 10
+        },
+        {
+          "type": "completeQuest",
+          "questId": "Q-V01-MAIN-005"
+        },
+        {
+          "type": "completeVolume",
+          "volume": "V01"
+        },
+        {
+          "type": "unlockContent",
+          "contentId": "V02-PREVIEW"
+        }
+      ],
+      "choices": [
+        {
+          "id": "V01-C01-N028-G",
+          "label": "在离开杳湾前，整理四封将把问题带进下一卷的信",
+          "next": "V01-C01-N330"
+        },
+        {
+          "id": "V01-C01-N028-F",
+          "label": "回看箭离开或留下之后，杳湾必须继续支付的那一笔日常代价",
+          "next": "V01-C01-N301"
+        },
+        {
+          "id": "V01-C01-N028-E",
+          "label": "回到村约桌前，看看被留下的人如何改写第一条规矩",
+          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-023"}],
+          "next": "V01-C01-N205"
+        },
+        {
+          "id": "V01-C01-N028-A",
+          "label": "在雨后试验裂陶哨与囚雨芦",
+          "next": "V01-C01-N073"
+        },
+        {
+          "id": "V01-C01-N028-B",
+          "label": "整理杳湾的山海志余响",
+          "next": "V01-C01-N076"
+        },
+        {
+          "id": "V01-C01-N028-C",
+          "label": "【含晦话罐】决定被封存话语的保管方式",
+          "visibleWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-UNIQUE-VOICEJAR",
+              "quantity": 1
+            }
+          ],
+          "next": "V01-C01-N074"
+        },
+        {
+          "id": "V01-C01-N028-D",
+          "label": "【无辞舌骨】决定遗忘留下的器物去处",
+          "visibleWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-MAT-WORDLESSBONE",
+              "quantity": 1
+            }
+          ],
+          "next": "V01-C01-N075"
+        }
+      ],
+      "tags": [
+        "main",
+        "volume_end",
+        "world_echo"
+      ]
+    }
+  ]
+}

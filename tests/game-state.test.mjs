@@ -35,17 +35,25 @@ test("codex and inventory use distinct category and detail interfaces", () => {
   assert.match(gameShell, /function DetailCardModal/);
   assert.match(gameShell, /<CodexPanel state=\{state\} openDetail=\{openDetail\} \/>/);
   assert.match(gameShell, /多源见闻/);
-  assert.match(gameShell, /equipmentSlots/);
-  assert.match(gameShell, /副手／仪式手/);
+  assert.match(gameShell, /categoryGroups/);
+  assert.match(gameShell, /sources: \["item", "tool", "material"\]/);
+  assert.match(gameShell, /codex-category-tabs/);
+  assert.doesNotMatch(gameShell, /return <ArchiveBrowser label="山海志/);
+  assert.match(gameShell, /inventory-view-tabs/);
+  assert.match(gameShell, /在身装备/);
+  assert.match(gameShell, /随身物/);
   assert.match(styles, /\.archive-browser/);
   assert.match(styles, /\.detail-backdrop \{ align-items: center/);
   assert.match(styles, /\.detail-card \{ border-radius: 10px; \}/);
-  assert.match(styles, /\.equipment-rack/);
+  assert.match(styles, /\.inventory-view-tabs/);
+  assert.match(styles, /\.codex-category-tabs/);
+  assert.doesNotMatch(styles, /\.codex-category-tabs \{[^}]*overflow-x/);
 });
 
 test("the application reads only the active chapter content package", () => {
   const source = fs.readFileSync(new URL("../app/game/blackRainContent.ts", import.meta.url), "utf8");
   assert.match(source, /第一卷_黑雨\/第一章_黑雨\/内容包\/story-nodes\.json/);
+  assert.match(source, /第一卷_黑雨\/第一章_黑雨\/内容包\/story-nodes-expansion\.json/);
   assert.match(source, /encounters\.json/);
   assert.doesNotMatch(source, /备份/);
 });
@@ -54,10 +62,12 @@ test("the current Black Rain package is internally complete and offers eight ori
   const contentRoot = new URL("../剧情/第一卷_黑雨/第一章_黑雨/内容包/", import.meta.url);
   const manifest = JSON.parse(fs.readFileSync(new URL("manifest.json", contentRoot), "utf8"));
   const story = JSON.parse(fs.readFileSync(new URL("story-nodes.json", contentRoot), "utf8"));
+  const expansion = JSON.parse(fs.readFileSync(new URL("story-nodes-expansion.json", contentRoot), "utf8"));
   const origins = JSON.parse(fs.readFileSync(new URL("player-origins.json", contentRoot), "utf8"));
   const shell = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
   assert.equal(manifest.entryNodeId, story.nodes[0].id);
-  assert.ok(story.nodes.length > 0);
+  assert.equal(manifest.counts.storyNodes, story.nodes.length + expansion.nodes.length);
+  assert.ok(expansion.nodes.length > 0);
   assert.ok(story.nodes.some((node) => node.id === manifest.entryNodeId));
   assert.equal(manifest.counts.origins, origins.origins.length);
   assert.equal(origins.origins.length, 8);

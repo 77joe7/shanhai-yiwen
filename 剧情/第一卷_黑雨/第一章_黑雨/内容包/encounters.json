@@ -1,0 +1,158 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "3.0.0",
+  "encounters": [
+    {"id":"EN-V01-MICRO-SALTBOWL","name":"昼盐空碗","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N165"}],"cooldown":null,"participants":["PLAYER","NPC-QINGYA"],"arena":{"locationId":"LOC-YAOWAN-ALLEY","features":["empty_bowl","day_salt_dust"]},"intentModel":[{"phase":1,"telegraph":"盐粒自行分裂","intent":"simulate_abundance"}],"solutions":[{"id":"SOL-SALTBOWL-SAMPLE","label":"留样补缺","requirements":[],"result":"allocation_gap_recorded","narrativeCost":"public_shortfall"},{"id":"SOL-SALTBOWL-DISPERSE","label":"倒入井土","requirements":[],"result":"anomaly_dispersed","narrativeCost":"evidence_lost"}],"failureResults":[{"id":"FAIL-SALTBOWL-HIDDEN","result":"缺口继续被统计掩盖","recover":"可在北滩使用浮尘复核"}],"rewards":["IT-V01-MAT-DAYSALTDUST"],"worldEffects":["village.rations_public"],"relatedCodexIds":["CX-V01-MAT-DAYSALTDUST"]},
+    {"id":"EN-V01-MICRO-LATESHADOW","name":"迟归影子","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N166"}],"cooldown":null,"participants":["PLAYER","NPC-WEIQING"],"arena":{"locationId":"LOC-YAOWAN-ALLEY","features":["late_shadow","watch_lamp"]},"intentModel":[{"phase":1,"telegraph":"影子滞在巷口","intent":"lead_to_unspoken_departure"}],"solutions":[{"id":"SOL-LATESHADOW-PIN","label":"钉住影子","requirements":[{"type":"hasItem","itemId":"IT-V01-MAT-SHADOWMUD","quantity":1}],"result":"sleeper_protected","narrativeCost":"route_unknown"},{"id":"SOL-LATESHADOW-FOLLOW","label":"跟随影子","requirements":[],"result":"departure_clue","narrativeCost":"night_risk"}],"failureResults":[{"id":"FAIL-LATESHADOW-LOST","result":"影子在灯灭前消失","recover":"守夜灯仍保留方向"}],"rewards":["IT-V01-MAT-TRACKDUST"],"worldEffects":["weiqing.watch_lamp_waits"],"relatedCodexIds":[]},
+    {"id":"EN-V01-MICRO-DRYTHRESHOLD","name":"避雨门槛","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N167"}],"cooldown":null,"participants":["PLAYER","NPC-YANBO"],"arena":{"locationId":"LOC-YAOWAN-ALLEY","features":["dry_threshold","erased_pages"]},"intentModel":[{"phase":1,"telegraph":"雨水绕开门槛","intent":"protect_hidden_record"}],"solutions":[{"id":"SOL-THRESHOLD-PUBLIC","label":"共同开门核验","requirements":[],"result":"ledger_page_public","narrativeCost":"scribe_exposed"},{"id":"SOL-THRESHOLD-DEFER","label":"暂封门槛","requirements":[],"result":"page_deferred","narrativeCost":"truth_delayed"}],"failureResults":[{"id":"FAIL-THRESHOLD-WASH","result":"残页受潮难辨","recover":"昼盐镜屑可辨改动边缘"}],"rewards":["IT-V01-MAT-COLDWAX"],"worldEffects":["evidence.additional_ledger_page"],"relatedCodexIds":[]},
+    {"id":"EN-V01-MICRO-SEEDPOT","name":"药锅黑粟","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N151"}],"cooldown":null,"participants":["PLAYER","NPC-QINGYA","NPC-AHE"],"arena":{"locationId":"LOC-YAOWAN-GRANARY","features":["dry_pot","black_millet"]},"intentModel":[{"phase":1,"telegraph":"药锅烧干露出种皮","intent":"force_present_future_tradeoff"}],"solutions":[{"id":"SOL-SEEDPOT-KEEP","label":"留种公开缺口","requirements":[],"result":"trial_seed_kept","narrativeCost":"less_porridge"},{"id":"SOL-SEEDPOT-COOK","label":"煮种救急","requirements":[],"result":"medicine_extended","narrativeCost":"future_harvest_reduced"}],"failureResults":[{"id":"FAIL-SEEDPOT-BURNT","result":"种子与药根一并烧焦","recover":"保留的药灶灰可核对损失"}],"rewards":["IT-V01-MAT-HEARTHASH","IT-V01-MAT-LOANSTONE"],"worldEffects":["village.food_supply"],"relatedCodexIds":["CX-V01-EVENT-RATIONS"]},
+    {"id":"EN-V01-MICRO-DYECLOTH","name":"半匹避雨布","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N152"}],"cooldown":null,"participants":["PLAYER","NPC-WEIQING","NPC-QINGYA"],"arena":{"locationId":"LOC-YAOWAN-DYEWORKS","features":["rain_cloth","wet_evidence"]},"intentModel":[{"phase":1,"telegraph":"布边显出经手指纹","intent":"force_shelter_evidence_tradeoff"}],"solutions":[{"id":"SOL-DYECLOTH-SHELTER","label":"裁作避雨披","requirements":[],"result":"shelter_created","narrativeCost":"archive_exposed"},{"id":"SOL-DYECLOTH-ARCHIVE","label":"封存记录","requirements":[],"result":"archive_protected","narrativeCost":"people_exposed"}],"failureResults":[{"id":"FAIL-DYECLOTH-RUN","result":"染色流失无法复原","recover":"锈雨染料仍可标记新保管链"}],"rewards":["IT-V01-MAT-RUSTDYE","IT-V01-MAT-COLDWAX"],"worldEffects":["village.water_sickness"],"relatedCodexIds":[]},
+    {"id":"EN-V01-MICRO-ONE_SHOE","name":"单鞋守夜灯","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N153"}],"cooldown":null,"participants":["PLAYER","NPC-WEIQING","NPC-YANTONG"],"arena":{"locationId":"LOC-NORTH-BANK","features":["watch_lamp","one_shoe_tracks"]},"intentModel":[{"phase":1,"telegraph":"灯火朝脚印倾斜","intent":"invite_premature_judgment"}],"solutions":[{"id":"SOL-ONE_SHOE-WAIT","label":"留灯待问","requirements":[],"result":"witness_unjudged","narrativeCost":"meeting_delay"},{"id":"SOL-ONE_SHOE-SEARCH","label":"循迹找人","requirements":[],"result":"witness_found","narrativeCost":"night_time"}],"failureResults":[{"id":"FAIL-ONE_SHOE-MUD","result":"雨抹去鞋印","recover":"回脚泥粉保留部分方向"}],"rewards":["IT-V01-MAT-WATCHWICK","IT-V01-MAT-TRACKDUST"],"worldEffects":["weiqing.shared_watch_lamp"],"relatedCodexIds":[]},
+    {"id":"EN-V01-MICRO-GOATFORK","name":"小满岔口","triggerRules":[{"type":"visitedNode","nodeId":"V01-C01-N154"}],"cooldown":null,"participants":["PLAYER","NPC-AHE","NPC-LIWEI"],"arena":{"locationId":"LOC-EVACUATION-FORK","features":["sheepfold","highland_route"]},"intentModel":[{"phase":1,"telegraph":"羊在岔口停步","intent":"project_human_choice_onto_animal"}],"solutions":[{"id":"SOL-GOATFORK-EVACUATE","label":"带羊上高地","requirements":[],"result":"goat_evacuated","narrativeCost":"sheepfold_abandoned"},{"id":"SOL-GOATFORK-STAY","label":"留下守圈","requirements":[],"result":"sheepfold_watched","narrativeCost":"watch_risk"}],"failureResults":[{"id":"FAIL-GOATFORK-RUN","result":"小满自行跑向旧圈","recover":"铃片可提示其去向"}],"rewards":["IT-V01-MAT-GOATBELL","IT-V01-MAT-NAMESAP"],"worldEffects":["npc.goat_xiaoman.alive"],"relatedCodexIds":["CX-V01-DOCUMENT-NAMEBOOK"]},
+    {
+      "id": "EN-V01-ELITE-WATERGUEST",
+      "name": "水客记忆",
+      "triggerRules": [{"type": "visitedNode", "nodeId": "V01-C01-N104"}],
+      "cooldown": null,
+      "participants": ["PLAYER", "NPC-SUSHA", "NPC-WEIQING"],
+      "arena": {"locationId": "LOC-RETURNED-BOAT-DEEPHOLD", "features": ["reverse_tide", "nameplates", "cracked_planks", "old_ship_seal"]},
+      "intentModel": [
+        {"phase": 1, "telegraph": "用熟人的声音重复半句话", "intent": "bite_omitted_testimony"},
+        {"phase": 2, "telegraph": "身体由错叫的乳名拼成", "intent": "turn_witnesses_against_each_other"},
+        {"phase": 3, "telegraph": "逆潮淹没离开舱门的脚印", "intent": "erase_exit_route"}
+      ],
+      "solutions": [
+        {"id": "SOL-WATERGUEST-CONFESS", "label": "补全证词", "requirements": [{"type": "flagTrue", "key": "clue.water_guest_seeks_testimony"}], "steps": ["让宿沙承认未追船的恐惧", "将知道与原谅区分", "让水客归还一段可核验证词"], "result": "released", "resourceRisk": "low", "narrativeCost": "susha_public_vulnerability"},
+        {"id": "SOL-WATERGUEST-REED", "label": "囚雨引流", "requirements": [{"type": "hasItem", "itemId": "IT-V01-MAT-RAINREED", "quantity": 1}], "steps": ["释放囚雨芦中的倒流雨", "引水客离开名牌舱", "收取水客牙"], "result": "contained", "resourceRisk": "medium", "narrativeCost": "testimony_delayed"},
+        {"id": "SOL-WATERGUEST-WHISTLE", "label": "空声驱散", "requirements": [{"type": "hasItem", "itemId": "IT-V01-TOOL-CRACKEDWHISTLE", "quantity": 1}], "steps": ["以裂陶哨制造不可模仿的空声", "打断熟人声线", "在证词碎裂前撤离"], "result": "scattered", "resourceRisk": "low", "narrativeCost": "evidence_damaged"},
+        {"id": "SOL-WATERGUEST-RETREAT", "label": "撤回渡口", "requirements": [], "steps": ["保住现有证据", "让隗青守住舱门", "承受时间推进"], "result": "retreated", "resourceRisk": "low", "narrativeCost": "time_and_missing_truth"}
+      ],
+      "failureResults": [{"id": "FAIL-WATERGUEST-BITTEN", "result": "一条证词线受损且推进时间，不结束支线或主线", "recover": "通过旧盐井账室、蜡印或人物公开线补强"}],
+      "rewards": ["IT-V01-MAT-WATERGUESTTOOTH"],
+      "worldEffects": ["susha.admits_fear", "boat.water_guest_contained", "evidence.river_testimony_damaged"],
+      "relatedCodexIds": ["CX-V01-BEAST-WATERGUEST", "CX-V01-DOCUMENT-OLDSHIPSEAL"]
+    },
+    {
+      "id": "EN-V01-MICRO-SEVENTHWELL",
+      "name": "第七口井的回声",
+      "triggerRules": [{"type": "visitedNode", "nodeId": "V01-C01-N078"}],
+      "cooldown": null,
+      "participants": ["PLAYER", "NPC-QINGYA", "NPC-WEIQING"],
+      "arena": {"locationId": "LOC-YAOWAN-SEVENTHWELL", "features": ["returning_bucket", "tenth_mark", "black_sand"]},
+      "intentModel": [{"phase": 1, "telegraph": "桶绳自行收紧", "intent": "return_lost_object"}, {"phase": 2, "telegraph": "井底三次轻响", "intent": "copy_child_handwriting"}],
+      "solutions": [
+        {"id": "SOL-WELL-ISOLATE", "label": "隔离", "requirements": [], "result": "sickness_reduced", "narrativeCost": "clue_delayed"},
+        {"id": "SOL-WELL-LISTEN", "label": "听井", "requirements": [{"type": "hasItem", "itemId": "IT-V01-TOOL-CRACKEDWHISTLE", "quantity": 1}], "result": "dream_tax_clue", "narrativeCost": "sickness_risk"},
+        {"id": "SOL-WELL-SAMPLE", "label": "留样", "requirements": [], "result": "river_trace", "narrativeCost": "treatment_delayed"}
+      ],
+      "failureResults": [{"id": "FAIL-WELL-FEVER", "result": "水病上升但不阻断调查", "recover": "河床药材或旧井准备"}],
+      "rewards": ["CX-V01-PLACE-SEVENTHWELL"],
+      "worldEffects": ["village.water_sickness", "well.tenth_mark_sealed"]
+    },
+    {
+      "id": "EN-V01-MICRO-RIVERNET",
+      "name": "倒流渔网",
+      "triggerRules": [{"type": "visitedNode", "nodeId": "V01-C01-N082"}],
+      "cooldown": null,
+      "participants": ["PLAYER", "NPC-SUSHA", "NPC-QINGYA", "NPC-LIWEI"],
+      "arena": {"locationId": "LOC-REDWATER-SHALLOW", "features": ["returned_net", "trial_medicine_box", "dry_river_tracks"]},
+      "intentModel": [{"phase": 1, "telegraph": "网眼吐出乳名", "intent": "bind_claim"}, {"phase": 2, "telegraph": "药箱向水中滑动", "intent": "force_tradeoff"}],
+      "solutions": [
+        {"id": "SOL-NET-MEDICINE", "label": "救药", "requirements": [], "result": "sickness_reduced", "narrativeCost": "names_unmatched"},
+        {"id": "SOL-NET-RECORD", "label": "登记", "requirements": [], "result": "evidence_preserved", "narrativeCost": "medicine_delayed"},
+        {"id": "SOL-NET-ROUTE", "label": "追路", "requirements": [], "result": "saltmarsh_route", "narrativeCost": "river_debt_unsettled"}
+      ],
+      "failureResults": [{"id": "FAIL-NET-RETAKEN", "result": "部分失物被河重新收走", "recover": "保留的登记与路线仍有效"}],
+      "rewards": ["CX-V01-DOCUMENT-RIVERTRIAL"],
+      "worldEffects": ["village.water_sickness", "river.flow"]
+    },
+    {
+      "id": "EN-V01-MICRO-SHADOWBIRDS",
+      "name": "鸟影归巢",
+      "triggerRules": [{"type": "visitedNode", "nodeId": "V01-C01-N086"}],
+      "cooldown": null,
+      "participants": ["PLAYER", "NPC-AHE", "NPC-THREESHADOW"],
+      "arena": {"locationId": "LOC-EASTGROVE-EDGE", "features": ["cold_nest", "calendar_page", "future_door"]},
+      "intentModel": [{"phase": 1, "telegraph": "影鸟衔起人的影子", "intent": "return_erased_trace"}, {"phase": 2, "telegraph": "冷巢无声渗雨", "intent": "erase_evacuation_future"}],
+      "solutions": [
+        {"id": "SOL-BIRDS-CALENDAR", "label": "追历页", "requirements": [], "result": "tenth_slot_evidence", "narrativeCost": "public_guilt"},
+        {"id": "SOL-BIRDS-DOOR", "label": "留撤门", "requirements": [], "result": "vulnerable_list", "narrativeCost": "route_pressure"},
+        {"id": "SOL-BIRDS-NEST", "label": "封冷巢", "requirements": [{"type": "hasItem", "itemId": "IT-V01-TOOL-DARKNEST", "quantity": 1}], "result": "evacuation_time", "narrativeCost": "grove_stability"}
+      ],
+      "failureResults": [{"id": "FAIL-BIRDS-LOST", "result": "鸟影继续迁移但不封锁通往旧井的道路", "recover": "卷末仍可从余响得知部分去向"}],
+      "rewards": ["CX-V01-EVENT-TENTH-NIGHT"],
+      "worldEffects": ["grove.stability", "village.evacuation_vulnerable_list"]
+    },
+    {
+      "id": "EN-V01-ELITE-HANHUI",
+      "name": "含晦",
+      "triggerRules": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}],
+      "cooldown": null,
+      "participants": ["BEAST-HANHUI", "PLAYER", "NPC-JIANPO"],
+      "arena": {
+        "locationId": "LOC-DAYSALT-WELL-BOTTOM",
+        "features": ["thin_daylight_pool", "voice_echo", "black_rain_channels", "breakable_salt_crust"]
+      },
+      "intentModel": [
+        {"phase": 1, "telegraph": "熟人的嘴呼唤玩家回头", "intent": "steal_recent_words"},
+        {"phase": 2, "telegraph": "背部所有嘴同时吸气", "intent": "erase_preparation_action"},
+        {"phase": 3, "telegraph": "沉入白昼盐池并复制玩家上一句命令", "intent": "turn_command_against_party"}
+      ],
+      "solutions": [
+        {
+          "id": "SOL-HANHUI-REVEAL",
+          "label": "揭言",
+          "requirements": [{"type": "itemRecognitionAtLeast", "itemId": "IT-V01-MAT-EMBERLEAF", "stage": "verified"}],
+          "steps": ["以扶桑烬照见第一句谎言", "承受一段私人记忆损失", "选择释放全部话语或仅取关键证词"],
+          "result": "released_words",
+          "resourceRisk": "low",
+          "narrativeCost": "memory"
+        },
+        {
+          "id": "SOL-HANHUI-LURE",
+          "label": "诱离",
+          "requirements": [{"type": "hasItem", "itemId": "IT-V01-TOOL-CRACKEDWHISTLE", "quantity": 1}],
+          "steps": ["观察它追逐言语空缺", "以裂陶哨制造空声", "趁其离池时用陶罐收束话语"],
+          "result": "contained",
+          "resourceRisk": "low",
+          "narrativeCost": "testimony_must_be_managed"
+        },
+        {
+          "id": "SOL-HANHUI-OVERFEED",
+          "label": "过载",
+          "requirements": [{"type": "hasItem", "itemId": "IT-V01-MAT-RAINREED", "quantity": 1}],
+          "steps": ["释放囚雨芦", "让含晦吞入过量被遗忘之言", "在其解体前选择封存或归还"],
+          "result": "contained_or_dispersed",
+          "resourceRisk": "medium",
+          "narrativeCost": "black_rain_exposure"
+        },
+        {
+          "id": "SOL-HANHUI-FORCE",
+          "label": "正面战斗",
+          "requirements": [],
+          "steps": ["打断偷取言语", "避开白昼碎片", "在证词耗尽前摧毁核心"],
+          "result": "killed",
+          "resourceRisk": "high",
+          "narrativeCost": "permanent_evidence_loss"
+        },
+        {
+          "id": "SOL-HANHUI-RETREAT",
+          "label": "撤退准备",
+          "requirements": [],
+          "steps": ["保住井绳", "撤回井口", "承受时间推进与村中水病加重"],
+          "result": "retreated",
+          "resourceRisk": "low",
+          "narrativeCost": "time_and_world_state"
+        }
+      ],
+      "failureResults": [
+        {"id": "FAIL-HANHUI-VOICE", "result": "玩家暂时失去一个对话选项来源标签", "recover": "在话罐或扶桑烬事件中找回"},
+        {"id": "FAIL-HANHUI-WELL", "result": "井绳断裂，推进六小时并增加水病", "recover": "机巧修复或由宿沙从暗渠救援"},
+        {"id": "FAIL-HANHUI-DEFEAT", "result": "不结束主线；缄婆封井并受伤，玩家从N016重新准备", "recover": "替代同伴与材料路线"}
+      ],
+      "rewards": ["IT-V01-CLUE-ARROWMOLD", "IT-V01-UNIQUE-VOICEJAR", "IT-V01-MAT-WORDLESSBONE"],
+      "worldEffects": ["hanhui.fate", "village.memories_restored", "village.day_salt_truth_public"],
+      "relatedCodexIds": ["CX-V01-BEAST-HANHUI", "CX-V01-PLACE-DAYSALTWELL"]
+    }
+  ]
+}

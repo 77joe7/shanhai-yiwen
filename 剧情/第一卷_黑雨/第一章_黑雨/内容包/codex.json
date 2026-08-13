@@ -1,0 +1,322 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "3.0.0",
+  "entries": [
+    {
+      "id": "CX-V01-MAT-DAYSALTDUST",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-DAYSALTDUST",
+      "title": "昼盐浮尘",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N165"}], "sourceVoice": "巷口空碗", "text": "一粒盐在无人碗里分成两粒，又悄悄化掉一粒。它总让碗看起来刚好没空。", "reliability": "observed", "contradictions": ["增多／仍然不足"]},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "night.salt_bowl_sampled"}], "sourceVoice": "青芽留样", "text": "浮尘会依附在被压低的资源缺口上，不能制造粮药；记录它，等于把『不够』从统计的缝隙里取出来。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-MAT-RETURNKNOT",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-RETURNKNOT",
+      "title": "返潮绳结",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N128"}], "sourceVoice": "归还者号浅滩", "text": "一根绳上系着村中青布、盐泽灰布与北方车队的赤麻。它们彼此不相配，却在同一个渡工结上受了潮。", "reliability": "observed", "contradictions": ["互不信任／共同退路"]},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "well.return_knot_ready"}], "sourceVoice": "倒潮路线", "text": "绳结不是神秘通行证，而是一条由多人反复核过的撤退路径。保留它可以救人，也意味着后来追查者少了一条可逆向追责的线。", "reliability": "verified", "contradictions": ["救援／追责"]},
+        {"id": "echo", "unlockRules": [{"type": "flagTrue", "key": "side.boat_revisit_completed"}], "sourceVoice": "渡口旧规", "text": "雨后有人学会把复杂的事叫作『返潮结』：不是保证能回头，只提醒所有拉过绳的人，谁先松手都该被看见。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-EVENT-THRESHOLDTALK",
+      "category": "event",
+      "subjectId": "EVENT-THRESHOLD-TALK",
+      "title": "门槛谈话",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N122"}], "sourceVoice": "北滩门槛", "text": "真正的最终会议尚未开始，众人却已把名牌、蜡印和粮袋摆成了一条窄路。谁先被允许开口，往往先决定了什么能被算作事实。", "reliability": "observed", "contradictions": ["程序先行／受害者先行"]},
+        {"id": "echo", "unlockRules": [{"type": "flagTrue", "key": "finale.threshold_talk_completed"}], "sourceVoice": "雨后抄本", "text": "门槛谈话没有达成共识。它留下的价值是让不同的代价各自拥有署名：儿童不再只是账页，北方不再只是遥远的命令，配给也不再只是一个可以遮住饥饿的数字。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PERSON-JILI",
+      "category": "person",
+      "subjectId": "NPC-JILI",
+      "title": "季狸",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N022"}], "sourceVoice": "北方收储使", "text": "季狸习惯把手指搭在文书边缘，像是随时要按住一张会逃走的账页。他说话从不用『必须』，总说『依约』，仿佛约定本身能替每个人承担后果。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["jili.transport_liability_written", "jili.seal_authority_exposed", "jili.route_record_shared"]}], "sourceVoice": "旧船蜡印与临时文书", "text": "他并非单纯的恶人，也不是无辜的传令者。他在崩坏的北方秩序里学会把伤害拆成可运输、可报销、可延后的条目；而条目一旦重新写上人的名字，便会反过来要求他回答。", "reliability": "verified", "contradictions": ["救援通道／征用通道"]}
+      ]
+    },
+    {
+      "id": "CX-V01-EVENT-RATIONS",
+      "category": "event",
+      "subjectId": "EVENT-YAOWAN-RATIONS",
+      "title": "雨中配给",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N118"}], "sourceVoice": "粮仓记录", "text": "黑雨第七日，粮仓只剩七袋干粮、一袋黑粟和半筐药根。每一种分配都意味着另一户人家要等。", "reliability": "observed", "contradictions": ["效率／可追问的公平"]},
+        {"id": "echo", "unlockRules": [{"type": "anyFlagTrue", "keys": ["village.rations_public", "granary.black_millet_trial_kept", "granary.evidence_burned"]}], "sourceVoice": "雨后粮仓", "text": "公开、试种或焚毁没有一种能让饥饿立刻消失；差别在于，谁拥有质疑分配的权利，谁必须承担留下种子的风险。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PERSON-YANTONG",
+      "category": "person",
+      "subjectId": "NPC-YANTONG",
+      "title": "砚童",
+      "layers": [
+        {"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N120"}], "sourceVoice": "祠屋门槛", "text": "砚童在梦里替许多人走路，醒来后却常被问自己做了什么。", "reliability": "witness", "contradictions": ["梦行儿／被借用的孩子"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["yantong.own_words_recorded", "yantong.identity_protected"]}], "sourceVoice": "砚童的选择", "text": "梦税让他成为记录的对象，而非叙述者。让他自己决定是否留下姓名，不能消除伤害，却终止了旁人替他解释一切的习惯。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-MAT-VOICECRYSTAL",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-VOICECRYSTAL",
+      "title": "人话盐晶",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N113"}], "sourceVoice": "人话盐层", "text": "盐晶贴耳会浮出未说完的半句话，离远后只剩咸味。", "reliability": "observed", "contradictions": ["证词／盐层回声"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["evidence.well_first_words_copied", "clue.first_well_command_revealed"]}], "sourceVoice": "井下记录", "text": "盐晶保存的不是完整真相，而是有人在责任被写成规矩前曾经开口。它需要其他证据核验，不能单独给任何人定罪。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-VOICESTRATA",
+      "category": "place",
+      "subjectId": "LOC-DAYSALT-WELL-VOICESTRATA",
+      "title": "人话盐层",
+      "layers": [
+        {"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N112"}], "sourceVoice": "缄婆", "text": "旧井深处有一层盐，会替人记住没听完的话。守井人从不准孩子靠近。", "reliability": "witness", "contradictions": ["镇井盐／求救声"]},
+        {"id": "evidence", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N116"}], "sourceVoice": "深层结算", "text": "人话盐层由被压下的证词与昼盐开采共同形成。它让真相难以消失，也让未被处理的责任拥有再次伤人的形状。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-DOCUMENT-NAMEBOOK",
+      "category": "document",
+      "subjectId": "DOC-AHE-NAMEBOOK",
+      "title": "阿禾的命名簿",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N107"}], "sourceVoice": "阿禾手记", "text": "用麻线缝起的小册，记着羊、树、病愈的孩子和雨前鸣叫的鸟。中间被鸟影叼走一页。", "reliability": "observed", "contradictions": ["孩子的涂写／撤离名单"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["ahe.names_rejoined", "ahe.namebook_recovered", "jianpo.receives_namebook_page"]}], "sourceVoice": "缺页与桑根", "text": "缺页记录的不是神秘咒文，而是被撤离规则优先擦掉的人：病者、老人、牲畜和守井者。名字被拆散后，会以树根与鸟影的形式阻断道路。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "雨后桑林", "text": "有人把命名簿称作拖慢撤离的孩子把戏；也有人说，正是它让杳湾后来仍能说出那些没有走到终点的人。", "reliability": "perspectival", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-EVENT-FASTROAD",
+      "category": "event",
+      "subjectId": "EVENT-FAST-EVACUATION",
+      "title": "冷巢幻路",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N109"}], "sourceVoice": "冷巢所示", "text": "一条最短、最整齐的撤离路：快者在前，不能快走的人被留在林影。", "reliability": "observed_vision", "contradictions": ["最优路径／被删去的人"]},
+        {"id": "insight", "unlockRules": [{"type": "anyFlagTrue", "keys": ["grove.dream_shell_contained", "grove.dream_shell_burned", "grove.dream_shell_named"]}], "sourceVoice": "阿禾与黎苇争执", "text": "梦壳并不创造残酷，只把人们愿意默认的取舍算成了无须负责的路线。封存、烧毁或命名都不能消除代价，只决定谁还看得见它。", "reliability": "strong_inference", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-BEAST-WATERGUEST",
+      "category": "beast",
+      "subjectId": "BEAST-WATERGUEST",
+      "title": "水客记忆",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N101"}], "sourceVoice": "逆潮廊道", "text": "由滴水人形与错叫的乳名拼成，像船上每一个失踪者，又不是其中任何一个。", "reliability": "observed", "contradictions": ["亡者／被遗忘的证词"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["boat.water_guest_released", "boat.water_guest_contained", "boat.water_guest_scattered"]}], "sourceVoice": "腹舱处置录", "text": "水客不以普通谎言为食；它追逐的是被省略的责任链。补全证词可使其退去，强行驱散则会损坏部分可核验信息。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "赤水渡工异说", "text": "后来渡工说，夜里若有人把自己说得太无辜，河里就会传来轻轻磨牙声。也有人说那只是旧船板在涨水。", "reliability": "perspectival", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-DOCUMENT-OLDSHIPSEAL",
+      "category": "document",
+      "subjectId": "DOC-OLD-SHIP-SEAL",
+      "title": "旧船蜡印",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N103"}], "sourceVoice": "归还者号船底", "text": "湿蜡印与季狸的真印有同一处缺口，却多了一道后来补上的齿痕。", "reliability": "observed", "contradictions": ["同一印章／后补权限"]},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "evidence.old_ship_seal_kept"}], "sourceVoice": "印面比对", "text": "蜡印证明北方货路曾以临时权限接管旧盐井运输。它不能证明每位持印者知情，却使‘村内私事’的说法再也无法成立。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-SEVENTHWELL",
+      "category": "place",
+      "subjectId": "LOC-YAOWAN-SEVENTHWELL",
+      "title": "第七口井",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N078"}], "sourceVoice": "夜巡记录", "text": "杳湾第七口井在黑雨后归还失物。桶绳上有十道旧刻痕，第十道细如孩童针划。", "reliability": "observed", "contradictions": ["归还失物／索取记忆"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["clue.well_sand_tracks_river", "clue.well_knocking_is_dream_tax"]}], "sourceVoice": "药渣与练字纸", "text": "井水携带来自赤水与旧井的黑砂。三下井响并非单纯鬼魅，而是被梦税制度牵引的儿童记忆在练习求救。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "雨后井栏", "text": "井栏后来保留一只空碗。有人说它等失物归还，有人说它提醒取水的人：别把别人先渴这件事叫成规矩。", "reliability": "perspectival", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-DOCUMENT-RIVERTRIAL",
+      "category": "document",
+      "subjectId": "DOC-RIVER-TRIAL-BOX",
+      "title": "倒流药箱封条",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N082"}], "sourceVoice": "赤水浅滩", "text": "渔网中捞出的药箱封条写着普通药材名，背面却留有反复涂改的孩童编号。", "reliability": "observed", "contradictions": ["药箱／试药记录"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["evidence.river_trial_seal_kept", "evidence.river_trial_box_sealed"]}], "sourceVoice": "封条比对", "text": "封条证明旧盐井的梦税并非村内秘仪，而曾以药物试验与河运为名扩散。药材确能缓解井病，代价是证据中有具体孩子被写成剂量。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-EVENT-EVACUATION-LIST",
+      "category": "event",
+      "subjectId": "EVENT-YAOWAN-EVACUATION",
+      "title": "撤离木牌",
+      "layers": [
+        {"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N096"}], "sourceVoice": "祠屋门槛", "text": "黑雨第七日，杳湾开始为撤离写木牌。牌上最初只写壮劳力，后来添上老人、孩子、牲畜和不能独自走路的人。", "reliability": "witness", "contradictions": ["效率名单／共同体名单"]},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "后世路标", "text": "盐泽路上有些木牌没有方向，只有磨亮的指痕。后人争论那是无用的累赘，还是最早拒绝把弱者从地图上擦掉的证据。", "reliability": "perspectival", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-EVENT-COMMUNITY-HEARING",
+      "category": "event",
+      "subjectId": "EVENT-DAYSALT-HEARING",
+      "title": "昼盐账公开",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N098"}], "sourceVoice": "祠屋灯下", "text": "昼盐账被摊在一盏油灯下。账册记得天气、灯油、箱数和人名，却长期把人名藏在‘来源’一栏。", "reliability": "observed", "contradictions": ["完整账目／长期遮蔽"]},
+        {"id": "echo", "unlockRules": [{"type": "anyFlagTrue", "keys": ["ledger.community_hearing_first", "ledger.multiple_copies", "ledger.publication_delayed"]}], "sourceVoice": "多方抄本", "text": "账的公开方式决定了谁先拥有叙述权。公开并不等于公正，延后也不等于保护；每一种选择都留下了可被后来人追问的缺口。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-EVENT-BLACKRAIN",
+      "category": "event",
+      "subjectId": "EVENT-BLACKRAIN",
+      "title": "黑雨",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N001"}], "sourceVoice": "玩家见闻", "text": "雨滴初落如冷铜，随后变黑。水面能映出不属于当前天空的十个红点；沾雨牲畜的影子会短暂增殖或滞留。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "talkedToAny", "npcIds": ["NPC-YANBO", "NPC-JIANPO", "NPC-LIWEI"]}], "sourceVoice": "杳湾众口", "text": "砚伯说是历错，缄婆说是被天舍弃的水，黎苇说盐泽老人见过‘替日洗名’的雨。三说互不相容，却都认为雨在抹去某种记录。", "reliability": "mixed", "contradictions": ["黑雨来自天上／黑雨只是被天上排弃"]},
+        {"id": "evidence", "unlockRules": [{"type": "allFlagsTrue", "keys": ["clue.fusang_ash_verified", "clue.black_line_saltwell"]}], "sourceVoice": "行证录", "text": "黑雨会把言语、影子和日名从现实中剥离，并沿赤水与旧盐井汇入含晦。扶桑烬能短暂逆转这一过程。雨既是清除痕迹的手段，也是被清除之物的载体。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "后世异说", "text": "北地称黑雨为十日灾前的妖兆，九黎盐泽称它为天上毁证失败的那一夜，杳湾后人则坚持雨下了七日，因为七比十更像一个可以活过去的数。", "reliability": "perspectival", "contradictions": ["预兆／毁证／天弃之水"]}
+      ]
+    },
+    {
+      "id": "CX-V01-PERSON-THREESHADOW",
+      "category": "person",
+      "subjectId": "NPC-THREESHADOW",
+      "title": "三影者",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N007"}], "sourceVoice": "玩家见闻", "text": "北滩无名尸，胸贯无羽赤金箭，衣如白昼。火下有少年、金乌、无头祭者三影，本体无影。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "anyFlagTrue", "keys": ["clue.shadow_memory_ten", "clue.bone_token_fusang"]}], "sourceVoice": "影忆与骨牌", "text": "三道影像三段被留在地上的证词。少年记得高桑与十个位置；鸟影指东；无头者似与尚未完成的仪式有关。", "reliability": "partial", "contradictions": ["一人三生／三物合一"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["clue.corpse_is_road", "clue.arrow_made_for_sun"]}], "sourceVoice": "井底行证与羿之判断", "text": "他不是完整的太阳，也不只是死者。他是逃离扶桑的一段白昼，以未来之箭作骨，借人形成为一条能把警告送往过去的路。", "reliability": "strong_inference", "contradictions": ["羿认为是路；三影者仍表现出独立意志"]},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "卷末余响", "text": "有人说他随箭解体，有人说他徒步回到扶桑；若箭被折断，杳湾多出一个叫迟日的少年。三种命运共享同一段来历，却不必共享同一个结论。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-ITEM-REDARROW",
+      "category": "item",
+      "subjectId": "UNIQUE-RED-ARROW",
+      "title": "赤金箭",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N007"}], "sourceVoice": "玩家见闻", "text": "无羽赤金箭贯穿三影尸体，箭杆持续长出年轮状金纹。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "flagTrue", "key": "clue.arrow_name_yi"}], "sourceVoice": "铭文拓印", "text": "近镞处刻‘羿’，刻痕新得像动作尚未结束。箭伤的时间次序与常理相反。", "reliability": "observed_anomaly", "contradictions": ["羿名确凿／羿尚未造箭"]},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.arrow_made_for_sun"}], "sourceVoice": "十足箭范", "text": "铸范尺寸及十足印证明它为太阳性目标打造。第三圈金纹为受力弱点；折断可取消既定目标，却不能取消武器。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "worldVarExists", "key": "unique.red_arrow.owner"}], "sourceVoice": "归属记录", "text": "箭的意义随归属改变：在羿手中是未来罪责的预演，在三影者身上是道路，在北方祭库是秩序资源；若只留箭镞，它成为由人重新指定目标的权力。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-MAT-EMBERLEAF",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-EMBERLEAF",
+      "title": "扶桑烬",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-MAT-EMBERLEAF", "quantity": 1}], "sourceVoice": "玩家见闻", "text": "黑雨浇不灭的金灰，带有晒热被褥的气味。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "itemRecognitionAtLeast", "itemId": "IT-V01-MAT-EMBERLEAF", "stage": "verified"}], "sourceVoice": "东桑林实验", "text": "照见一句被黑雨洗去的话，代价是持有者失去一件私人小记忆。其作用不是恢复全部过去，而是在两种遗忘之间交换。", "reliability": "verified", "contradictions": []},
+        {"id": "insight", "unlockRules": [{"type": "flagTrue", "key": "clue.corpse_is_road"}], "sourceVoice": "推论", "text": "扶桑烬是被抹去之白昼留下的余温。若世界能遗忘一段白天，那么太阳也并非纯粹天体，而是被维持的记录与秩序。", "reliability": "strong_inference", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-MAT-RAINREED",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-RAINREED",
+      "title": "囚雨芦",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-MAT-RAINREED", "quantity": 1}], "sourceVoice": "河床采集", "text": "透明芦节囚着一滴黑雨，内有低语。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "encounterResolved", "encounterId": "EN-V01-ELITE-HANHUI", "result": "contained"}], "sourceVoice": "含晦遭遇", "text": "可保存黑雨的方向性和遗忘性质，对以言语空缺为食的异物造成过载。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-BEAST-HANHUI",
+      "category": "beast",
+      "subjectId": "BEAST-HANHUI",
+      "title": "含晦",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}], "sourceVoice": "井底见闻", "text": "由黑雨、鱼骨与人声聚成的无目兽，背生熟人之口，以被洗去的言语为食。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "encounterResolvedAny", "encounterId": "EN-V01-ELITE-HANHUI"}], "sourceVoice": "行证录", "text": "它并非雨前已有的异兽，而是杳湾长期隐瞒昼盐代价、黑雨集中抹去证词后形成的生态结果。追逐言语空缺，离开白昼盐池会失形。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "worldVarExists", "key": "hanhui.fate"}], "sourceVoice": "事件余响", "text": "含晦可被释放、封存或杀死。每种解决都改变证词去向：归还会制造冲突，封存把责任交给持有者，击杀则让村落获得安宁与永久失忆。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-DAYSALTWELL",
+      "category": "place",
+      "subjectId": "LOC-DAYSALT-WELL",
+      "title": "旧盐井",
+      "layers": [
+        {"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N016"}], "sourceVoice": "缄婆口述", "text": "井底没有盐，只有一小块可开采的白天。杳湾称其产物为昼盐，用于灯油与药膏。", "reliability": "witness", "contradictions": ["盐井／白昼矿" ]},
+        {"id": "evidence", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}], "sourceVoice": "井下行证", "text": "井壁开采痕仍发晨光，证明昼盐并非比喻。长期开采使本地与扶桑记录发生联系，也为含晦提供了能聚形的白昼盐池。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PERSON-YI",
+      "category": "person",
+      "subjectId": "NPC-YI",
+      "title": "羿",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N021"}], "sourceVoice": "玩家见闻", "text": "从西边循箭痕而来的射师，背空箭囊，持无弦弓。此时尚未射日，也未造出尸体胸口那支箭。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "flagTrue", "key": "clue.yi_dreamed_shots"}], "sourceVoice": "羿的自述", "text": "反复梦见九次放弦与一次停手；空箭囊能听见未来的箭互相碰撞。他拒绝保证射日或不射。", "reliability": "self_report", "contradictions": ["命定射手／拒绝命定"]}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-EASTGROVE",
+      "category": "place",
+      "subjectId": "LOC-EAST-MULBERRY-GROVE",
+      "title": "东桑林",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N014"}], "sourceVoice": "玩家与阿禾", "text": "原有二十七棵桑，黑雨后三倍又十倍增生。每十棵共根，林中十只空巢仅九只尚温。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.fusang_ash_verified"}], "sourceVoice": "材料行证", "text": "异生桑叶能析出扶桑烬，说明此地在黑雨期间与东方扶桑发生短暂重叠。给树命名可提高其稳定性，带走空巢则削弱重叠边界。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-REDRIVERBED",
+      "category": "place",
+      "subjectId": "LOC-REDRIVER-BED",
+      "title": "退水河床",
+      "layers": [{"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N013"}], "sourceVoice": "玩家见闻", "text": "赤水停流后露出的河床，悬鱼、失物与不同朝向的牙齿一同暴露。", "reliability": "observed", "contradictions": []}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.river_returns_by_debt"}], "sourceVoice": "河床行证", "text": "河并非随机退还失物；它按未偿责任排列物件，令旧井、沉船与村中借债成为同一条可追踪的线。", "reliability": "verified", "contradictions": ["自然倒流／责任回流"]}],
+      "id": "CX-V01-PLACE-RETURNEDBOAT",
+      "category": "place",
+      "subjectId": "LOC-RETURNED-BOAT",
+      "title": "归还者号",
+      "layers": [{"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N035"}], "sourceVoice": "宿沙", "text": "半年前沉没的渡船在黑雨中倒退归岸，仍以渡工三响报债。", "reliability": "witness", "contradictions": ["沉船／会说话的门"]}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.susha_son_carried_children_records"}], "sourceVoice": "倒船腹舱", "text": "船舱保留了未送达的儿童梦税记录，表明暗渠与北方货路曾共同运作。", "reliability": "verified", "contradictions": []}]
+    },
+    {
+      "id": "CX-V01-MAT-NIGHTFEATHER",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-NIGHTFEATHER",
+      "title": "梦钉羽",
+      "layers": [{"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N015"}], "sourceVoice": "砚童后颈", "text": "没有重量的黑羽，离手不落，只固执指向东方。", "reliability": "observed", "contradictions": []}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.feather_points_to_command"}], "sourceVoice": "裂陶哨试验", "text": "梦钉羽并不制造梦，而是把睡者影子固定到某一条来自东方的命令上；切断会归还选择，也会留下梦的空洞。", "reliability": "verified", "contradictions": ["护梦羽／牵梦钉"]}]
+    },
+    {
+      "id": "CX-V01-EVENT-TENTH-NIGHT",
+      "category": "event",
+      "subjectId": "EVENT-TENTH-NIGHT",
+      "title": "第十夜",
+      "layers": [{"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N015"}], "sourceVoice": "砚童梦话", "text": "梦中的哥哥反复说‘轮到我’，井边有十只空碗。", "reliability": "self_report", "contradictions": ["孩子的噩梦／旧井仪式"]}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "evidence.tenth_night_list"}], "sourceVoice": "蜡封账页", "text": "所谓第十夜是以儿童梦境催生昼盐的轮值制度；名单被伪装成灯油与盐的借支账。", "reliability": "verified", "contradictions": []}]
+    },
+    {
+      "id": "CX-V01-MAT-SHADOWMUD",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-SHADOWMUD",
+      "title": "滞影泥",
+      "layers": [{"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-MAT-SHADOWMUD", "quantity": 1}], "sourceVoice": "黑雨泥地", "text": "比周遭光线慢半息变暗的黑泥，触碰时像另一只手在回握。", "reliability": "observed", "contradictions": []}, {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["side.dyer_family_saved", "grove.shadow_nest_pinned"]}], "sourceVoice": "影迹试验", "text": "泥可钉住短暂影迹，却不能分辨影子是否善恶；它只把正在发生的事留在原地一节拍。", "reliability": "verified", "contradictions": ["封邪物／留住活人"]}]
+    },
+    {
+      "id": "CX-V01-TOOL-CRACKEDWHISTLE",
+      "category": "tool",
+      "subjectId": "IT-V01-TOOL-CRACKEDWHISTLE",
+      "title": "裂陶哨",
+      "layers": [{"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-TOOL-CRACKEDWHISTLE", "quantity": 1}], "sourceVoice": "青芽", "text": "粮仓驱鼠哨，破裂后吹不出完整音，却能听见空腔替它回响。", "reliability": "witness", "contradictions": []}, {"id": "insight", "unlockRules": [{"type": "flagTrue", "key": "clue.whistle_hears_empty_records"}], "sourceVoice": "雨后试验", "text": "陶哨能让被遮蔽的空缺发声：空粮、空账、空腔与被抹掉的话都留下不同回音。", "reliability": "verified", "contradictions": []}]
+    },
+    {
+      "id": "CX-V01-TOOL-DARKNEST",
+      "category": "tool",
+      "subjectId": "IT-V01-TOOL-DARKNEST",
+      "title": "受雨空巢",
+      "layers": [{"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-TOOL-DARKNEST", "quantity": 1}], "sourceVoice": "东桑林", "text": "巢内永远比外面暗一层，靠近日光时会渗出黑雨。", "reliability": "observed", "contradictions": []}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "grove.dream_shell_contained"}], "sourceVoice": "梦壳封存", "text": "它能暂时遮蔽太阳性痕迹，不消除危险；被遮住的未来仍会在别处发热。", "reliability": "verified", "contradictions": ["庇护／拖延"]}]
+    },
+    {
+      "id": "CX-V01-DOCUMENT-DAYSALTLEDGER",
+      "category": "document",
+      "subjectId": "DOC-DAYSALT-LEDGER",
+      "title": "昼盐账",
+      "layers": [{"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N016"}], "sourceVoice": "缄婆", "text": "杳湾用昼盐换过灯油、药膏和北方的平安。", "reliability": "witness", "contradictions": ["盐货账／人名账"]}, {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["evidence.daysalt_ledger_complete", "evidence.tenth_night_list"]}], "sourceVoice": "账室与蜡封页", "text": "账册以货物格式记录儿童梦境与劳作，最可怕之处不在秘密，而在它被完整、清楚、长期地登记。", "reliability": "verified", "contradictions": []}]
+    }
+  ]
+}
