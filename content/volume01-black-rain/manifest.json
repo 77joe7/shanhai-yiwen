@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "1.0.0",
+  "id": "CONTENT-V01-BLACK-RAIN",
+  "name": "第一卷《黑雨》可接入内容包",
+  "entryNodeId": "V01-C01-N001",
+  "files": {
+    "story": "story-nodes.json",
+    "characters": "characters.json",
+    "origins": "player-origins.json",
+    "items": "items.json",
+    "quests": "quests.json",
+    "encounters": "encounters.json",
+    "codex": "codex.json",
+    "worldState": "world-state.json"
+  },
+  "counts": {
+    "storyNodes": 28,
+    "characters": 11,
+    "origins": 8,
+    "items": 12,
+    "quests": 6,
+    "encounters": 1,
+    "codexEntries": 9,
+    "mainEndings": 4
+  },
+  "styleNote": "采用魔幻现实、东方史诗、青春群像与悬疑成长等高层文学特征；不复制任何在世或已故作家的独特措辞、句法或可辨识段落。"
+}

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "1.0.0",
+  "entries": [
+    {
+      "id": "CX-V01-EVENT-BLACKRAIN",
+      "category": "event",
+      "subjectId": "EVENT-BLACKRAIN",
+      "title": "黑雨",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N001"}], "sourceVoice": "玩家见闻", "text": "雨滴初落如冷铜，随后变黑。水面能映出不属于当前天空的十个红点；沾雨牲畜的影子会短暂增殖或滞留。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "talkedToAny", "npcIds": ["NPC-YANBO", "NPC-JIANPO", "NPC-LIWEI"]}], "sourceVoice": "杳湾众口", "text": "砚伯说是历错，缄婆说是被天舍弃的水，黎苇说盐泽老人见过‘替日洗名’的雨。三说互不相容，却都认为雨在抹去某种记录。", "reliability": "mixed", "contradictions": ["黑雨来自天上／黑雨只是被天上排弃"]},
+        {"id": "evidence", "unlockRules": [{"type": "allFlagsTrue", "keys": ["clue.fusang_ash_verified", "clue.black_line_saltwell"]}], "sourceVoice": "行证录", "text": "黑雨会把言语、影子和日名从现实中剥离，并沿赤水与旧盐井汇入含晦。扶桑烬能短暂逆转这一过程。雨既是清除痕迹的手段，也是被清除之物的载体。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "后世异说", "text": "北地称黑雨为十日灾前的妖兆，九黎盐泽称它为天上毁证失败的那一夜，杳湾后人则坚持雨下了七日，因为七比十更像一个可以活过去的数。", "reliability": "perspectival", "contradictions": ["预兆／毁证／天弃之水"]}
+      ]
+    },
+    {
+      "id": "CX-V01-PERSON-THREESHADOW",
+      "category": "person",
+      "subjectId": "NPC-THREESHADOW",
+      "title": "三影者",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N007"}], "sourceVoice": "玩家见闻", "text": "北滩无名尸，胸贯无羽赤金箭，衣如白昼。火下有少年、金乌、无头祭者三影，本体无影。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "anyFlagTrue", "keys": ["clue.shadow_memory_ten", "clue.bone_token_fusang"]}], "sourceVoice": "影忆与骨牌", "text": "三道影像三段被留在地上的证词。少年记得高桑与十个位置；鸟影指东；无头者似与尚未完成的仪式有关。", "reliability": "partial", "contradictions": ["一人三生／三物合一"]},
+        {"id": "evidence", "unlockRules": [{"type": "anyFlagTrue", "keys": ["clue.corpse_is_road", "clue.arrow_made_for_sun"]}], "sourceVoice": "井底行证与羿之判断", "text": "他不是完整的太阳，也不只是死者。他是逃离扶桑的一段白昼，以未来之箭作骨，借人形成为一条能把警告送往过去的路。", "reliability": "strong_inference", "contradictions": ["羿认为是路；三影者仍表现出独立意志"]},
+        {"id": "echo", "unlockRules": [{"type": "volumeCompleted", "volume": "V01"}], "sourceVoice": "卷末余响", "text": "有人说他随箭解体，有人说他徒步回到扶桑；若箭被折断，杳湾多出一个叫迟日的少年。三种命运共享同一段来历，却不必共享同一个结论。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-ITEM-REDARROW",
+      "category": "item",
+      "subjectId": "UNIQUE-RED-ARROW",
+      "title": "赤金箭",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N007"}], "sourceVoice": "玩家见闻", "text": "无羽赤金箭贯穿三影尸体，箭杆持续长出年轮状金纹。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "flagTrue", "key": "clue.arrow_name_yi"}], "sourceVoice": "铭文拓印", "text": "近镞处刻‘羿’，刻痕新得像动作尚未结束。箭伤的时间次序与常理相反。", "reliability": "observed_anomaly", "contradictions": ["羿名确凿／羿尚未造箭"]},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.arrow_made_for_sun"}], "sourceVoice": "十足箭范", "text": "铸范尺寸及十足印证明它为太阳性目标打造。第三圈金纹为受力弱点；折断可取消既定目标，却不能取消武器。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "worldVarExists", "key": "unique.red_arrow.owner"}], "sourceVoice": "归属记录", "text": "箭的意义随归属改变：在羿手中是未来罪责的预演，在三影者身上是道路，在北方祭库是秩序资源；若只留箭镞，它成为由人重新指定目标的权力。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-MAT-EMBERLEAF",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-EMBERLEAF",
+      "title": "扶桑烬",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-MAT-EMBERLEAF", "quantity": 1}], "sourceVoice": "玩家见闻", "text": "黑雨浇不灭的金灰，带有晒热被褥的气味。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "itemRecognitionAtLeast", "itemId": "IT-V01-MAT-EMBERLEAF", "stage": "verified"}], "sourceVoice": "东桑林实验", "text": "照见一句被黑雨洗去的话，代价是持有者失去一件私人小记忆。其作用不是恢复全部过去，而是在两种遗忘之间交换。", "reliability": "verified", "contradictions": []},
+        {"id": "insight", "unlockRules": [{"type": "flagTrue", "key": "clue.corpse_is_road"}], "sourceVoice": "推论", "text": "扶桑烬是被抹去之白昼留下的余温。若世界能遗忘一段白天，那么太阳也并非纯粹天体，而是被维持的记录与秩序。", "reliability": "strong_inference", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-MAT-RAINREED",
+      "category": "material",
+      "subjectId": "IT-V01-MAT-RAINREED",
+      "title": "囚雨芦",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "hasItem", "itemId": "IT-V01-MAT-RAINREED", "quantity": 1}], "sourceVoice": "河床采集", "text": "透明芦节囚着一滴黑雨，内有低语。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "encounterResolved", "encounterId": "EN-V01-ELITE-HANHUI", "result": "contained"}], "sourceVoice": "含晦遭遇", "text": "可保存黑雨的方向性和遗忘性质，对以言语空缺为食的异物造成过载。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-BEAST-HANHUI",
+      "category": "beast",
+      "subjectId": "BEAST-HANHUI",
+      "title": "含晦",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}], "sourceVoice": "井底见闻", "text": "由黑雨、鱼骨与人声聚成的无目兽，背生熟人之口，以被洗去的言语为食。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "encounterResolvedAny", "encounterId": "EN-V01-ELITE-HANHUI"}], "sourceVoice": "行证录", "text": "它并非雨前已有的异兽，而是杳湾长期隐瞒昼盐代价、黑雨集中抹去证词后形成的生态结果。追逐言语空缺，离开白昼盐池会失形。", "reliability": "verified", "contradictions": []},
+        {"id": "echo", "unlockRules": [{"type": "worldVarExists", "key": "hanhui.fate"}], "sourceVoice": "事件余响", "text": "含晦可被释放、封存或杀死。每种解决都改变证词去向：归还会制造冲突，封存把责任交给持有者，击杀则让村落获得安宁与永久失忆。", "reliability": "state_dependent", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-DAYSALTWELL",
+      "category": "place",
+      "subjectId": "LOC-DAYSALT-WELL",
+      "title": "旧盐井",
+      "layers": [
+        {"id": "rumor", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N016"}], "sourceVoice": "缄婆口述", "text": "井底没有盐，只有一小块可开采的白天。杳湾称其产物为昼盐，用于灯油与药膏。", "reliability": "witness", "contradictions": ["盐井／白昼矿" ]},
+        {"id": "evidence", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}], "sourceVoice": "井下行证", "text": "井壁开采痕仍发晨光，证明昼盐并非比喻。长期开采使本地与扶桑记录发生联系，也为含晦提供了能聚形的白昼盐池。", "reliability": "verified", "contradictions": []}
+      ]
+    },
+    {
+      "id": "CX-V01-PERSON-YI",
+      "category": "person",
+      "subjectId": "NPC-YI",
+      "title": "羿",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N021"}], "sourceVoice": "玩家见闻", "text": "从西边循箭痕而来的射师，背空箭囊，持无弦弓。此时尚未射日，也未造出尸体胸口那支箭。", "reliability": "observed", "contradictions": []},
+        {"id": "rumor", "unlockRules": [{"type": "flagTrue", "key": "clue.yi_dreamed_shots"}], "sourceVoice": "羿的自述", "text": "反复梦见九次放弦与一次停手；空箭囊能听见未来的箭互相碰撞。他拒绝保证射日或不射。", "reliability": "self_report", "contradictions": ["命定射手／拒绝命定"]}
+      ]
+    },
+    {
+      "id": "CX-V01-PLACE-EASTGROVE",
+      "category": "place",
+      "subjectId": "LOC-EAST-MULBERRY-GROVE",
+      "title": "东桑林",
+      "layers": [
+        {"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N014"}], "sourceVoice": "玩家与阿禾", "text": "原有二十七棵桑，黑雨后三倍又十倍增生。每十棵共根，林中十只空巢仅九只尚温。", "reliability": "observed", "contradictions": []},
+        {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.fusang_ash_verified"}], "sourceVoice": "材料行证", "text": "异生桑叶能析出扶桑烬，说明此地在黑雨期间与东方扶桑发生短暂重叠。给树命名可提高其稳定性，带走空巢则削弱重叠边界。", "reliability": "verified", "contradictions": []}
+      ]
+    }
+  ]
+}

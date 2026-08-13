@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "1.0.0",
+  "encounters": [
+    {
+      "id": "EN-V01-ELITE-HANHUI",
+      "name": "含晦",
+      "triggerRules": [{"type": "visitedNode", "nodeId": "V01-C01-N017"}],
+      "cooldown": null,
+      "participants": ["BEAST-HANHUI", "PLAYER", "NPC-JIANPO"],
+      "arena": {
+        "locationId": "LOC-DAYSALT-WELL-BOTTOM",
+        "features": ["thin_daylight_pool", "voice_echo", "black_rain_channels", "breakable_salt_crust"]
+      },
+      "intentModel": [
+        {"phase": 1, "telegraph": "熟人的嘴呼唤玩家回头", "intent": "steal_recent_words"},
+        {"phase": 2, "telegraph": "背部所有嘴同时吸气", "intent": "erase_preparation_action"},
+        {"phase": 3, "telegraph": "沉入白昼盐池并复制玩家上一句命令", "intent": "turn_command_against_party"}
+      ],
+      "solutions": [
+        {
+          "id": "SOL-HANHUI-REVEAL",
+          "label": "揭言",
+          "requirements": [{"type": "itemRecognitionAtLeast", "itemId": "IT-V01-MAT-EMBERLEAF", "stage": "verified"}],
+          "steps": ["以扶桑烬照见第一句谎言", "承受一段私人记忆损失", "选择释放全部话语或仅取关键证词"],
+          "result": "released_words",
+          "resourceRisk": "low",
+          "narrativeCost": "memory"
+        },
+        {
+          "id": "SOL-HANHUI-LURE",
+          "label": "诱离",
+          "requirements": [{"type": "hasItem", "itemId": "IT-V01-TOOL-CRACKEDWHISTLE", "quantity": 1}],
+          "steps": ["观察它追逐言语空缺", "以裂陶哨制造空声", "趁其离池时用陶罐收束话语"],
+          "result": "contained",
+          "resourceRisk": "low",
+          "narrativeCost": "testimony_must_be_managed"
+        },
+        {
+          "id": "SOL-HANHUI-OVERFEED",
+          "label": "过载",
+          "requirements": [{"type": "hasItem", "itemId": "IT-V01-MAT-RAINREED", "quantity": 1}],
+          "steps": ["释放囚雨芦", "让含晦吞入过量被遗忘之言", "在其解体前选择封存或归还"],
+          "result": "contained_or_dispersed",
+          "resourceRisk": "medium",
+          "narrativeCost": "black_rain_exposure"
+        },
+        {
+          "id": "SOL-HANHUI-FORCE",
+          "label": "正面战斗",
+          "requirements": [],
+          "steps": ["打断偷取言语", "避开白昼碎片", "在证词耗尽前摧毁核心"],
+          "result": "killed",
+          "resourceRisk": "high",
+          "narrativeCost": "permanent_evidence_loss"
+        },
+        {
+          "id": "SOL-HANHUI-RETREAT",
+          "label": "撤退准备",
+          "requirements": [],
+          "steps": ["保住井绳", "撤回井口", "承受时间推进与村中水病加重"],
+          "result": "retreated",
+          "resourceRisk": "low",
+          "narrativeCost": "time_and_world_state"
+        }
+      ],
+      "failureResults": [
+        {"id": "FAIL-HANHUI-VOICE", "result": "玩家暂时失去一个对话选项来源标签", "recover": "在话罐或扶桑烬事件中找回"},
+        {"id": "FAIL-HANHUI-WELL", "result": "井绳断裂，推进六小时并增加水病", "recover": "机巧修复或由宿沙从暗渠救援"},
+        {"id": "FAIL-HANHUI-DEFEAT", "result": "不结束主线；缄婆封井并受伤，玩家从N016重新准备", "recover": "替代同伴与材料路线"}
+      ],
+      "rewards": ["IT-V01-CLUE-ARROWMOLD", "IT-V01-UNIQUE-VOICEJAR", "IT-V01-MAT-WORDLESSBONE"],
+      "worldEffects": ["hanhui.fate", "village.memories_restored", "village.day_salt_truth_public"],
+      "relatedCodexIds": ["CX-V01-BEAST-HANHUI", "CX-V01-PLACE-DAYSALTWELL"]
+    }
+  ]
+}

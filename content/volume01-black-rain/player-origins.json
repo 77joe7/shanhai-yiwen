@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "0.1.0",
+  "contentVersion": "1.0.0",
+  "origins": [
+    {"id": "hunter", "name": "猎户", "originScene": "给一支受潮的骨箭换箭羽", "statBonuses": {"agility": 1, "craft": 1}, "startingItems": ["IT-GENERIC-HUNTING-KNIFE"], "knowledge": ["tracks", "animal_fear"], "relationSeeds": [{"npcId": "NPC-AHE", "axis": "trust", "value": 1}], "choiceTags": ["猎户"]},
+    {"id": "mountain_folk", "name": "山民", "originScene": "替邻家屋顶压上最后一块石头", "statBonuses": {"body": 1, "agility": 1}, "startingItems": ["IT-GENERIC-HEMP-ROPE"], "knowledge": ["weather", "terrain"], "relationSeeds": [{"npcId": "NPC-WEIQING", "axis": "respect", "value": 1}], "choiceTags": ["山民"]},
+    {"id": "ritual_apprentice", "name": "巫祝学徒", "originScene": "照看一盆始终不肯熄灭的祭火", "statBonuses": {"spirit": 1, "will": 1}, "startingItems": ["IT-GENERIC-WHITE-SALT"], "knowledge": ["ritual_trace", "taboo"], "relationSeeds": [{"npcId": "NPC-JIANPO", "axis": "trust", "value": 1}], "choiceTags": ["巫祝学徒", "灵识"]},
+    {"id": "caravan_orphan", "name": "商旅遗孤", "originScene": "清点一只永远少一枚贝币的旧钱袋", "statBonuses": {"contract": 1, "craft": 1}, "startingItems": ["IT-GENERIC-COPPER-SCALE"], "knowledge": ["routes", "trade_marks"], "relationSeeds": [{"npcId": "NPC-SUSHA", "axis": "trust", "value": 1}], "choiceTags": ["商旅"]},
+    {"id": "jiuli_refugee", "name": "九黎流民", "originScene": "把故乡骨牌藏进鞋底的夹层", "statBonuses": {"will": 1, "agility": 1}, "startingItems": ["IT-GENERIC-BONE-AWL"], "knowledge": ["bone_script", "salt_marsh"], "relationSeeds": [{"npcId": "NPC-LIWEI", "axis": "trust", "value": 2}], "choiceTags": ["九黎"]},
+    {"id": "priest_descendant", "name": "祭司之后", "originScene": "给祖先牌位擦去一个不该存在的日名", "statBonuses": {"spirit": 1, "contract": 1}, "startingItems": ["IT-GENERIC-KNOT-CORD"], "knowledge": ["old_names", "礼制"], "relationSeeds": [{"npcId": "NPC-YANBO", "axis": "respect", "value": 1}], "choiceTags": ["祭司之后"]},
+    {"id": "exiled_noble", "name": "流亡贵胄", "originScene": "练习如何不用旧姓介绍自己", "statBonuses": {"contract": 1, "will": 1}, "startingItems": ["IT-GENERIC-SEAL-FRAGMENT"], "knowledge": ["north_protocol", "heraldry"], "relationSeeds": [{"npcId": "NPC-JILI", "axis": "respect", "value": 1}], "choiceTags": ["旧礼"]},
+    {"id": "nameless", "name": "无名之人", "originScene": "在泥墙上试写一个今天才决定使用的名字", "statBonuses": {"spirit": 1}, "startingItems": ["IT-GENERIC-BLANK-TOKEN"], "knowledge": ["namelessness"], "relationSeeds": [], "choiceTags": ["无名之人"], "special": "可承接危险日名；更容易被神异记录覆盖"}
+  ],
+  "templateBindings": {"player.originScene": "origins[].originScene"}
+}
