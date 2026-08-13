@@ -120,6 +120,12 @@ export function GameShell() {
     setNotice(`意图“${intent}”已记下；请以剧情选择推进故事。`);
   }
 
+  function exitToMain() {
+    setOverlay(null);
+    setState(createInitialState());
+    setNotice("已退出到主界面");
+  }
+
   return (
     <main className="game-shell mythic-shell">
       <header className="topbar">
@@ -136,10 +142,16 @@ export function GameShell() {
       </header>
 
       <section className="mobile-status-strip" aria-label="角色当前状态">
-        <Meter label="生息" value={state.resources.life} max={12} tone="red" />
-        <Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" />
-        <Meter label="定力" value={state.resources.resolve} max={10} tone="blue" />
-        <button type="button" onClick={() => setOverlay("character")} aria-label="查看角色档案">{state.player.name.slice(0, 1)}</button>
+        <button type="button" className="status-identity" onClick={() => setOverlay("character")} aria-label="查看角色档案">
+          <span className="status-avatar">{state.player.name.slice(0, 1)}</span>
+          <span className="status-name">{state.player.name}</span>
+        </button>
+        <div className="status-meters">
+          <Meter label="生息" value={state.resources.life} max={12} tone="red" />
+          <Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" />
+          <Meter label="定力" value={state.resources.resolve} max={10} tone="blue" />
+        </div>
+        <StatChips stats={state.stats} />
       </section>
 
       <section className="desktop-grid">
@@ -165,7 +177,7 @@ export function GameShell() {
       </nav>
 
       <div className="toast" role="status"><span />{notice}</div>
-      {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} />}
+      {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} exitToMain={exitToMain} />}
       {detail && <DetailCardModal card={detail} close={() => setDetail(null)} />}
       <input ref={importRef} hidden type="file" accept="application/json,.json" onChange={(e) => receiveImport(e.target.files?.[0])} />
     </main>
@@ -184,6 +196,7 @@ function CharacterRail({ state, onCreate, onOpenDetails }: { state: GameState; o
       <Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" />
       <Meter label="定力" value={state.resources.resolve} max={10} tone="blue" />
     </div>
+    <StatChips stats={state.stats} />
     <div className="location-card"><span>当前所在</span><strong>{state.location}</strong><small>第一日 · {state.period}</small></div>
     <div className="traits"><span>缺陷</span><b>{flawName(state.player.flaw)}</b><small>经历相关危机后，可形成新的应对之道。</small></div>
     <div className="danger-status" aria-label="当前危险状态"><span>状态</span><b>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</b></div>
@@ -192,6 +205,14 @@ function CharacterRail({ state, onCreate, onOpenDetails }: { state: GameState; o
 
 function Meter({ label, value, max, tone }: { label: string; value: number; max: number; tone: string }) {
   return <div className="meter"><div><span>{label}</span><b>{value}<small>/{max}</small></b></div><i><em className={tone} style={{ width: `${Math.min(100, value / max * 100)}%` }} /></i></div>;
+}
+
+const statOrder = ["体魄", "身法", "灵识", "心志", "机巧", "言契"] as const;
+const defaultStats: GameState["stats"] = { 体魄: 3, 身法: 3, 灵识: 3, 心志: 3, 机巧: 2, 言契: 2 };
+
+function StatChips({ stats }: { stats?: GameState["stats"] }) {
+  const values = stats ?? defaultStats;
+  return <div className="stat-chips" aria-label="六维属性">{statOrder.map((key) => <span className="stat-chip" key={key}><b>{key}</b><i>{values[key]}</i></span>)}</div>;
 }
 
 function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: PanelId) => void; state: GameState }) {
@@ -217,19 +238,14 @@ function StartPanel({ state, openCreate, openSettings, openSaves }: { state: Gam
     <div className="start-hero">
       <span className="eyebrow">NEW GAME · 黑雨将落</span>
       <h2>先立下一个普通人的名字</h2>
-      <p>说明书要求主角不是预设的天命之子。新玩家进入前，需要先确定出身、天性与缺陷：它们会改变你能看见的信息、可承担的风险，以及旁人如何回应你。</p>
+      <p>你不是预设的天命之子——先定出身、天性与缺陷，再入这未定的天地。</p>
       <div className="start-actions">
         <button className="ink-button" onClick={openCreate}>设置角色信息</button>
         <button onClick={openSettings}>游戏设置</button>
         <button onClick={openSaves}>{hasSaveTrace ? "读取存档" : "导入存档"}</button>
       </div>
     </div>
-    <div className="start-rule-grid" aria-label="核心体验">
-      <article><b>观察</b><span>从天气、地形、物痕与人言中发现异常。</span></article>
-      <article><b>求证</b><span>用探索、交涉和物件验证传闻，不靠盲目刷数值。</span></article>
-      <article><b>准备</b><span>在行囊、路线、同伴和时机之间做取舍。</span></article>
-      <article><b>后果</b><span>选择会写入关系、世界状态与山海志。</span></article>
-    </div>
+    <div className="start-rule-grid" aria-label="核心体验"><span>观察 · 求证 · 准备 · 后果</span></div>
   </section>;
 }
 
@@ -401,18 +417,18 @@ function DetailCardModal({ card, close }: { card: DetailCard; close: () => void 
   return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{card.text}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}{card.sections && <div className="detail-sections">{card.sections.map((section) => <section className={section.locked ? "locked" : ""} key={section.label}><small>{section.label}</small><p>{section.text}</p></section>)}</div>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
 }
 
-function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
+function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice, exitToMain }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void; exitToMain: () => void }) {
   return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}><section className="modal" role="dialog" aria-modal="true" aria-label="游戏弹窗"><button className="close" onClick={close}>×</button>
     {type === "character" && <CharacterDrawer state={state} />}
     {type === "create" && <CharacterCreator state={state} complete={(draft) => { const entered = enterCurrentNode(createInitialState(draft)); setState(entered.state); if (settings.autoSave) saveGame(entered.state); if (settings.haptics) void browserPlatform.feedback.vibrate("medium"); setNotice(entered.notes.join(" · ") || `${draft.name}已在天地间留下名字`); close(); }} />}
-    {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} />}
+    {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} onExit={exitToMain} />}
     {type === "saves" && <SavePanel state={state} setState={setState} download={downloadSave} importNow={() => importRef.current?.click()} setNotice={setNotice} />}
     {type === "help" && <HelpPanel />}
   </section></div>;
 }
 
 function CharacterDrawer({ state }: { state: GameState }) {
-  return <div className="character-drawer"><span className="eyebrow">CHARACTER · 行者</span><h2>{state.player.name}</h2><p>{originName(state.player.origin)} · 年十八 · {state.location} · 第一日{state.period}</p><div className="character-drawer-resources"><Meter label="生息" value={state.resources.life} max={12} tone="red" /><Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" /><Meter label="定力" value={state.resources.resolve} max={10} tone="blue" /></div><dl><div><dt>天性</dt><dd>{natureName(state.player.nature)}</dd></div><div><dt>缺陷</dt><dd>{flawName(state.player.flaw)}</dd></div><div><dt>当前状态</dt><dd>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</dd></div></dl><p className="drawer-note">选择会改变你看到的信息、承担的代价与他人对你的回应。</p></div>;
+  return <div className="character-drawer"><span className="eyebrow">CHARACTER · 行者</span><h2>{state.player.name}</h2><p>{originName(state.player.origin)} · 年十八 · {state.location} · 第一日{state.period}</p><div className="character-drawer-resources"><Meter label="生息" value={state.resources.life} max={12} tone="red" /><Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" /><Meter label="定力" value={state.resources.resolve} max={10} tone="blue" /></div><StatChips stats={state.stats} /><dl><div><dt>天性</dt><dd>{natureName(state.player.nature)}</dd></div><div><dt>缺陷</dt><dd>{flawName(state.player.flaw)}</dd></div><div><dt>当前状态</dt><dd>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</dd></div></dl><p className="drawer-note">选择会改变你看到的信息、承担的代价与他人对你的回应。</p></div>;
 }
 
 function CharacterCreator({ state, complete }: { state: GameState; complete: (d: CharacterDraft) => void }) {
@@ -424,8 +440,8 @@ function CharacterCreator({ state, complete }: { state: GameState; complete: (d:
   return <div className="creator"><span className="eyebrow">CHARACTER · 立身</span><h2>{titles[step]}</h2><p>差异会带来新的信息、选择与代价，而不只是数字增减。</p><div className="creator-options">{groups[step].map((x) => <button key={x.id} className={draft[keys[step]] === x.id ? "active" : ""} onClick={() => setDraft({ ...draft, [keys[step]]: x.id })}><b>{x.name}</b><span>{x.note}</span>{"bonus" in x && <small>{x.bonus}</small>}</button>)}</div>{step === 2 && <label className="name-field"><span>你的名字</span><input maxLength={8} value={draft.name === "无名之人" ? "" : draft.name} placeholder="无名之人" onChange={(e) => setDraft({ ...draft, name: e.target.value || "无名之人" })} /></label>}<div className="creator-footer"><button disabled={step === 0} onClick={() => setStep(step - 1)}>上一步</button><div>{[0, 1, 2].map((n) => <i className={n === step ? "active" : ""} key={n} />)}</div>{step < 2 ? <button className="ink-button" onClick={() => setStep(step + 1)}>下一步</button> : <button className="ink-button" onClick={() => complete(draft)}>立身入世</button>}</div></div>;
 }
 
-function SettingsPanel({ value, setValue }: { value: Settings; setValue: (s: Settings) => void }) {
-  return <div className="settings-panel game-settings"><span className="eyebrow">SETTINGS · 游戏</span><h2>游戏设置</h2><section className="settings-section"><h3>流程</h3><button className={`toggle ${value.autoSave ? "on" : ""}`} onClick={() => setValue({ ...value, autoSave: !value.autoSave })}><span>自动保存进度</span><i /></button><button className={`toggle ${value.haptics ? "on" : ""}`} onClick={() => setValue({ ...value, haptics: !value.haptics })}><span>触感反馈</span><i /></button></section><section className="settings-section"><h3>阅读</h3><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button></section><section className="settings-section"><h3>声音与表现</h3><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></section><p>当前为本地浏览器 Demo：账号、云存档、广告与支付只保留接口边界，尚不启用。</p></div>;
+function SettingsPanel({ value, setValue, onExit }: { value: Settings; setValue: (s: Settings) => void; onExit: () => void }) {
+  return <div className="settings-panel game-settings"><span className="eyebrow">SETTINGS · 游戏</span><h2>游戏设置</h2><section className="settings-section"><h3>流程</h3><button className={`toggle ${value.autoSave ? "on" : ""}`} onClick={() => setValue({ ...value, autoSave: !value.autoSave })}><span>自动保存进度</span><i /></button><button className={`toggle ${value.haptics ? "on" : ""}`} onClick={() => setValue({ ...value, haptics: !value.haptics })}><span>触感反馈</span><i /></button></section><section className="settings-section"><h3>阅读</h3><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button></section><section className="settings-section"><h3>声音与表现</h3><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></section><p>当前为本地浏览器 Demo：账号、云存档、广告与支付只保留接口边界，尚不启用。</p><button className="exit-main-button" onClick={onExit}>退出到主界面</button></div>;
 }
 
 function SavePanel({ state, setState, download, importNow, setNotice }: { state: GameState; setState: (s: GameState) => void; download: () => void; importNow: () => void; setNotice: (s: string) => void }) {
