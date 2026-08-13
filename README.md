@@ -10,8 +10,16 @@
 
 ## 管理入口
 
+- 开发前置规则：`AGENTS.md`
+- 完整开发规范：`docs/development/DEVELOPMENT_STANDARD.md`
+- Web 与移动端规范：`docs/development/WEB_MOBILE_STANDARD.md`
+- 微信小游戏迁移准备：`docs/development/WECHAT_MINIGAME_READINESS.md`
+- 开发与发布检查表：`docs/development/DEVELOPMENT_CHECKLIST.md`
+- 技术决策模板：`docs/development/ADR_TEMPLATE.md`
 - 修改记录：`CHANGELOG.md`
 - 版本号：`VERSION`
 - Git与发布规则：`VERSIONING.md`
 
-后续修改默认在本目录内进行。每次实质修改应形成修改日志和独立 Git 提交；发布版本应创建对应标签。
+后续修改默认在本目录内进行。任何开发工作开始前必须先阅读 `AGENTS.md`；每次实质修改应形成修改日志和独立 Git 提交，发布版本应创建对应标签并推送受控远程。
+
+> 当前仓库尚未配置 Git 远程。本地提交可以提供版本记录，但不能替代异地备份；配置远程并成功推送前，应将远程备份状态视为“未完成”。
