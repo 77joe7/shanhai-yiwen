@@ -109,18 +109,20 @@ export function GameShell() {
   return (
     <main className="game-shell mythic-shell">
       <header className="topbar">
-        <button className="menu-trigger" aria-label="打开行者档案" onClick={() => setOverlay("character")}>☷</button>
         <button className="brand" aria-label="返回卷册" onClick={() => selectPanel("story")}>
           <span className="brand-seal">异</span><span><strong>山海异闻录</strong><small>天地未定</small></span>
         </button>
+        <div className="chapter-marker"><span>卷一</span><strong>黑雨初落</strong><em>内容 v{blackRainContent.manifest.contentVersion}</em></div>
         <div className="top-actions">
-          <button onClick={() => setOverlay("character")} aria-label="打开行者档案">人</button>
+          <button onClick={() => setOverlay("help")} aria-label="帮助">?</button>
+          <button onClick={() => setOverlay("saves")} aria-label="存档">存</button>
+          <button onClick={() => setOverlay("settings")} aria-label="设置">设</button>
         </div>
       </header>
 
       <section className="desktop-grid">
-        <CharacterRail state={state} panel={panel} setPanel={selectPanel} onCreate={() => setOverlay("create")} onOpenDetails={() => setOverlay("character")} />
-        <section className={`reader reader-${panel}`}>
+        <CharacterRail state={state} onCreate={() => setOverlay("create")} onOpenDetails={() => setOverlay("character")} />
+        <section className="reader" aria-live="polite">
           <div className="reader-heading">
             <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
             <h1>{panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
@@ -128,6 +130,7 @@ export function GameShell() {
           </div>
           <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />
         </section>
+        <SideRail panel={panel} setPanel={selectPanel} state={state} />
       </section>
 
       <nav className="mobile-nav" aria-label="主要功能">
@@ -135,14 +138,14 @@ export function GameShell() {
       </nav>
 
       <div className="toast" role="status"><span />{notice}</div>
-      {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} selectPanel={selectPanel} />}
+      {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} />}
       {detail && <DetailCardModal card={detail} close={() => setDetail(null)} />}
       <input ref={importRef} hidden type="file" accept="application/json,.json" onChange={(e) => receiveImport(e.target.files?.[0])} />
     </main>
   );
 }
 
-function CharacterRail({ state, panel, setPanel, onCreate, onOpenDetails }: { state: GameState; panel: PanelId; setPanel: (panel: PanelId) => void; onCreate: () => void; onOpenDetails: () => void }) {
+function CharacterRail({ state, onCreate, onOpenDetails }: { state: GameState; onCreate: () => void; onOpenDetails: () => void }) {
   return <aside className="character-rail">
     <button className="character-profile-trigger" onClick={onOpenDetails} aria-label="打开角色详情">
       <div className="portrait"><div className="portrait-mist" /><span>{state.player.name.slice(0, 1)}</span></div>
@@ -157,12 +160,19 @@ function CharacterRail({ state, panel, setPanel, onCreate, onOpenDetails }: { st
     <div className="location-card"><span>当前所在</span><strong>{state.location}</strong><small>第一日 · {state.period}</small></div>
     <div className="traits"><span>缺陷</span><b>{flawName(state.player.flaw)}</b><small>经历相关危机后，可形成新的应对之道。</small></div>
     <div className="danger-status" aria-label="当前危险状态"><span>状态</span><b>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</b></div>
-    <nav className="drawer-nav" aria-label="卷内导航">{navItems.map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => setPanel(item.id)}><span>{item.icon}</span>{item.label}{item.id === "codex" && <small>{state.codexUnlocked.length}</small>}</button>)}</nav>
   </aside>;
 }
 
 function Meter({ label, value, max, tone }: { label: string; value: number; max: number; tone: string }) {
   return <div className="meter"><div><span>{label}</span><b>{value}<small>/{max}</small></b></div><i><em className={tone} style={{ width: `${Math.min(100, value / max * 100)}%` }} /></i></div>;
+}
+
+function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: PanelId) => void; state: GameState }) {
+  return <aside className="side-rail">
+    <nav>{navItems.map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => setPanel(item.id)}><span>{item.icon}</span>{item.label}<small>{item.id === "codex" ? state.codexUnlocked.length : ""}</small></button>)}</nav>
+    <div className="whisper"><span>天地异兆</span><strong>一日</strong><p>天上仍只有一轮太阳。</p></div>
+    <div className="reserved"><span>正式版预留</span><p>账号 · 云存档 · 平台能力</p><small>Demo 期间不启用、不占用叙事流程</small></div>
+  </aside>;
 }
 
 function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, selectPanel, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
@@ -242,31 +252,16 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
       return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{text}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {text}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{text}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{text}</p></article>}</div>;
     })}</div>
     <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
-    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; const actionType = intent === "speech" ? "说话" : "行动"; const unavailableReason = isTyping ? "剧情正在展开，请先等待或选择显示全文" : choice.disabledHint ?? "条件尚未满足"; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} aria-label={`${actionType}选项：${choice.label}。${available ? "可以选择" : unavailableReason}`} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${actionType}` : unavailableReason}</small></div><i aria-hidden="true">{available ? "→" : "—"}</i></button>; })}</div>
+    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>
     <div ref={transcriptEndRef} />
   </article>;
 }
 
 function MapPanel({ state }: { state: GameState }) {
   const places = [
-    { name: "杳湾", tag: "当前驻足", kind: "居所", x: 49, y: 48, text: "黑雨尚未落定，潮湿的木屋与无声的滩涂夹在赤水回湾之间。" },
-    { name: "北滩无名尸", tag: "剧情线索", kind: "尸骸", x: 27, y: 29, text: "滩地的水痕反复覆盖脚印。此处的异样仍待你在剧情中辨明。" },
-    { name: "东桑林", tag: "异象区域", kind: "扶桑", x: 72, y: 26, text: "焦黑的枝影在雨前伸展，林中所见将随卷内选择而改变。" },
-    { name: "旧盐井", tag: "尚待开启", kind: "深处", x: 68, y: 69, text: "井口以盐霜封住，尚未抵达的地方只保留模糊的轮廓。" },
+    { name: "杳湾", tag: "起点", x: 49, y: 48 }, { name: "北滩无名尸", tag: "线索", x: 27, y: 29 }, { name: "东桑林", tag: "异象", x: 72, y: 26 }, { name: "旧盐井", tag: "深处", x: 68, y: 69 },
   ];
-  const [selectedPlace, setSelectedPlace] = useState(() => places.find((place) => place.name === state.location)?.name ?? places[0].name);
-  const [zoom, setZoom] = useState(1);
-  const selected = places.find((place) => place.name === selectedPlace) ?? places[0];
-  return <section className="map-panel exploration-map" aria-label="黑雨舆图">
-    <div className="map-intro"><span>卷一 · 地势与线索</span><p>舆图记录已显形的地点与异象；行旅仍由剧情选择推进。</p></div>
-    <div className="map-canvas" style={{ "--map-zoom": zoom } as React.CSSProperties}>
-      <div className="map-ink-layer" aria-hidden="true"><i /><i /><i /></div>
-      <div className="map-marker-layer">{places.map((place) => <button key={place.name} type="button" className={`${place.name === state.location ? "current" : ""} ${place.name === selected.name ? "selected" : ""}`} style={{ left: `${place.x}%`, top: `${place.y}%` }} onClick={() => setSelectedPlace(place.name)} aria-pressed={place.name === selected.name}><i aria-hidden="true" /><b>{place.name}</b><small>{place.tag}</small></button>)}</div>
-      <div className="map-controls" aria-label="舆图缩放"><button type="button" onClick={() => setZoom((value) => Math.min(1.18, Number((value + .06).toFixed(2))))} aria-label="放大舆图">＋</button><button type="button" onClick={() => setZoom((value) => Math.max(.88, Number((value - .06).toFixed(2))))} aria-label="缩小舆图">－</button><button type="button" onClick={() => { setZoom(1); setSelectedPlace(state.location); }} aria-label="定位当前所在">◎</button></div>
-      <aside className="map-location-card" aria-live="polite"><small>{selected.kind} · {selected.tag}</small><h2>{selected.name}</h2><div className="brush-rule"><i /></div><p>{selected.text}</p><span>{selected.name === state.location ? "[ 当前所在 ]" : "[ 仅作记录 ]"}</span></aside>
-    </div>
-    <div className="legend"><span><i className="known" />当前所在</span><span><i />已记录线索</span><span><i className="locked-dot" />尚待剧情开启</span></div>
-  </section>;
+  return <div className="map-panel"><p>本章的行旅由剧情选择推进。舆图记录已经在故事中显形的地点与线索；当前所在：{state.location}。</p><div className="map-canvas">{places.map((p) => <button key={p.name} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.name !== state.location}><i /><b>{p.name}</b><small>{p.name === state.location ? "当前" : p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已抵达</span><span><i />剧情线索</span><span><i className="locked-dot" />尚待剧情开启</span></div></div>;
 }
 
 function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
@@ -334,9 +329,9 @@ function DetailCardModal({ card, close }: { card: DetailCard; close: () => void 
   return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{card.text}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
 }
 
-function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice, selectPanel }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void; selectPanel: (panel: PanelId) => void }) {
+function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
   return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}><section className="modal" role="dialog" aria-modal="true" aria-label="游戏弹窗"><button className="close" onClick={close}>×</button>
-    {type === "character" && <CharacterDrawer state={state} onNavigate={(panel) => { selectPanel(panel); close(); }} />}
+    {type === "character" && <CharacterDrawer state={state} />}
     {type === "create" && <CharacterCreator state={state} complete={(draft) => { const entered = enterCurrentNode(createInitialState(draft)); setState(entered.state); saveGame(entered.state); setNotice(entered.notes.join(" · ") || `${draft.name}已在天地间留下名字`); close(); }} />}
     {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} />}
     {type === "saves" && <SavePanel state={state} setState={setState} download={downloadSave} importNow={() => importRef.current?.click()} setNotice={setNotice} />}
@@ -344,8 +339,8 @@ function Modal({ type, close, state, setState, settings, setSettings, downloadSa
   </section></div>;
 }
 
-function CharacterDrawer({ state, onNavigate }: { state: GameState; onNavigate: (panel: PanelId) => void }) {
-  return <div className="character-drawer"><span className="eyebrow">CHARACTER · 行者</span><h2>{state.player.name}</h2><p>{originName(state.player.origin)} · 年十八 · {state.location} · 第一日{state.period}</p><div className="character-drawer-resources"><Meter label="生息" value={state.resources.life} max={12} tone="red" /><Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" /><Meter label="定力" value={state.resources.resolve} max={10} tone="blue" /></div><dl><div><dt>天性</dt><dd>{natureName(state.player.nature)}</dd></div><div><dt>缺陷</dt><dd>{flawName(state.player.flaw)}</dd></div><div><dt>当前状态</dt><dd>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</dd></div></dl><p className="drawer-note">选择会改变你看到的信息、承担的代价与他人对你的回应。</p><nav className="drawer-nav modal-drawer-nav" aria-label="卷内导航">{navItems.map((item) => <button key={item.id} onClick={() => onNavigate(item.id)}><span>{item.icon}</span>{item.label}{item.id === "codex" && <small>{state.codexUnlocked.length}</small>}</button>)}</nav></div>;
+function CharacterDrawer({ state }: { state: GameState }) {
+  return <div className="character-drawer"><span className="eyebrow">CHARACTER · 行者</span><h2>{state.player.name}</h2><p>{originName(state.player.origin)} · 年十八 · {state.location} · 第一日{state.period}</p><div className="character-drawer-resources"><Meter label="生息" value={state.resources.life} max={12} tone="red" /><Meter label="精力" value={state.resources.stamina} max={10} tone="ochre" /><Meter label="定力" value={state.resources.resolve} max={10} tone="blue" /></div><dl><div><dt>天性</dt><dd>{natureName(state.player.nature)}</dd></div><div><dt>缺陷</dt><dd>{flawName(state.player.flaw)}</dd></div><div><dt>当前状态</dt><dd>{Object.keys(state.flags ?? {}).some((key) => key.startsWith("status.")) ? "异兆缠身" : "暂无重伤"}</dd></div></dl><p className="drawer-note">选择会改变你看到的信息、承担的代价与他人对你的回应。</p></div>;
 }
 
 function CharacterCreator({ state, complete }: { state: GameState; complete: (d: CharacterDraft) => void }) {
