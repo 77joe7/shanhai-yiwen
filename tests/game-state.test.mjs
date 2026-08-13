@@ -28,13 +28,19 @@ test("browser storage is isolated behind the platform adapter", () => {
   assert.doesNotMatch(source, /localStorage/);
 });
 
-test("archive panels use category lists and reusable detail cards", () => {
+test("codex and inventory use distinct category and detail interfaces", () => {
   const gameShell = fs.readFileSync(new URL("../app/game/GameShell.tsx", import.meta.url), "utf8");
   const styles = fs.readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
   assert.match(gameShell, /function ArchiveBrowser/);
   assert.match(gameShell, /function DetailCardModal/);
   assert.match(gameShell, /<CodexPanel state=\{state\} openDetail=\{openDetail\} \/>/);
+  assert.match(gameShell, /多源见闻/);
+  assert.match(gameShell, /equipmentSlots/);
+  assert.match(gameShell, /副手／仪式手/);
   assert.match(styles, /\.archive-browser/);
+  assert.match(styles, /\.detail-backdrop \{ align-items: center/);
+  assert.match(styles, /\.detail-card \{ border-radius: 10px; \}/);
+  assert.match(styles, /\.equipment-rack/);
 });
 
 test("the application reads only the active chapter content package", () => {

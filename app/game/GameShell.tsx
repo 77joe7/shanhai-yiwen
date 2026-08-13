@@ -16,6 +16,7 @@ type DetailCard = {
   text: string;
   source: string;
   facts?: { label: string; value: string | number }[];
+  sections?: { label: string; text: string; locked?: boolean }[];
   action?: { label: string; run: () => void };
 };
 
@@ -290,15 +291,22 @@ function MapPanel({ state }: { state: GameState }) {
 }
 
 function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
-  const categoryNames: Record<string, string> = { event: "异象", person: "人物", item: "器物", material: "材料", beast: "异兽", place: "地理" };
+  const categoryNames: Record<string, string> = { event: "异象", person: "人物", item: "器物", material: "材料", beast: "异兽", place: "地理", document: "文书", tool: "器具" };
+  const layerNames: Record<string, string> = { first_sight: "初见", rumor: "传闻", evidence: "行证", insight: "推论", echo: "余响" };
   const categories = [...new Set(blackRainContent.codex.map((entry) => entry.category))];
   const [category, setCategory] = useState(categories[0]);
   const entries = blackRainContent.codex.filter((entry) => entry.category === category).filter((entry) => (state.codexLayers?.[entry.id]?.length ?? 0) > 0);
-  return <ArchiveBrowser label="山海志分类" categories={categories} categoryLabels={categoryNames} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类见闻尚未被记录。">
+  return <ArchiveBrowser label="山海志 · 见闻辨析" categories={categories} categoryLabels={categoryNames} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类见闻尚未被记录。">
     {entries.map((entry) => {
       const unlocked = new Set(state.codexLayers?.[entry.id] ?? []);
       const layer = entry.layers.filter((candidate) => unlocked.has(candidate.id)).at(-1) ?? entry.layers[0];
-      return <ArchiveRow key={entry.id} eyebrow={layer.sourceVoice} title={entry.title} note={`已获 ${unlocked.size}/${entry.layers.length} 层见闻`} onClick={() => openDetail({ eyebrow: `${categoryNames[entry.category] ?? entry.category} · ${layer.sourceVoice}`, title: entry.title, text: layer.text, source: `可信度：${layer.reliability}${layer.contradictions.length ? `；矛盾：${layer.contradictions.join(" / ")}` : ""}`, facts: [{ label: "已解锁层级", value: `${unlocked.size}/${entry.layers.length}` }, { label: "归类", value: categoryNames[entry.category] ?? entry.category }] })} />;
+      const contradictions = [...new Set(entry.layers.flatMap((candidate) => unlocked.has(candidate.id) ? candidate.contradictions : []))];
+      return <ArchiveRow key={entry.id} eyebrow={`${layerNames[layer.id] ?? layer.id} · ${layer.sourceVoice}`} title={entry.title} note={`认知 ${unlocked.size}/${entry.layers.length} 层${contradictions.length ? " · 有异说" : ""}`} onClick={() => openDetail({
+        eyebrow: `${categoryNames[entry.category] ?? entry.category} · 多源见闻`, title: entry.title, text: layer.text,
+        source: `当前记录来自：${layer.sourceVoice}；可信度：${layer.reliability}${contradictions.length ? `；待辨异说：${contradictions.join(" / ")}` : ""}`,
+        facts: [{ label: "认知层级", value: `${unlocked.size}/${entry.layers.length}` }, { label: "归类", value: categoryNames[entry.category] ?? entry.category }],
+        sections: entry.layers.map((candidate) => ({ label: `${layerNames[candidate.id] ?? candidate.id} · ${unlocked.has(candidate.id) ? candidate.sourceVoice : "待求证"}`, text: unlocked.has(candidate.id) ? candidate.text : "这一层见闻尚未获得；继续观察、求证或承担后果后，记录可能更新。", locked: !unlocked.has(candidate.id) })),
+      })} />;
     })}
   </ArchiveBrowser>;
 }
@@ -306,20 +314,20 @@ function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card
 function InventoryPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
   const categoryNames: Record<string, string> = { equipment: "装备", generic: "行旅", material: "材料", tool: "工具", clue: "线索", unique: "异物" };
   const genericEntries = Object.entries(state.itemQuantities ?? {}).filter(([id, quantity]) => id in genericItems && Number(quantity) > 0).map(([id, quantity]) => ({ id, name: genericItems[id], category: "generic", text: "出身携带的行旅物件。", quantity: Number(quantity) }));
-  const categories = ["equipment", ...(genericEntries.length ? ["generic"] : []), ...new Set(blackRainContent.items.map((item) => item.category))];
-  const [category, setCategory] = useState(categories[0]);
-  const equipmentSlots = ["主手", "衣具", "护符"];
-  const entries = category === "equipment"
-    ? state.equipment.map((name, index) => ({ id: `equipment-${index}`, name, category: equipmentSlots[index], text: "已装备在身的行旅器物，可在剧情节点中响应条件。", quantity: 1 }))
-    : category === "generic" ? genericEntries
+  const categories = [...(genericEntries.length ? ["generic"] : []), ...new Set(blackRainContent.items.map((item) => item.category))];
+  const [category, setCategory] = useState(categories[0] ?? "generic");
+  const equipmentSlots = [{ label: "主手", name: state.equipment[0] }, { label: "副手／仪式手", name: undefined }, { label: "衣甲", name: state.equipment[1] }, { label: "足具", name: undefined }, { label: "护符", name: state.equipment[2] }, { label: "工具", name: undefined }, { label: "随身信物", name: undefined }];
+  const entries = category === "generic" ? genericEntries
     : blackRainContent.items.filter((item) => Number(state.itemQuantities?.[item.id] ?? 0) > 0).filter((item) => item.category === category).map((item) => ({ ...item, quantity: Number(state.itemQuantities?.[item.id] ?? 0) }));
-  return <ArchiveBrowser label="行囊分类" categories={categories} categoryLabels={categoryNames} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类行囊尚未获得。">
+  return <section className="inventory-panel" aria-label="行囊"><section className="equipment-rack" aria-label="在身装备位"><div className="equipment-rack-heading"><small>在身 · 非仓库</small><h2>行装与可用手段</h2><p>装备、工具与信物会在合适的剧情条件下提供行动入口；未识别的物件只呈现可感知的线索。</p></div><div className="equipment-slots">{equipmentSlots.map((slot) => <button type="button" className={slot.name ? "equipped" : "empty"} key={slot.label} onClick={() => slot.name && openDetail({ eyebrow: `${slot.label} · 在身装备`, title: slot.name, text: "此物已随身携带。它的效用由剧情中的场景、认知与选择共同决定，而不是单独堆叠数值。", source: "装备位仅记录当前在身物；替换与消耗会随剧情状态更新。", facts: [{ label: "装备位", value: slot.label }, { label: "状态", value: "已携带" }] })} disabled={!slot.name}><small>{slot.label}</small><b>{slot.name ?? "未携带"}</b></button>)}</div></section><ArchiveBrowser label="行囊 · 随身物" categories={categories} categoryLabels={categoryNames} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类行囊尚未获得。">
     {entries.map((item) => <ArchiveRow key={item.id} eyebrow={category === "equipment" ? item.category : categoryNames[item.category] ?? item.category} title={item.name} note={`持有 ${item.quantity} 件`} onClick={() => {
       const content = itemById.get(item.id);
       const recognition = content?.recognitionStages[Math.max(0, Number(state.itemKnowledge?.[item.id] ?? 0) - 1)] ?? content?.recognitionStages[0];
-      openDetail({ eyebrow: `${category === "equipment" ? item.category : categoryNames[item.category] ?? item.category} · 行囊`, title: recognition?.displayName ?? item.name, text: recognition?.text ?? item.text, source: content ? `来源：${content.origin}` : category === "generic" ? "来源：角色出身" : "当前已装备。", facts: [{ label: "数量", value: item.quantity }, { label: "物性", value: content?.properties?.join(" · ") ?? "装备" }, { label: "稀有度", value: content?.rarity ?? "常见" }] });
+      const knownStage = Math.max(0, Number(state.itemKnowledge?.[item.id] ?? 0));
+      const stageNames = ["未辨", "初见", "传闻", "行证", "推论"];
+      openDetail({ eyebrow: `${categoryNames[item.category] ?? item.category} · 随身物`, title: recognition?.displayName ?? item.name, text: recognition?.text ?? item.text, source: content ? `来源：${content.origin}` : "来源：角色出身", facts: [{ label: "数量", value: item.quantity }, { label: "认知", value: stageNames[knownStage] ?? "已识别" }, { label: "物性", value: content?.properties?.join(" · ") ?? "行旅物件" }], sections: content ? [{ label: "当前用途", text: recognition?.effects?.length ? "此物已显出可在特定场景中触发的用法；满足条件时，剧情会给出相应选择。" : "尚未显出明确用途；可继续观察、询问或用于相关场景。" }, { label: "叙事关联", text: content.storyHooks.length ? `可能关联：${content.storyHooks.join(" · ")}` : "尚未记录明确的后续关联。" }] : [{ label: "携带缘由", text: "这是角色出身携带的行旅物件；它不以固定数值替代剧情中的判断。" }] });
     }} />)}
-  </ArchiveBrowser>;
+  </ArchiveBrowser></section>;
 }
 
 function PeoplePanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
@@ -351,7 +359,7 @@ function MorePanel({ state, openOverlay, openPeople }: { state: GameState; openO
 }
 
 function DetailCardModal({ card, close }: { card: DetailCard; close: () => void }) {
-  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{card.text}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
+  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{card.text}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}{card.sections && <div className="detail-sections">{card.sections.map((section) => <section className={section.locked ? "locked" : ""} key={section.label}><small>{section.label}</small><p>{section.text}</p></section>)}</div>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
 }
 
 function Modal({ type, close, state, setState, settings, setSettings, downloadSave, importRef, setNotice }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState; setState: (s: GameState) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void }) {
