@@ -122,7 +122,7 @@ export function GameShell() {
 
       <section className="desktop-grid">
         <CharacterRail state={state} onCreate={() => setOverlay("create")} onOpenDetails={() => setOverlay("character")} />
-        <section className="reader" aria-live="polite">
+        <section className="reader">
           <div className="reader-heading">
             <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
             <h1>{panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
@@ -252,7 +252,7 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
       return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{text}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {text}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{text}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{text}</p></article>}</div>;
     })}</div>
     <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
-    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>
+    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; const actionType = intent === "speech" ? "说话" : "行动"; const unavailableReason = isTyping ? "剧情正在展开，请先等待或选择显示全文" : choice.disabledHint ?? "条件尚未满足"; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} aria-label={`${actionType}选项：${choice.label}。${available ? "可以选择" : unavailableReason}`} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${actionType}` : unavailableReason}</small></div><i aria-hidden="true">{available ? "→" : "—"}</i></button>; })}</div>
     <div ref={transcriptEndRef} />
   </article>;
 }
