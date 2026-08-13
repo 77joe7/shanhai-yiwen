@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createInitialState, flaws, hydrateBlackRainState, natures, origins } from "./gameData";
 import { blackRainContent, genericItems, itemById } from "./blackRainContent";
-import { chooseStory, currentStoryNode, displayCharacterName, enterCurrentNode, interpolate, visibleBlocks, visibleChoices } from "./storyRuntime";
+import { choiceIntent, chooseStory, currentStoryNode, displayCharacterName, enterCurrentNode, interpolate, visibleBlocks, visibleChoices } from "./storyRuntime";
 import { exportSave, importSave, loadGame, readSettings, saveGame, writeSettings } from "./storage";
 import { browserPlatform } from "./platform";
 import type { CharacterDraft, GameState, OverlayId, PanelId, Settings } from "./types";
@@ -119,7 +119,7 @@ export function GameShell() {
             <h1>{panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
             <div className="brush-rule"><i /></div>
           </div>
-          <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} openOverlay={setOverlay} openDetail={setDetail} />
+          <Panel panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} reducedMotion={settings.reducedMotion} openOverlay={setOverlay} openDetail={setDetail} />
         </section>
         <SideRail panel={panel} setPanel={setPanel} state={state} />
       </section>
@@ -163,8 +163,8 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
   </aside>;
 }
 
-function Panel({ panel, state, mutate, advanceStory, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
-  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} openCreate={() => openOverlay("create")} />;
+function Panel({ panel, state, mutate, advanceStory, reducedMotion, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; reducedMotion: boolean; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
+  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} />;
   if (panel === "map") return <MapPanel state={state} />;
   if (panel === "codex") return <CodexPanel state={state} openDetail={openDetail} />;
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
@@ -172,15 +172,26 @@ function Panel({ panel, state, mutate, advanceStory, openOverlay, openDetail }: 
   return <MorePanel state={state} openOverlay={openOverlay} />;
 }
 
-function StoryPanel({ state, advanceStory, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; openCreate: () => void }) {
+function StoryPanel({ state, advanceStory, reducedMotion, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; reducedMotion: boolean; openCreate: () => void }) {
   const node = currentStoryNode(state);
   const blocks = visibleBlocks(state);
   const choices = visibleChoices(state).map((choice) => state.created ? choice : { ...choice, enabled: false, disabledHint: "请先建立角色，再以出身进入故事。" });
+  const latestNodeRef = useRef<HTMLDivElement>(null);
+  const previousNodeId = useRef(node.id);
+  const history = state.storyHistory?.length ? state.storyHistory : blocks.map((block, index) => ({ id: `${node.id}:fallback:${index}`, nodeId: node.id, kind: block.type === "dialogue" ? "npc-dialogue" as const : block.type === "system" ? "system" as const : "narration" as const, text: interpolate(state, block.text), speaker: block.speaker }));
+  const latestStart = history.findIndex((entry) => entry.nodeId === node.id);
+
+  useEffect(() => {
+    if (previousNodeId.current === node.id) return;
+    previousNodeId.current = node.id;
+    window.requestAnimationFrame(() => latestNodeRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" }));
+  }, [node.id, reducedMotion]);
+
   return <article className="story-panel story-runtime">
     <header className="story-kicker"><span>{node.chapter.replace("ACT", "第")}</span><small>{node.presentation === "prologue" ? "卷首" : "剧情节点"}</small></header>
     {!state.created && <div className="story-create"><b>以你的出身进入杳湾</b><button className="ink-button" onClick={openCreate}>建立角色</button></div>}
-    <div className="story-blocks">{blocks.map((block, index) => block.type === "dialogue" ? <blockquote key={`${node.id}-${index}`}><cite>{displayCharacterName(block.speaker ?? "")}</cite><p>{interpolate(state, block.text)}</p></blockquote> : block.type === "system" ? <aside key={`${node.id}-${index}`} className="story-system">{interpolate(state, block.text)}</aside> : <p key={`${node.id}-${index}`} className={block.type === "conditional" ? "story-echo" : ""}>{interpolate(state, block.text)}</p>)}</div>
-    <div className="choices story-choices">{choices.map((choice, index) => <button key={choice.id} className={!choice.enabled ? "locked" : ""} disabled={!choice.enabled} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `线索：${choice.sourceTag}` : choice.enabled ? "推进故事" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{choice.enabled ? "→" : "—"}</i></button>)}</div>
+    <div className="story-blocks story-transcript">{history.map((entry, index) => <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className="story-message npc-dialogue"><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{entry.text}</p></blockquote> : entry.kind === "system" ? <aside className="story-message story-system">异兆记录 · {entry.text}</aside> : entry.kind === "narration" ? <p className="story-message narration">{entry.text}</p> : <article className={`story-message player-message ${entry.kind}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{entry.text}</p></article>}</div>)}</div>
+    <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); return <button key={choice.id} className={`${intent}-choice ${!choice.enabled ? "locked" : ""}`} disabled={!choice.enabled} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `线索：${choice.sourceTag}` : choice.enabled ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{choice.enabled ? "→" : "—"}</i></button>; })}</div>
   </article>;
 }
 

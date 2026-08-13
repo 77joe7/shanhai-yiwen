@@ -1,5 +1,5 @@
 import { blackRainContent, characterById, itemById, originById, statLabels } from "./blackRainContent";
-import type { GameState } from "./types";
+import type { GameState, StoryHistoryEntry } from "./types";
 
 type Predicate = { type: string; [key: string]: unknown };
 type Effect = { type: string; [key: string]: unknown };
@@ -58,6 +58,26 @@ export function visibleChoices(state: GameState) {
     ...choice,
     enabled: (choice.enabledWhen ?? []).every((rule) => testPredicate(state, rule)),
   }));
+}
+
+export function choiceIntent(label: string) {
+  return /^(说|问|告诉|回答|承认|解释|答应|拒绝|劝|喊|请|对|向|低声|高声)/.test(label) ? "speech" : "action";
+}
+
+function nodeHistory(state: GameState) {
+  const node = currentStoryNode(state);
+  return visibleBlocks(state).map((block, index): StoryHistoryEntry => ({
+    id: `${node.id}:block:${index}`,
+    nodeId: node.id,
+    kind: block.type === "dialogue" ? "npc-dialogue" : block.type === "system" ? "system" : "narration",
+    text: interpolate(state, block.text),
+    speaker: block.speaker,
+  }));
+}
+
+function choiceHistory(nodeId: string, choice: ReturnType<typeof visibleChoices>[number]): StoryHistoryEntry {
+  const intent = choiceIntent(choice.label);
+  return { id: `${nodeId}:choice:${choice.id}`, nodeId, kind: intent === "speech" ? "player-speech" : "player-action", text: choice.label };
 }
 
 function effectLabel(effect: Effect) {
@@ -129,14 +149,15 @@ export function enterCurrentNode(state: GameState) {
   const node = currentStoryNode(state);
   if (state.visitedNodes?.includes(node.id)) return { state, notes: [] as string[] };
   const entered = applyEffects(state, node.onEnterEffects as Effect[] | undefined);
-  return { state: { ...entered.state, visitedNodes: [...(entered.state.visitedNodes ?? []), node.id] }, notes: entered.notes };
+  return { state: { ...entered.state, visitedNodes: [...(entered.state.visitedNodes ?? []), node.id], storyHistory: [...(entered.state.storyHistory ?? []), ...nodeHistory(entered.state)] }, notes: entered.notes };
 }
 
 export function chooseStory(state: GameState, choiceId: string) {
   const node = currentStoryNode(state);
   const choice = visibleChoices(state).find((value) => value.id === choiceId);
   if (!choice || !choice.enabled) return { state, notes: [choice?.disabledHint ?? "此选择的条件尚未满足。"] };
-  const afterCosts = applyEffects(state, choice.costs as Effect[] | undefined);
+  const selected = { ...state, storyHistory: [...(state.storyHistory ?? []), choiceHistory(node.id, choice)] };
+  const afterCosts = applyEffects(selected, choice.costs as Effect[] | undefined);
   const afterChoice = applyEffects(afterCosts.state, choice.effects as Effect[] | undefined);
   const afterExit = applyEffects(afterChoice.state, node.onExitEffects as Effect[] | undefined);
   const arrived = enterCurrentNode({ ...afterExit.state, currentNodeId: choice.next });

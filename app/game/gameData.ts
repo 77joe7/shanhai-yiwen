@@ -56,6 +56,7 @@ export function createInitialState(draft?: CharacterDraft): GameState {
     visitedNodes: [],
     activeQuests: [],
     completedQuests: [],
+    storyHistory: [],
     log: ["第一卷《黑雨》内容包已载入。", "黑雨尚未落下。"],
   };
 }
@@ -77,5 +78,6 @@ export function hydrateBlackRainState(state: GameState): GameState {
     visitedNodes: state.visitedNodes ?? [],
     activeQuests: state.activeQuests ?? [],
     completedQuests: state.completedQuests ?? [],
+    storyHistory: state.storyHistory ?? [],
   };
 }

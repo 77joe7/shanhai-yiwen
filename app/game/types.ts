@@ -20,6 +20,16 @@ export interface Settings {
   ambientVolume: number;
 }
 
+export type StoryMessageKind = "narration" | "npc-dialogue" | "system" | "player-action" | "player-speech";
+
+export interface StoryHistoryEntry {
+  id: string;
+  nodeId: string;
+  kind: StoryMessageKind;
+  text: string;
+  speaker?: string;
+}
+
 export interface GameState {
   schemaVersion: 1;
   contentVersion: string;
@@ -44,6 +54,7 @@ export interface GameState {
   visitedNodes?: string[];
   activeQuests?: string[];
   completedQuests?: string[];
+  storyHistory?: StoryHistoryEntry[];
   log: string[];
   lastSavedAt?: string;
 }
