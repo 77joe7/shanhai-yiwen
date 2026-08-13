@@ -269,7 +269,9 @@
       "category": "place",
       "subjectId": "LOC-REDRIVER-BED",
       "title": "退水河床",
-      "layers": [{"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N013"}], "sourceVoice": "玩家见闻", "text": "赤水停流后露出的河床，悬鱼、失物与不同朝向的牙齿一同暴露。", "reliability": "observed", "contradictions": []}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.river_returns_by_debt"}], "sourceVoice": "河床行证", "text": "河并非随机退还失物；它按未偿责任排列物件，令旧井、沉船与村中借债成为同一条可追踪的线。", "reliability": "verified", "contradictions": ["自然倒流／责任回流"]}],
+      "layers": [{"id": "first_sight", "unlockRules": [{"type": "visitedNode", "nodeId": "V01-C01-N013"}], "sourceVoice": "玩家见闻", "text": "赤水停流后露出的河床，悬鱼、失物与不同朝向的牙齿一同暴露。", "reliability": "observed", "contradictions": []}, {"id": "evidence", "unlockRules": [{"type": "flagTrue", "key": "clue.river_returns_by_debt"}], "sourceVoice": "河床行证", "text": "河并非随机退还失物；它按未偿责任排列物件，令旧井、沉船与村中借债成为同一条可追踪的线。", "reliability": "verified", "contradictions": ["自然倒流／责任回流"]}]
+    },
+    {
       "id": "CX-V01-PLACE-RETURNEDBOAT",
       "category": "place",
       "subjectId": "LOC-RETURNED-BOAT",
