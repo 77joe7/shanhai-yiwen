@@ -290,11 +290,6 @@ export function GameShell() {
             <SideRail panel={panel} setPanel={selectPanel} state={state} />
           </section>
 
-          <form className={`command-dock ${panel === "story" && state.created ? "is-visible" : ""}`} onSubmit={(event) => { event.preventDefault(); submitCommand(); }} aria-label="当前意图栏">
-            <label><span aria-hidden="true">&gt;</span><input value={command} onChange={(event) => setCommand(event.target.value)} maxLength={40} placeholder="写下意图，或直接选择下方行动…" aria-label="输入当前意图" /></label>
-            <button type="submit">记入</button>
-          </form>
-
           <nav className="mobile-nav" aria-label="主要功能">
             {navItems.filter((item) => item.id !== "people").map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
           </nav>
@@ -486,6 +481,7 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
     {isTyping ? <div className="story-choices-pending" aria-hidden="true">……</div> : <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>}
     <div ref={transcriptEndRef} />
     <footer className="story-safe-area" aria-label="当前情境与提醒">
+      <span className="safe-header">情境 · 安全区</span>
       <span className="safe-label">所在</span>
       <span className="safe-location">{state.location}</span>
       <span className="safe-divider">·</span>
