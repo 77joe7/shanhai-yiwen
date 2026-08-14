@@ -10,6 +10,7 @@
 - 重新部署第一卷《黑雨》v4.1.0（464 节点）：内容包更新后重新构建静态导出并部署 EdgeOne（V1.4 对齐的 5 页导航、撤回、branchClass、高亮跳转、稀有度标签、幕名修正等代码改动同步上线）。部署前打基线 tag `deploy-v4.1.0-20260814`（指向 commit `89451b3`），剧情内容包完整快照另冻结于 `剧情/.../备份/2026-08-14_v4.1.0/`（zip，含 10 个 JSON + 正文 + 资料）。已验证线上 HTTP 200、`contentVersion:"4.1.0"`。
 - 信息栏（情境安全区）从底部移至标题栏正下方：`StorySafeArea` 的 DOM 位置从 `desktop-grid` 之后移到 `topbar` 之后；`.story-safe-area` 由 `position:fixed; bottom:0` 改为 `top:64px`（移动端 `top:calc(64px + env(safe-area-inset-top))`），`border-bottom:0` 改 `border-top:0`。配套调整：`.mythic-shell .reader` 顶部 padding 42px→106px、`.side-rail` 顶部 padding 30px→94px（避让信息栏）、移动端 `.mobile-status-strip` 加 `margin-top:72px`、移动端 `.reader` 底部 padding `calc(196px+…)`→`calc(104px+…)`（底部信息栏移除后不再需要大留白）。滚动定位（视口 2/3 / reducedMotion 1/3）不变。
 - 导航重构与版面优化（三项）：① 底部导航由「志异/故交/行游/舆图/命录」改为「志异/命录/行游(居中)/行囊/舆图」——命录提前到第 2 位，行囊独立为第 4 大功能页（`PanelId` 移除 `people`、新增 `inventory`，`hlPanel` 同步：人物→命录、物件/线索→行囊）；命录页子标签由「行囊/未竟之事」改为「故交/命轨」（故交渲染 PeoplePanel、命轨渲染 QuestLog）。② 功能页标题去重：`reader-heading`（eyebrow/h1/brush-rule/退出按钮）仅在 story 页渲染，非剧情页由面板内部标题唯一呈现；MapPanel、FatePanel 补统一 `archive-toolbar` 标题（「舆图」「命录」）。③ 顶部大框：`.mythic-shell .topbar` 去掉 `border-bottom`，与信息栏 `.story-safe-area` 连续合并为统一深色大框。
+- 信息栏仅「行游」剧情界面可见：`StorySafeArea` 渲染条件加 `panel === "story"`；`main` 加 `data-panel={panel}`，用 `[data-panel="story"]` 选择器让避让 padding（`.reader` 顶部 106px、`.side-rail` 顶部 94px、移动端 `.mobile-status-strip` margin-top 72px）仅在剧情页生效，非剧情页恢复默认（reader 42px / side-rail 30px / 状态条 0）。信息栏成为剧情界面专属模块。
 
 ### 新增
 
@@ -37,6 +38,8 @@
 - 分支剧情系统类型检查修复：`types.ts` 对 `src/content/contracts` 的相对导入路径由错误两级（`../../src/content/contracts`，指向不存在的 `app/src/content/contracts`）改正为三级（`../../../src/content/contracts`）；并补齐 `types.ts` 对 `Predicate/Effect/StoryBlock` 的「本地导入 + 再导出」与 `engine.ts` 对 `BranchState` 等类型再导出，使 `engine.ts`/`scripts/verify-branching.ts` 的类型引用可在 `tsc` 下解析；`tsconfig.json` 开启 `allowImportingTsExtensions`（已 `noEmit`，仅影响类型检查）以放行验证脚本的 `.ts` 扩展名导入。修复后 `tsc --noEmit` 全量错误回落至基线 19（分支系统零新增错误），`scripts/verify-branching.ts` 五组校验仍全绿。
 
 ### 文档
+
+- `黑雨_文学扩写版.md` 同步至 v4.3.0：幕结构由旧六幕制（尸体与证词/桑林与盐井/无日之夜/让谁先知道）重排为 v4.3.0 五幕制（雨至/三影/倒河/无日之夜/赤日之兆），场景归属按内容包 chapter 校正（场景二「第一夜的议事」归入第一幕 A1-MID、场景三「北滩有尸」归入第二幕 A2-SHORE 等）；8 处失效接入节点更新为当前有效 id（第一二幕改用 `A1-*`/`A2-*` 分支节点，第三四五幕保留 `V01-C01-N*` 并标注幕归属）；场景五补 v4.3.0 新增昼盐命令签发者伏笔（N315 撕角文书呼应）；卷首标注版本同步说明。8,755 汉字（原 8,475 增加约 280 字）。
 
 - 新增第一卷全量审查报告 `docs/black-rain-v1-review.md`：程序化图遍历（选项归一化比对 / Tarjan 环检测 / 从终局 N023 反向可达分析 / 入边与章节归属核查）+ 逐幕人工叙事核对。结论：主线骨架（一二幕分支 + 三-五幕总分 + 六卷终）逻辑自洽；**P0 严重问题 13 项**——N296 跨卷回环（第五幕选项误指第二幕卷终 A2-END-SALT，剧情时间线倒退）、10 个回访死区枢纽 + 2 个中间枢纽（N286/N281/N291/N306/N311/N315/N320/N325/N335/N340 及 N053-G11-G21/G31，进入后无出口回主线，玩家被困无法到达卷终）、build 校验缺反向可达检查；**P1 重要 2 项**——N227 三选项文案归一化后完全重复（仅（一）（二）（三）差异，命中用户排查第 b 类）、22 个回访链节点 chapter 标签错乱（七日记跨标 ACT1-5 等）；**P2 建议 5 项**——第三幕节奏偏平、金乌/第十日/昼盐命令签发者/赤金箭嫁祸者 4 项第二卷伏笔未埋、卷终单选项无再决策空间、HUB 标题机器痕迹、N053/N022 标题近似。每项均附修改动作与可复现脚本口径（修复后反向可达应覆盖 ≥316 节点、死区归零）。
 
