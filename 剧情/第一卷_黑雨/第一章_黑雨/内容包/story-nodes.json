@@ -6,2162 +6,6 @@
   "subtitle": "赤水有尸，天上少了一轮太阳",
   "nodes": [
     {
-      "id": "V01-C01-N001",
-      "chapter": "ACT1_RAIN_ARRIVES",
-      "title": "雨在落下以前",
-      "presentation": "prologue",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "后来杳湾的人把那一年叫作黑雨元年，仿佛世界从前没有年岁，只有庄稼熟过多少回、赤水淹死过多少人。事实上，雨落下以前，村里刚丢了一只白羊，砚伯还在晒他那本被虫吃空了半边的历书，渡口的宿沙为一枚贝币同商旅争吵。每个人都忙着一件足以占满一生的小事，因此谁也没有抬头。"
-        },
-        {
-          "type": "narration",
-          "text": "你是杳湾的{{player.originName}}，此刻正{{player.originScene}}。第一滴雨落在手背上，凉得像井底捞出的铜。它没有立刻散开，而是伏在皮肤上，映出一个比正午更亮的天空；那天空中没有太阳，只有十个尚未睁开的红点。你眨眼时，水珠已经黑了。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“别擦。鸡沾了这个，刚才把自己的影子啄死了。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“你看我做什么？先看天。平常下雨，羊往家跑；今天它们全朝东边跪。”"
-        },
-        {
-          "type": "narration",
-          "text": "说话的是牧羊女阿禾。她抱着那只失踪的白羊，羊还活着，四蹄却各踩着一小片夜。远处有人敲起避雨的木梆，第一声从村东传来，第二声却从赤水底下回答。"
-        }
-      ],
-      "onEnterEffects": [
-        {
-          "type": "setWorldVar",
-          "key": "weather.black_rain.day",
-          "value": 1
-        },
-        {
-          "type": "startQuest",
-          "questId": "Q-V01-MAIN-001"
-        },
-        {
-          "type": "unlockCodex",
-          "codexId": "CX-V01-EVENT-BLACKRAIN",
-          "layer": "first_sight"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N001-A",
-          "label": "护送阿禾和白羊回村",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-AHE",
-              "axis": "trust",
-              "delta": 2
-            }
-          ],
-          "next": "V01-C01-N002"
-        },
-        {
-          "id": "V01-C01-N001-B",
-          "label": "赶往正在进水的粮仓",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "village.granary.saved",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N003"
-        },
-        {
-          "id": "V01-C01-N001-C",
-          "label": "跑向赤水渡口",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "trust",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N004"
-        },
-        {
-          "id": "V01-C01-N001-D",
-          "label": "【灵识】观察雨滴里的十个红点",
-          "sourceTag": "灵识",
-          "visibleWhen": [
-            {
-              "type": "playerStatAtLeast",
-              "stat": "spirit",
-              "value": 4
-            }
-          ],
-          "effects": [
-            {
-              "type": "addKnowledge",
-              "subjectId": "CX-V01-EVENT-BLACKRAIN",
-              "amount": 1
-            },
-            {
-              "type": "addStatus",
-              "statusId": "ST-RainMarked",
-              "duration": "ACT1"
-            }
-          ],
-          "next": "V01-C01-N005"
-        }
-      ],
-      "tags": [
-        "main",
-        "black_rain",
-        "origin_hook"
-      ]
-    },
-    {
-      "id": "V01-C01-N002",
-      "chapter": "ACT1_RAIN_ARRIVES",
-      "title": "羊有四片夜",
-      "presentation": "scene",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "回村的路不过三百步，黑雨却把它下得比冬天还长。阿禾不肯把羊放下。羊腹沉重，像吞了一块石头，每走几步便回头望东边。它的四道影子并不随身体移动，留在泥里慢慢挣扎。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“它叫小满。我娘说，叫了名字的东西就不能随便死。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“他们若叫我把它扔下，我就问：粮仓也有名字，怎么没人舍得扔？”"
-        },
-        {
-          "type": "narration",
-          "text": "你们经过桑树时，小满突然咬住一片叶。叶背粘着细小的金灰，雨浇不灭，反而发出晒热被褥的气味。你用布裹住它，掌心立刻浮出一圈温暖的光，像有人在很远的地方记住了你。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“东边的桑林昨晚也亮过。不是火。火不会一边烧，一边长叶子。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“我数过鸟巢。以前九只，昨夜十只。你若告诉砚伯，他会说小孩子数错；你若跟我去数，他就得换个谎。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "addItem",
-          "itemId": "IT-V01-MAT-EMBERLEAF",
-          "quantity": 1
-        },
-        {
-          "type": "unlockCodex",
-          "codexId": "CX-V01-MAT-EMBERLEAF",
-          "layer": "first_sight"
-        },
-        {
-          "type": "setFlag",
-          "key": "clue.east_mulberry_glow",
-          "value": true
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N002-A",
-          "label": "替小满洗去蹄上的黑泥",
-          "costs": [
-            {
-              "type": "time",
-              "minutes": 10
-            }
-          ],
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "npc.goat_xiaoman.alive",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-AHE",
-              "axis": "debt",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N006"
-        },
-        {
-          "id": "V01-C01-N002-B",
-          "label": "保留黑泥作证",
-          "effects": [
-            {
-              "type": "addItem",
-              "itemId": "IT-V01-MAT-SHADOWMUD",
-              "quantity": 1
-            }
-          ],
-          "next": "V01-C01-N006"
-        }
-      ],
-      "tags": [
-        "main",
-        "first_material",
-        "ahe"
-      ]
-    },
-    {
-      "id": "V01-C01-N003",
-      "chapter": "ACT1_RAIN_ARRIVES",
-      "title": "湿粮",
-      "presentation": "scene",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "粮仓的茅顶没有漏，水却从谷粒内部往外渗。青芽和两个老人把麻袋拖到高处，袋缝里流出的不是水，是黑得发亮的细线。你割开最重的一袋，看见粟米都长出了透明的根，根须一致指向东方。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“别丢。毒死人的粮也是粮。先记住它怎么毒，再决定给谁吃。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“你去门外看影子。我留在这里看粮。两样都不对时，别急着挑更吓人的那样信。”"
-        },
-        {
-          "type": "narration",
-          "text": "你们用陶片和干沙隔开湿粮。黑线碰到陶土便蜷缩，发出婴儿梦呓般的轻响。直到最后一袋搬完，你才发现自己的影子留在仓门外，没有跟进来。青芽拿灯照了照你脚下，什么也没说，只把一枚烧裂的陶哨塞进你手里。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“拿着。哨子破了以后，吹不响，却能听出哪里是空的。人也一样——越不肯说的地方，回声越大。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "addItem",
-          "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
-          "quantity": 1
-        },
-        {
-          "type": "setWorldVar",
-          "key": "village.food_supply",
-          "value": 3
-        },
-        {
-          "type": "changeRelation",
-          "npcId": "NPC-QINGYA",
-          "axis": "respect",
-          "delta": 1
-        },
-        {
-          "type": "setFlag",
-          "key": "clue.roots_point_east",
-          "value": true
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N003-A",
-          "label": "去祠屋参加议事",
-          "next": "V01-C01-N006"
-        }
-      ],
-      "tags": [
-        "main",
-        "granary",
-        "world_echo_seed"
-      ]
-    },
-    {
-      "id": "V01-C01-N004",
-      "chapter": "ACT1_RAIN_ARRIVES",
-      "title": "倒着到来的船",
-      "presentation": "scene",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "赤水仍向东流，浪花却一朵接一朵退回上游。宿沙站在齐腰深的水里，用缆绳套住一条倒退而来的空船。船头朝东，船却从东边来，舱中铺满温热的红沙。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“三十年了，河带走的东西从不肯还。今日它大方，怕是要收利。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“你听见船底那三下没有？第一下求岸，第二下报姓名，第三下叫活人别替死人作主。”"
-        },
-        {
-          "type": "narration",
-          "text": "你拉住缆绳时，船底传来三下叩击。宿沙的手立刻松了半寸。那是渡工求岸的旧信号，而这条船半年前沉在下游，连同他的长子一起。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“若里面真是他，我便开舱。若不是他，我更该开。你替我记着：是我开的。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“还有一件事先说在前头：这船替北边运过东西。若舱里除了我儿还有货，你先问货是谁的，再问我儿怎么死。”"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N004-A",
-          "label": "拉船上岸，暂不启舱",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.returned_boat",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "trust",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N006"
-        },
-        {
-          "id": "V01-C01-N004-B",
-          "label": "割断缆绳，让船退回东边",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "river.returned_boat_released",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "trust",
-              "delta": -1
-            }
-          ],
-          "next": "V01-C01-N006"
-        }
-      ],
-      "tags": [
-        "main",
-        "river",
-        "susha"
-      ]
-    },
-    {
-      "id": "V01-C01-N005",
-      "chapter": "ACT1_RAIN_ARRIVES",
-      "title": "被雨看见",
-      "presentation": "vision",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你没有擦去雨。十个红点在水珠里逐一睁开，其中九个照着你，最后一个照着你身后的空地。那空地先长出一棵通天的桑，再悬起一具胸口有箭的人。人的三道影子分别跪着、奔跑、张弓，动作互不相认。"
-        },
-        {
-          "type": "narration",
-          "text": "幻象只存在一息。醒来时阿禾正用袖口替你擦手。她的袖子被雨烧出十个小洞。你的皮肤没有伤，却多了一圈淡金色细纹，像一只没有瞳孔的眼。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“现在它认识你了。别怕，认识不等于喜欢。村里人都认识我，也没几个喜欢我。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“你刚才喊了一个名字，不是自己的。那十个红点里有一个应了。你还记得那个音吗？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“不记得就别编。大人一害怕，最爱拿编出来的话填空；填久了，连空原来是什么样都忘了。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "clue.ten_red_points",
-          "value": true
-        },
-        {
-          "type": "addKnowledge",
-          "subjectId": "CX-V01-EVENT-BLACKRAIN",
-          "amount": 1
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N005-A",
-          "label": "带阿禾回村",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-AHE",
-              "axis": "trust",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N006"
-        }
-      ],
-      "tags": [
-        "main",
-        "vision",
-        "foreshadowing"
-      ]
-    },
-    {
-      "id": "V01-C01-N006",
-      "chapter": "ACT1_RAIN_ARRIVES",
-      "title": "第一夜的议事",
-      "presentation": "dialogue",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "祠屋里挤着四十七个人，祖灵牌被挪去堵漏。砚伯坚持说这是祖宗第一次替活人挡雨，因此不算不敬。缄婆坐在火塘边，往火里撒盐；盐没有炸响，像雪一样融进炭中。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“历上说今日晴。历若没错，就是天错了。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“天不会错。写天的人会。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“你若知道，便直说是谁写错。别拿一句玄话让全村陪你猜。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“我知道谁写错了，却不知道你们肯不肯听。知道和肯听之间，正好够埋一口井。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "when": [
-            {
-              "type": "worldVarEquals",
-              "key": "village.granary.saved",
-              "value": true
-            }
-          ],
-          "text": "“粮保住了十二日的量。是他先去搬的。现在若要逃，先说清那十二日给谁。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "when": [
-            {
-              "type": "worldVarEquals",
-              "key": "npc.goat_xiaoman.alive",
-              "value": true
-            }
-          ],
-          "text": "“小满没死。它蹄下的黑泥还在动。你们若肯少吵一句，我就把它带来。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "when": [
-            {
-              "type": "flagTrue",
-              "key": "clue.returned_boat"
-            }
-          ],
-          "text": "“河退回来一条死了半年的船。诸位若还只想封井，就先解释船为何从下游倒着上岸。”"
-        },
-        {
-          "type": "narration",
-          "text": "村人争论该封井、宰牲、逃往南坡还是继续等雨停。你讲述自己所见。有人相信，有人不信，还有人只计算每一种说法会让自家少分多少粮。正在这时，屋外的木梆响了第三遍。守夜人隗青推门进来，雨水沿他的蓑衣滴落，在地上形成一个人形。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“北滩有东西。像人。胸口插着箭。它有三道影子。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“活的还是死的？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“这正是我不敢替它回答的事。箭在长，它没呼吸，可三道影子一路跟我回了村。”"
-        }
-      ],
-      "onEnterEffects": [
-        {
-          "type": "completeObjective",
-          "questId": "Q-V01-MAIN-001",
-          "objectiveId": "reach_council"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N006-A",
-          "label": "立即前往北滩",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "village.council_choice",
-              "value": "investigate_now"
-            }
-          ],
-      "next": "V01-C01-N182"
-        },
-        {
-          "id": "V01-C01-N006-B",
-          "label": "先组织封井与接雨禁令",
-          "costs": [
-            {
-              "type": "time",
-              "minutes": 20
-            }
-          ],
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "village.water_sickness",
-              "value": 0
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-YANBO",
-              "axis": "respect",
-              "delta": 1
-            }
-          ],
-      "next": "V01-C01-N180"
-        },
-        {
-          "id": "V01-C01-N006-C",
-          "label": "先让每户报人数与牲畜",
-          "costs": [
-            {
-              "type": "time",
-              "minutes": 15
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.missing_people_counted",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-JIANPO",
-              "axis": "respect",
-              "delta": 1
-            }
-          ],
-      "next": "V01-C01-N181"
-        }
-      ],
-      "tags": [
-        "main",
-        "council",
-        "first_relation"
-      ]
-    },
-    {
-      "id": "V01-C01-N007",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "北滩有尸",
-      "presentation": "reveal",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "北滩原是一片白石。黑雨把石头染得像未干的墨，只有滩心那个人仍是白的。他仰面躺在浅水中，长发没有漂动，衣袍既不像麻也不像丝，仿佛由正午最亮的那一刻织成。胸口贯着一支赤金箭，箭尾没有羽。"
-        },
-        {
-          "type": "narration",
-          "text": "火把在他身边照出三道影子。一道属于少年，蜷着膝；一道属于长翼的鸟，喙抵东方；最后一道没有头，双手仍在结一个未完的印。尸体本身却没有影子。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“我没碰。不是因为敬神，是因为箭在往外长。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“三道影子，是三个人？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“若是三个人，地上就该有三具尸。它们是三句没说完的话。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“你又知道？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“不知道。我只比砚伯少装作知道。”"
-        },
-        {
-          "type": "narration",
-          "text": "你俯身看去。箭杆上每隔一息便生出一圈细小的金纹，如树记年轮。最新的一圈，恰在你靠近时合拢。尸体的左手攥着焦黑桑叶，右手腕系着一块写有陌生日名的骨牌。黑雨落到他的眼皮上，全部滑向东方。"
-        }
-      ],
-      "onEnterEffects": [
-        {
-          "type": "unlockCodex",
-          "codexId": "CX-V01-PERSON-THREESHADOW",
-          "layer": "first_sight"
-        },
-        {
-          "type": "startQuest",
-          "questId": "Q-V01-MAIN-002"
-        },
-        {
-          "type": "setWorldVar",
-          "key": "corpse.integrity",
-          "value": 100
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N007-G",
-          "label": "在不触碰尸体的前提下，尝试让三道影子各自回应一次",
-          "effects": [{"type": "setFlag", "key": "north_beach.shadows_invited", "value": true}],
-          "next": "V01-C01-N250"
-        },
-        {
-          "id": "V01-C01-N007-A",
-          "label": "检查赤金箭",
-          "visibleWhen": [
-            {
-              "type": "flagFalse",
-              "key": "clue.arrow_name_yi"
-            }
-          ],
-          "next": "V01-C01-N008"
-        },
-        {
-          "id": "V01-C01-N007-B",
-          "label": "检查三道影子",
-          "visibleWhen": [
-            {
-              "type": "flagFalse",
-              "key": "clue.shadow_memory_ten"
-            }
-          ],
-          "next": "V01-C01-N009"
-        },
-        {
-          "id": "V01-C01-N007-C",
-          "label": "检查骨牌与桑叶",
-          "visibleWhen": [
-            {
-              "type": "flagFalse",
-              "key": "clue.bone_token_fusang"
-            }
-          ],
-          "next": "V01-C01-N010"
-        },
-        {
-          "id": "V01-C01-N007-D",
-          "label": "先封锁北滩，不触碰尸体",
-          "visibleWhen": [
-            {
-              "type": "allFlagsFalse",
-              "keys": [
-                "clue.arrow_name_yi",
-                "clue.shadow_memory_ten",
-                "clue.bone_token_fusang"
-              ]
-            }
-          ],
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "corpse.contamination",
-              "value": 0
-            }
-          ],
-          "next": "V01-C01-N011"
-        },
-        {
-          "id": "V01-C01-N007-E",
-          "label": "结束调查，等待天象变化",
-          "visibleWhen": [
-            {
-              "type": "anyFlagTrue",
-              "keys": [
-                "clue.arrow_name_yi",
-                "clue.shadow_memory_ten",
-                "clue.bone_token_fusang"
-              ]
-            }
-          ],
-          "next": "V01-C01-N012"
-        },
-        {
-          "id": "V01-C01-N007-F",
-          "label": "和隗青巡查白灰圈外的夜路",
-          "visibleWhen": [
-            {
-              "type": "flagFalse",
-              "key": "side.nightwatch.done"
-            }
-          ],
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-001"
-            }
-          ],
-          "next": "V01-C01-N029"
-        }
-      ],
-      "tags": [
-        "main",
-        "corpse",
-        "investigation_hub"
-      ]
-    },
-    {
-      "id": "V01-C01-N008",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "尚未射出的箭",
-      "presentation": "investigation",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你没有拔箭，只用陶哨的裂口贴近箭杆。金属内部传来弓弦震动，先是一声，随后又有九声从极远处依次应和。第十声响完，尸体胸腔里有东西轻轻翻身。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“箭伤四周没有血。不是死后插的，是这具身体从箭上长出来的。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“箭上刻了什么？”"
-        },
-        {
-          "type": "narration",
-          "text": "箭镞朝西，伤口里的灼痕却向东延伸。这意味着箭由西方射来，死者却在中箭以后继续朝东方燃烧。箭杆近镞处刻着一个极浅的‘羿’字，笔画末端崭新，仿佛刻字的人还没来得及把刀抬起。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“羿？那个传闻里能射穿山脊的人？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“传闻只说他会射，没说他射过这具尸。把能做的事当成做过的事，是给凶手省路。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“那就把字拓下来。明日若箭上换了名字，至少今日的罪名还有证人。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "clue.arrow_name_yi",
-          "value": true
-        },
-        {
-          "type": "addKnowledge",
-          "subjectId": "CX-V01-ITEM-REDARROW",
-          "amount": 1
-        },
-        {
-          "type": "completeObjective",
-          "questId": "Q-V01-MAIN-002",
-          "objectiveId": "inspect_one_clue"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N008-A",
-          "label": "继续检查其他线索",
-          "next": "V01-C01-N007"
-        },
-        {
-          "id": "V01-C01-N008-B",
-          "label": "尝试拓下箭杆铭文",
-          "costs": [
-            {
-              "type": "itemDurability",
-              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
-              "amount": 1
-            }
-          ],
-          "effects": [
-            {
-              "type": "addItem",
-              "itemId": "IT-V01-CLUE-ARROWRUBBING",
-              "quantity": 1
-            },
-            {
-              "type": "changeWorldVar",
-              "key": "corpse.integrity",
-              "delta": -5
-            }
-          ],
-          "next": "V01-C01-N007"
-        }
-      ],
-      "tags": [
-        "main",
-        "clue",
-        "arrow"
-      ]
-    },
-    {
-      "id": "V01-C01-N009",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "影子各有旧事",
-      "presentation": "investigation",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你绕尸体走了一圈，三道影子始终停在原处。少年影子的手指沾着河泥，鸟影的羽尖嵌有盐粒，无头影子的袖中则落下一点金灰。影子不是光造成的，它们更像三段被迫留在地上的证词。"
-        },
-        {
-          "type": "narration",
-          "text": "当你把自己的手叠在少年影上，一段不属于你的记忆涌来：有人在高桑之巅数兄弟，数到第九便不敢再数；远处一个女人驾着六龙之车，反复告诫他们轮流照临人间。记忆中的第十个位置一直空着。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“影子不会撒谎，因为它连自己是谁都不知道。人会替它撒。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“我看见九个兄弟。你们看见几个？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“九个。第十处空着。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“空着不等于没有。也可能有人专门把它空出来，好让你相信少了一个。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“那尸体是第十个？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“你问得太快。它也可能是来告诉我们：第十个还没死。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "clue.shadow_memory_ten",
-          "value": true
-        },
-        {
-          "type": "unlockCodex",
-          "codexId": "CX-V01-PERSON-THREESHADOW",
-          "layer": "rumor"
-        },
-        {
-          "type": "completeObjective",
-          "questId": "Q-V01-MAIN-002",
-          "objectiveId": "inspect_one_clue"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N009-A",
-          "label": "松开影子，继续调查",
-          "next": "V01-C01-N007"
-        },
-        {
-          "id": "V01-C01-N009-B",
-          "label": "【心志】追问空缺的第十个位置",
-          "sourceTag": "心志",
-          "enabledWhen": [
-            {
-              "type": "playerStatAtLeast",
-              "stat": "will",
-              "value": 4
-            }
-          ],
-          "disabledHint": "你能感觉到记忆在排斥追问。",
-          "costs": [
-            {
-              "type": "resource",
-              "resource": "stress",
-              "amount": 2
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.shadow_says_not_dead",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N007"
-        }
-      ],
-      "tags": [
-        "main",
-        "clue",
-        "shadow_memory"
-      ]
-    },
-    {
-      "id": "V01-C01-N010",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "没有写完的日名",
-      "presentation": "investigation",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "骨牌一面画桑，一面写日名。那字你不认得，却知道应该怎样读，像婴儿天生会寻找乳汁。读音抵达舌尖时，黑雨突然加重，周围所有人同时忘记自己方才说过的话。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“别念。名字是门，念出声就是替里面的人开。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“方才你还说天错了。如今一块骨牌就能让你闭嘴，看来天不如名字吓人。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“我怕的不是名字，是念完以后我们会把什么忘掉。刚才谁先说要封井？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“没人说过。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“说过。正因为你们都不记得，才证明别再念。”"
-        },
-        {
-          "type": "narration",
-          "text": "焦叶与阿禾在路上拾到的金灰气味相同。两片残叶拼在一起，叶脉组成一幅极简的水路：赤水向东，越盐泽，过无潮海，止于一棵托日的桑。地图末端被人用指甲划去，留下十道平行伤痕。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“路线过旧盐井。尸体不是碰巧落在杳湾，它沿着我们挖出来的路来的。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "clue.bone_token_fusang",
-          "value": true
-        },
-        {
-          "type": "addItem",
-          "itemId": "IT-V01-CLUE-DAYTOKEN",
-          "quantity": 1
-        },
-        {
-          "type": "completeObjective",
-          "questId": "Q-V01-MAIN-002",
-          "objectiveId": "inspect_one_clue"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N010-A",
-          "label": "收起骨牌，继续调查",
-          "next": "V01-C01-N007"
-        },
-        {
-          "id": "V01-C01-N010-B",
-          "label": "【无名之人】念出那个名字",
-          "sourceTag": "无名之人",
-          "visibleWhen": [
-            {
-              "type": "playerOriginIs",
-              "origin": "nameless"
-            }
-          ],
-          "irreversible": true,
-          "effects": [
-            {
-              "type": "addStatus",
-              "statusId": "ST-NameBorrowed",
-              "duration": "VOLUME"
-            },
-            {
-              "type": "setFlag",
-              "key": "clue.true_day_name_heard",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N007"
-        }
-      ],
-      "tags": [
-        "main",
-        "clue",
-        "fusang"
-      ]
-    },
-    {
-      "id": "V01-C01-N011",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "把未知留在原地",
-      "presentation": "scene",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你让隗青插下火把，沿北滩撒一圈白灰。没有人靠近，尸体的秘密便暂时完整；代价是秘密也得以自由生长。天亮前，杳湾已有七种说法：死者是落水的神、九黎的细作、被雷劈白的商人、羿失手射下的星、赤水长出的儿子、村人共同做的梦，以及一个专门来替大家承担灾祸的陌生人。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“先不碰是对的。没有证据时，克制也是一种证据。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“你封得住手，封不住嘴。明日它就会有七个名字，每个名字后面都跟着一群想从它身上得好处的人。”"
-        },
-        {
-          "type": "narration",
-          "text": "第七种说法最受欢迎。人们已经开始往封锁线外放粟米和旧衣。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“他们说供它吃饱，雨就会停。要赶走吗？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“先记下谁来。众人一旦希望尸体替他们受苦，便会恨任何试图查明尸体身份的人。下一次送来的就未必只是粟米。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setWorldVar",
-          "key": "village.corpse_cult",
-          "value": 1
-        },
-        {
-          "type": "startQuest",
-          "questId": "Q-V01-SIDE-003"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N011-A",
-          "label": "听取村人的七种说法",
-          "next": "V01-C01-N029"
-        }
-      ],
-      "tags": [
-        "main",
-        "rumor",
-        "world_state"
-      ]
-    },
-    {
-      "id": "V01-C01-N029",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "白灰圈以外",
-      "presentation": "exploration_hub",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "白灰圈画到村口便断了。圈内轮流看守尸体，圈外的雨把杳湾分成一间间不相认的黑屋：粮仓里有东西磨牙，渡口有船叩舱，祠屋后有人端粥朝北滩走。隗青把灯罩压低，灯焰缩成一颗黄豆。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“我不是请你逞能。巡夜三条规矩：听不懂的话别替它答；看见熟人先看脚；真要跑，跑到有人能看见的地方。你选路，我跟。”"
-        },
-        {
-          "type": "system",
-          "text": "夜巡会推进时间。未处理的地点不会消失，但会留下可追溯的后果；可随时回北滩推进主线。"
-        }
-      ],
-      "onEnterEffects": [
-        {
-          "type": "setWorldVar",
-          "key": "weather.black_rain.day",
-          "value": 2
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N029-H",
-          "label": "召开白灰圈外的公开问询，先让每个目击者把话说完",
-          "effects": [
-            {"type": "setFlag", "key": "north_beach.public_hearing", "value": true},
-            {"type": "changeRelation", "npcId": "NPC-WEIQING", "axis": "trust", "delta": 1}
-          ],
-          "next": "V01-C01-N189"
-        },
-        {
-          "id": "V01-C01-N029-A",
-          "label": "查看白灰圈外不断增加的供碗",
-          "next": "V01-C01-N030"
-        },
-        {
-          "id": "V01-C01-N029-B",
-          "label": "沿白灰线巡查丢失的影子",
-          "next": "V01-C01-N031"
-        },
-        {
-          "id": "V01-C01-N029-C",
-          "label": "去粮仓查黑粟的磨牙声",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-004"
-            }
-          ],
-          "next": "V01-C01-N033"
-        },
-        {
-          "id": "V01-C01-N029-D",
-          "label": "去渡口听沉船的三响",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-002"
-            }
-          ],
-          "next": "V01-C01-N035"
-        },
-        {
-          "id": "V01-C01-N029-E",
-          "label": "结束夜巡，回北滩等第二个月亮",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "side.nightwatch.done",
-              "value": true
-            },
-            {
-              "type": "completeQuest",
-              "questId": "Q-V01-SIDE-001"
-            }
-          ],
-          "next": "V01-C01-N012"
-        },
-        {
-          "id": "V01-C01-N029-F",
-          "label": "沿村井逐户确认黑雨留下的病人与失物",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-009"
-            }
-          ],
-          "next": "V01-C01-N078"
-        }
-      ],
-      "tags": [
-        "side",
-        "exploration_hub",
-        "nightwatch",
-        "revisit"
-      ]
-    },
-    {
-      "id": "V01-C01-N030",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "给谁吃的粥",
-      "presentation": "micro_encounter",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "供碗从第一只排到第十三只，粥由稠到稀。碗边压着红线、断齿和孩子的虎头鞋。抱婴儿的妇人蹲在末尾，把自己的粥倒进泥里；泥中立刻伸出一条细黑的舌头。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“她白日说孩子病了，夜里却给尸体添饭。可她自己的碗是空的。我没碰她——问清楚会让人放心，也会让全村知道她家断粮。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-AHE",
-          "text": "“那不是给尸体。给饿的人留一碗，饿的人就会信明天还有东西吃。你们大人把同一只碗叫祭品，省得承认有人没饭。”"
-        },
-        {
-          "type": "narration",
-          "text": "碗底浮着半粒会蠕动的黑粟，触到白灰便缩成清水。妇人把孩子抱得更紧，等你决定这点秘密该归谁。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N030-A",
-          "label": "记录供碗与黑粟，匿名交给青芽",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.offerings_are_hunger",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-QINGYA",
-              "axis": "respect",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N029"
-        },
-        {
-          "id": "V01-C01-N030-B",
-          "label": "当场撤掉供碗，要求众人回屋",
-          "effects": [
-            {
-              "type": "changeWorldVar",
-              "key": "village.corpse_cult",
-              "delta": -1
-            },
-            {
-              "type": "changeWorldVar",
-              "key": "village.water_sickness",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N029"
-        },
-        {
-          "id": "V01-C01-N030-C",
-          "label": "用白灰试验黑粟的反应",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.black_millet_fears_salt",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        }
-      ],
-      "tags": [
-        "side",
-        "hunger",
-        "choice_consequence"
-      ]
-    },
-    {
-      "id": "V01-C01-N031",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "影子先回家",
-      "presentation": "micro_encounter",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "染坊的门紧闭。门外蹲着三道湿影，像三只狗贴住门槛；门内是孩子的喘息与药草苦味。罗娘不敢开门：她男人夜里寻药回来时，影子先到了。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“我守了七年夜，见过偷谷的、偷人的、偷神像金漆的。今夜头一回看见有人把自己的影子锁在门外。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“药在我手里。真等到天亮，门里门外谁对谁错都没用。”"
-        },
-        {
-          "type": "narration",
-          "text": "影子听见‘药’字，同时按住门。雨水在灰线前凝成三枚小脚印，脚尖齐齐朝北滩。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N031-A",
-          "label": "用滞影泥把影子固定在门外",
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-MAT-SHADOWMUD",
-              "quantity": 1
-            }
-          ],
-          "disabledHint": "需要能暂时固定影迹的材料。",
-          "effects": [
-            {
-              "type": "removeItem",
-              "itemId": "IT-V01-MAT-SHADOWMUD",
-              "quantity": 1
-            },
-            {
-              "type": "setFlag",
-              "key": "side.dyer_family_saved",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N032"
-        },
-        {
-          "id": "V01-C01-N031-B",
-          "label": "【灵识】分辨影子是否记得主人的步态",
-          "sourceTag": "灵识",
-          "enabledWhen": [
-            {
-              "type": "playerStatAtLeast",
-              "stat": "spirit",
-              "value": 4
-            }
-          ],
-          "disabledHint": "雨中的影迹太乱，无法靠肉眼判定。",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.shadows_follow_habit",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N032"
-        },
-        {
-          "id": "V01-C01-N031-C",
-          "label": "让隗青守门，先从窗缝递药",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-WEIQING",
-              "axis": "trust",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N032"
-        }
-      ],
-      "tags": [
-        "side",
-        "knowledge_combat",
-        "shadow"
-      ]
-    },
-    {
-      "id": "V01-C01-N032",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "守夜人的灯",
-      "presentation": "character_scene",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "药终究递进了屋。隗青背对门站着，直到孩子的哭声重新有力，才把灯举高。他的手一直按着腰刀，却没有拔。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“我以前以为守夜，就是把坏东西挡在门外。后来才知道，门里的人也会害怕得像坏东西。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“我爹死那年，村里说他喝多了跌进河。我知道不是。他守着一条不能过的船，最后连影子都没回来。我没本事查，只能把每一夜守得比他长。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“别替我编英勇。记成：有人没敢开门，有人还是把药递了进去。这样就够。”"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "side.weqing_confided",
-          "value": true
-        },
-        {
-          "type": "changeRelation",
-          "npcId": "NPC-WEIQING",
-          "axis": "trust",
-          "delta": 2
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N032-A",
-          "label": "答应只记录亲眼所见",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "player.keeps_witness_record",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        },
-        {
-          "id": "V01-C01-N032-B",
-          "label": "追问那条不能过的船",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.weqing_father_boat",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        }
-      ],
-      "tags": [
-        "side",
-        "npc_arc",
-        "weqing"
-      ]
-    },
-    {
-      "id": "V01-C01-N033",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "会磨牙的粮仓",
-      "presentation": "exploration",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "粮仓门闩由外扣着，里面却有极轻的磨牙声。青芽把耳朵贴到门板，听很久，才用炭笔在掌心写：不是鼠。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“鼠找粮。里面这个挑籽，专挑被雨浸黑的，像替自己筛一碗更好的饭。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“我能一把火烧了。十二日粮变十二日灰，村里不会怕它，也会饿得很公平。别问该不该烧，先进去看它要什么。”"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N033-A",
-          "label": "用裂陶哨确认粮堆里的空腔",
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
-              "quantity": 1
-            }
-          ],
-          "disabledHint": "需要能辨认空腔走向的工具。",
-          "next": "V01-C01-N034"
-        },
-        {
-          "id": "V01-C01-N033-B",
-          "label": "从屋顶放出湿气，再进入粮仓",
-          "costs": [
-            {
-              "type": "time",
-              "minutes": 20
-            }
-          ],
-          "effects": [
-            {
-              "type": "changeWorldVar",
-              "key": "village.food_supply",
-              "delta": -1
-            }
-          ],
-          "next": "V01-C01-N034"
-        },
-        {
-          "id": "V01-C01-N033-C",
-          "label": "封门标记风险，暂缓调查",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "granary.sealed_before_truth",
-              "value": true
-            },
-            {
-              "type": "completeQuest",
-              "questId": "Q-V01-SIDE-004"
-            }
-          ],
-          "next": "V01-C01-N029"
-        }
-      ],
-      "tags": [
-        "side",
-        "material",
-        "granary"
-      ]
-    },
-    {
-      "id": "V01-C01-N034",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "黑粟在数人",
-      "presentation": "puzzle",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "粮堆中央空出一条只能侧身通过的洞，洞壁由根须编成。根须碰过脚踝，像在清点人数。尽头蹲着无眼灰鼠，透明肚皮里有十七粒发芽黑粟，每粒旁都粘着一根头发。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-QINGYA",
-          "text": "“它不是吃粮，是替粮记号。旧年荒的时候，死人少一口，活人多一口。如今粮替我们记账，倒也公道得叫人恶心。”"
-        },
-        {
-          "type": "narration",
-          "text": "灰鼠闻到扶桑烬，肚中黑粟排成一线，指向北坡旧盐井；其中一粒逆线爬向阿禾家羊圈。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N034-A",
-          "label": "留下灰鼠，追踪它筛出的黑粟",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.black_millet_tracks_hunger",
-              "value": true
-            },
-            {
-              "type": "setWorldVar",
-              "key": "granary.mouse_alive",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        },
-        {
-          "id": "V01-C01-N034-B",
-          "label": "以白灰隔开黑粟与好粮",
-          "enabledWhen": [
-            {
-              "type": "flagTrue",
-              "key": "clue.black_millet_fears_salt"
-            }
-          ],
-          "disabledHint": "你尚未确认黑粟对什么有反应。",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "village.food_supply",
-              "value": 3
-            },
-            {
-              "type": "setFlag",
-              "key": "granary.black_millet_isolated",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        },
-        {
-          "id": "V01-C01-N034-C",
-          "label": "烧掉灰鼠与受染粮",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "village.food_supply",
-              "value": 1
-            },
-            {
-              "type": "setFlag",
-              "key": "granary.evidence_burned",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "completeQuest",
-          "questId": "Q-V01-SIDE-004"
-        }
-      ],
-      "tags": [
-        "side",
-        "puzzle",
-        "knowledge",
-        "world_echo"
-      ]
-    },
-    {
-      "id": "V01-C01-N035",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "三响不是敲门",
-      "presentation": "dungeon_entry",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "渡口没有水声，只有沉船隔雾叩舱：一长、两短，停一息，再来一遍。宿沙坐在缆桩旁磨一把钝刀，刀刃已薄得像纸。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“这是渡工回岸信号。第一声报活，第二声报货，第三声报债。船里若真是我儿，他会先报债，因为他觉得欠我的比欠命大。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“我不求你替我开门。只要你站在外头，万一出来的不是他，替我记得是我先松的缆。”"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N035-A",
-          "label": "随宿沙登船，从正门进入腹舱",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "trust",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N036"
-        },
-        {
-          "id": "V01-C01-N035-B",
-          "label": "沿船底影迹寻找暗舱",
-          "visibleWhen": [
-            {
-              "type": "flagTrue",
-              "key": "clue.shadows_follow_habit"
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "boat.shadow_route_known",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N036"
-        },
-        {
-          "id": "V01-C01-N035-C",
-          "label": "暂不登船，重新系紧缆绳",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "boat.entry_delayed",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N029"
-        }
-      ],
-      "tags": [
-        "side",
-        "dungeon",
-        "susha",
-        "river"
-      ]
-    },
-    {
-      "id": "V01-C01-N036",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "倒船腹舱",
-      "presentation": "dungeon_hub",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "踏进舱门，船向上游倾斜。明明搁在泥滩，舱内水却从脚边流向屋顶。每扇门贴着潮湿货单，日期从明日倒数到半年前；最深处有人用指节敲同样的三响。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“船在倒走，话也会倒走。听见‘别开’，别急着关门；那可能是他死前最后一句，也可能是活着时第一句。”"
-        },
-        {
-          "type": "system",
-          "text": "副本规则：处理一扇舱门，河水便倒流一刻钟。可调查、带证据撤退，或在风险过高时返回渡口。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N036-F",
-          "label": "在进入腹舱前，召集宿沙、黎苇与砚伯核验一份从未记全的船货单",
-          "effects": [{"type": "setFlag", "key": "boat.manifest_hearing_opened", "value": true}],
-          "next": "V01-C01-N264"
-        },
-        {
-          "id": "V01-C01-N036-A",
-          "label": "检查写着昨日水位的舱门",
-          "next": "V01-C01-N037"
-        },
-        {
-          "id": "V01-C01-N036-B",
-          "label": "检查盖有北方蜡印的货单门",
-          "next": "V01-C01-N038"
-        },
-        {
-          "id": "V01-C01-N036-C",
-          "label": "循三响前往最深处",
-          "next": "V01-C01-N039"
-        },
-        {
-          "id": "V01-C01-N036-D",
-          "label": "带现有线索撤回渡口",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "boat.retreat_with_evidence",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N040"
-        },
-        {
-          "id": "V01-C01-N036-E",
-          "label": "把三道门的线索叠在一起，寻找腹舱更深处",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-014"
-            }
-          ],
-          "next": "V01-C01-N100"
-        }
-      ],
-      "tags": [
-        "side",
-        "small_dungeon",
-        "multi_solution"
-      ]
-    },
-    {
-      "id": "V01-C01-N037",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "门一：昨日水位",
-      "presentation": "dungeon_room",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "门后是一段倒置河岸。你们踩在水面下的天空，头顶漂着半年前的渡口。宿沙的儿子站在旧船头，把木箱交给蒙面人；他回头望来，嘴唇先动，声音却从三个月后传来。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“他没收钱。看清没有？他把自己的渡牌塞给那人。这不是走私的手势，是求人带东西过关。可箱里是什么，还不能替他洗干净。”"
-        },
-        {
-          "type": "narration",
-          "text": "木箱裂开一道缝，渗出白盐和孩子写满歪字的木片。水位猛地翻转，旧日的宿沙在岸上大喊，姓氏却被河水吞掉。"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "clue.susha_son_carried_children_records",
-          "value": true
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N037-A",
-          "label": "记下渡牌编号，返回腹舱",
-          "next": "V01-C01-N036"
-        },
-        {
-          "id": "V01-C01-N037-B",
-          "label": "以囚雨芦收存一滴倒流水",
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-MAT-RAINREED",
-              "quantity": 1
-            }
-          ],
-          "disabledHint": "需要能保存逆流水势的容器。",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.boat_water_preserved",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N036"
-        }
-      ],
-      "tags": [
-        "side",
-        "dungeon_room",
-        "evidence"
-      ]
-    },
-    {
-      "id": "V01-C01-N038",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "门二：货单没有货名",
-      "presentation": "dungeon_room",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "蜡印门后堆满货单。每张都写着重量、路线和损耗，唯独货名被刮得发白。宿沙擦过纸面，指尖渗血；被刮掉的字从掌纹浮起：昼盐、梦羽、童声、无名。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“北边的人最会算。人不叫人，叫损耗；孩子不叫孩子，叫一斗昼盐省下的灯油。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JILI",
-          "text": "“你凭倒流货单给北方定罪？若是真的，我也想知道是谁用我的印。印不是主人，正如船不是船夫。”"
-        },
-        {
-          "type": "narration",
-          "text": "季狸的声音不在舱内，却从每张纸背后传来。最底一张单据盖着尚未铸出的真印，收货地写作：杳湾旧井以下。"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "clue.north_trade_used_unborn_seal",
-          "value": true
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N038-A",
-          "label": "带走一张完整货单",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "item.north_manifest_kept",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N036"
-        },
-        {
-          "id": "V01-C01-N038-B",
-          "label": "把货单浸进黑雨，验证字迹",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "clue.manifest_survives_rain",
-              "value": true
-            },
-            {
-              "type": "changeWorldVar",
-              "key": "corpse.contamination",
-              "delta": 2
-            }
-          ],
-          "next": "V01-C01-N036"
-        }
-      ],
-      "tags": [
-        "side",
-        "dungeon_room",
-        "north"
-      ]
-    },
-    {
-      "id": "V01-C01-N039",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "门三：报债的人",
-      "presentation": "dungeon_climax",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "最深处的门半开。滴水的青年坐在里面，面目被水纹折得看不真切，胸前挂着渡牌。他每叩一下舱板，水面便浮出一个杳湾人的名字；第三下浮出的却是宿沙自己。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“别叫我爹。你若是我儿，就把没说的话说完；你若不是，就别借他的脸讨债。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-THREESHADOW",
-          "text": "“他不是你的儿子。他是你儿子没能送到岸的话。话沉得太久，便借了人的脸。”"
-        },
-        {
-          "type": "narration",
-          "text": "青年摊开裂木牌：井下缺一口白天，北方要十个孩子的梦。船若回不来，把名册交给能承受恨的人。宿沙的刀掉进水里，没有声音。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“我承受得住恨。可我不知道该恨谁：写名册的、运名册的、收名册的，还是只会骂他不肯回家的我。”"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N039-A",
-          "label": "让宿沙收下木牌，带回村中公开",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "susha.son_record_public",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "trust",
-              "delta": 2
-            }
-          ],
-          "next": "V01-C01-N040"
-        },
-        {
-          "id": "V01-C01-N039-B",
-          "label": "请求水中人把木牌留在船里，暂不决定",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "susha.son_record_deferred",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "respect",
-              "delta": -1
-            }
-          ],
-          "next": "V01-C01-N040"
-        },
-        {
-          "id": "V01-C01-N039-C",
-          "label": "【言契】承诺替名册寻找每个名字的归处",
-          "sourceTag": "言契",
-          "enabledWhen": [
-            {
-              "type": "playerStatAtLeast",
-              "stat": "speech",
-              "value": 4
-            }
-          ],
-          "disabledHint": "你还没有足够的立场替那些名字承诺。",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "player.oath_names_to_shore",
-              "value": true
-            },
-            {
-              "type": "setWorldVar",
-              "key": "river.flow",
-              "value": "stalled"
-            }
-          ],
-          "next": "V01-C01-N040"
-        }
-      ],
-      "tags": [
-        "side",
-        "dungeon_climax",
-        "susha_arc"
-      ]
-    },
-    {
-      "id": "V01-C01-N040",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "船离开河床",
-      "presentation": "dungeon_resolution",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "退出腹舱时，船不再倾斜，安静搁在泥滩上，像终于承认沉没的旧器物。宿沙把薄刀插回鞘，河面起了细纹，水却仍不知道该往哪边走。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-SUSHA",
-          "text": "“我还没原谅他。原谅不是把人从水里捞出来就算完。但我知道该去找谁问债。旧盐井的暗渠通船底，你们下井时带上这段缆绳；它受过倒流，记得怎么回来。”"
-        },
-        {
-          "type": "system",
-          "text": "副本完成：倒船腹舱。获得的证词会改变季狸、宿沙与旧盐井的对话；未调查的房间可在河流倒转前回访。"
-        }
-      ],
-      "onExitEffects": [
-        {
-          "type": "setFlag",
-          "key": "side.boat_dungeon_completed",
-          "value": true
-        },
-        {
-          "type": "completeQuest",
-          "questId": "Q-V01-SIDE-002"
-        },
-        {
-          "type": "unlockCodex",
-          "codexId": "CX-V01-PLACE-DAYSALTWELL",
-          "layer": "rumor"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N040-A",
-          "label": "带着缆绳回夜巡路口",
-          "next": "V01-C01-N029"
-        },
-        {
-          "id": "V01-C01-N040-B",
-          "label": "立刻去北滩报告发现",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "side.nightwatch.done",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N012"
-        }
-      ],
-      "tags": [
-        "side",
-        "dungeon_resolution",
-        "world_echo"
-      ]
-    },
-    {
-      "id": "V01-C01-N012",
-      "chapter": "ACT2_THREE_SHADOWS",
-      "title": "第二个月亮",
-      "presentation": "act_break",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "黑雨第三日，太阳没有升起。正午的天色如旧铁，村民在无影的地上走来走去，人人显得比平时孤单。到黄昏，东边升起第二个月亮。它比原来的月亮更白、更近，表面没有桂影，只有一支缓慢旋转的箭。"
-        },
-        {
-          "type": "narration",
-          "text": "三影尸体在双月下坐了起来。不是复活，只是三道影子一齐站直，把尸身从水中托起。它张开嘴，吐出一条活着的黑线。黑线钻入河中，赤水随即停流。"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“现在可以怕了。河一旦想起自己从哪里来，就会倒着回去。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“河没有记性。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“那你解释它为何专往东边找。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-WEIQING",
-          "text": "“尸体吐出的线进了河。先查河，还是守尸？”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-YANBO",
-          "text": "“分开查。”"
-        },
-        {
-          "type": "dialogue",
-          "speaker": "NPC-JIANPO",
-          "text": "“人手不够。查河就会漏掉桑林，去桑林就没人盯供物。别装作什么都能保住，让他选。”"
-        },
-        {
-          "type": "system",
-          "text": "主线更新：在赤水倒流前查明黑雨如何进入村落。你无法在一次流程中保存所有证据与所有人。"
-        }
-      ],
-      "onEnterEffects": [
-        {
-          "type": "setWorldVar",
-          "key": "sky.moons.count",
-          "value": 2
-        },
-        {
-          "type": "setWorldVar",
-          "key": "river.flow",
-          "value": "stalled"
-        },
-        {
-          "type": "advanceTime",
-          "days": 2
-        },
-        {
-          "type": "startQuest",
-          "questId": "Q-V01-MAIN-003"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N012-D",
-          "label": "在第二个月亮升起前，带村人确认它究竟照见了谁",
-          "effects": [
-            {"type": "setFlag", "key": "moon.public_observation", "value": true},
-            {"type": "startQuest", "questId": "Q-V01-SIDE-024"}
-          ],
-          "next": "V01-C01-N210"
-        },
-        {
-          "id": "V01-C01-N012-A",
-          "label": "去河床追那条黑线",
-          "next": "V01-C01-N013"
-        },
-        {
-          "id": "V01-C01-N012-B",
-          "label": "去东桑林求证焦叶",
-          "next": "V01-C01-N014"
-        },
-        {
-          "id": "V01-C01-N012-C",
-          "label": "留在村中追查供尸之人",
-          "visibleWhen": [
-            {
-              "type": "worldVarAtLeast",
-              "key": "village.corpse_cult",
-              "value": 1
-            }
-          ],
-          "next": "V01-C01-N015"
-        }
-      ],
-      "tags": [
-        "main",
-        "moon",
-        "act_break"
-      ]
-    },
-    {
       "id": "V01-C01-N041",
       "chapter": "ACT3_RIVER_REVERSED",
       "title": "十巢不在同一棵树上",
@@ -2189,57 +33,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N041-H",
-          "label": "跟随空巢里的湿纸深入第十巢，寻找那个要求被问而不愿被命名的声音",
-          "effects": [{"type": "setFlag", "key": "grove.unanswered_voice_sought", "value": true}],
-          "next": "V01-C01-N268"
+          "no": 1,
+          "id": "V01-C01-N041-E11",
+          "label": "继续：十巢不在同一棵树上（第1部分）",
+          "next": "V01-C01-N041-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N041-G",
-          "label": "协助阿禾召集十巢边的失散家人，先把活人的路接上",
-          "effects": [
-            {"type": "startQuest", "questId": "Q-V01-SIDE-020"},
-            {"type": "changeRelation", "npcId": "NPC-AHE", "axis": "trust", "delta": 1}
-          ],
-          "next": "V01-C01-N193"
+          "no": 2,
+          "id": "V01-C01-N041-E21",
+          "label": "继续：十巢不在同一棵树上（第2部分）",
+          "next": "V01-C01-N041-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N041-A",
-          "label": "跟阿禾逐棵确认已有的名字",
-          "next": "V01-C01-N042"
-        },
-        {
-          "id": "V01-C01-N041-B",
-          "label": "观察九只温巢与一只冷巢",
-          "next": "V01-C01-N043"
-        },
-        {
-          "id": "V01-C01-N041-C",
-          "label": "攀向看似最远的第十巢",
-          "next": "V01-C01-N044"
-        },
-        {
-          "id": "V01-C01-N041-D",
-          "label": "带现有发现前往旧盐井",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "side.ten_nests_deferred",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N016"
-        },
-        {
-          "id": "V01-C01-N041-E",
-          "label": "在林缘守到鸟影回巢",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-011"
-            }
-          ],
-          "next": "V01-C01-N086"
+          "no": 3,
+          "id": "V01-C01-N041-E31",
+          "label": "继续：十巢不在同一棵树上（第3部分）",
+          "next": "V01-C01-N041-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -2286,7 +98,8 @@
               "delta": 2
             }
           ],
-          "next": "V01-C01-N045"
+          "next": "V01-C01-N045",
+          "no": 1
         },
         {
           "id": "V01-C01-N042-B",
@@ -2312,7 +125,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N045"
+          "next": "V01-C01-N045",
+          "no": 2
         },
         {
           "id": "V01-C01-N042-C",
@@ -2329,7 +143,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N045"
+          "next": "V01-C01-N045",
+          "no": 3
         }
       ],
       "tags": [
@@ -2378,7 +193,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N046"
+          "next": "V01-C01-N046",
+          "no": 1
         },
         {
           "id": "V01-C01-N043-B",
@@ -2396,7 +212,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N046"
+          "next": "V01-C01-N046",
+          "no": 2
         },
         {
           "id": "V01-C01-N043-C",
@@ -2413,7 +230,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N046"
+          "next": "V01-C01-N046",
+          "no": 3
         }
       ],
       "tags": [
@@ -2449,7 +267,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N046"
+          "next": "V01-C01-N046",
+          "no": 1
         },
         {
           "id": "V01-C01-N044-B",
@@ -2476,7 +295,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N046"
+          "next": "V01-C01-N046",
+          "no": 2
         },
         {
           "id": "V01-C01-N044-C",
@@ -2494,7 +314,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N047"
+          "next": "V01-C01-N047",
+          "no": 3
         }
       ],
       "tags": [
@@ -2535,12 +356,14 @@
         {
           "id": "V01-C01-N045-A",
           "label": "沿根路去冷巢",
-          "next": "V01-C01-N046"
+          "next": "V01-C01-N046",
+          "no": 1
         },
         {
           "id": "V01-C01-N045-B",
           "label": "回入口改查别的路径",
-          "next": "V01-C01-N041"
+          "next": "V01-C01-N041",
+          "no": 2
         }
       ],
       "tags": [
@@ -2597,7 +420,8 @@
               "delta": 2
             }
           ],
-          "next": "V01-C01-N047"
+          "next": "V01-C01-N047",
+          "no": 1
         },
         {
           "id": "V01-C01-N046-B",
@@ -2622,7 +446,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N047"
+          "next": "V01-C01-N047",
+          "no": 2
         },
         {
           "id": "V01-C01-N046-C",
@@ -2640,7 +465,8 @@
               "value": "yes"
             }
           ],
-          "next": "V01-C01-N047"
+          "next": "V01-C01-N047",
+          "no": 3
         }
       ],
       "tags": [
@@ -2689,12 +515,14 @@
         {
           "id": "V01-C01-N047-A",
           "label": "前往旧盐井",
-          "next": "V01-C01-N016"
+          "next": "V01-C01-N016",
+          "no": 1
         },
         {
           "id": "V01-C01-N047-B",
           "label": "回十巢入口，检查未走的路径",
-          "next": "V01-C01-N041"
+          "next": "V01-C01-N041",
+          "no": 2
         }
       ],
       "tags": [
@@ -2758,77 +586,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N013-F",
-          "label": "沿倒流的赤水设立失物认领桌，让归还之物先被人确认而非被人抢走",
-          "effects": [{"type": "setFlag", "key": "river.return_table_opened", "value": true}],
-          "next": "V01-C01-N286"
+          "no": 1,
+          "id": "V01-C01-N013-E11",
+          "label": "继续：河床下的路（第1部分）",
+          "next": "V01-C01-N013-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N013-E",
-          "label": "带上月线图与失散者细节网，沿河床逐段确认被归还的东西",
-          "effects": [
-            {"type": "setFlag", "key": "riverbed.returned_items_survey", "value": true},
-            {"type": "startQuest", "questId": "Q-V01-SIDE-025"}
-          ],
-          "next": "V01-C01-N214"
+          "no": 2,
+          "id": "V01-C01-N013-E21",
+          "label": "继续：河床下的路（第2部分）",
+          "next": "V01-C01-N013-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N013-A",
-          "label": "打开沉船舱门",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "susha.son_truth_opened",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "trust",
-              "delta": 2
-            }
-          ],
-          "next": "V01-C01-N061"
-        },
-        {
-          "id": "V01-C01-N013-B",
-          "label": "尊重宿沙的迟疑，封住舱门",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "susha.son_boat_sealed",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-SUSHA",
-              "axis": "respect",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N062"
-        },
-        {
-          "id": "V01-C01-N013-C",
-          "label": "沿黑线追查被河退回的旧物",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-008"
-            }
-          ],
-          "next": "V01-C01-N063"
-        },
-        {
-          "id": "V01-C01-N013-D",
-          "label": "沿浅滩查找倒流留下的渔网、药箱与脚印",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-010"
-            }
-          ],
-          "next": "V01-C01-N082"
+          "no": 3,
+          "id": "V01-C01-N013-E31",
+          "label": "继续：河床下的路（第3部分）",
+          "next": "V01-C01-N013-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -2879,7 +655,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 1
         },
         {
           "id": "V01-C01-N061-B",
@@ -2899,7 +676,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 2
         },
         {
           "id": "V01-C01-N061-C",
@@ -2911,7 +689,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 3
         }
       ],
       "tags": [
@@ -2963,7 +742,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 1
         },
         {
           "id": "V01-C01-N062-B",
@@ -2983,7 +763,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 2
         },
         {
           "id": "V01-C01-N062-C",
@@ -2995,7 +776,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 3
         }
       ],
       "tags": [
@@ -3041,7 +823,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 1
         },
         {
           "id": "V01-C01-N063-B",
@@ -3064,7 +847,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 2
         },
         {
           "id": "V01-C01-N063-C",
@@ -3076,7 +860,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N064"
+          "next": "V01-C01-N064",
+          "no": 3
         }
       ],
       "tags": [
@@ -3121,12 +906,14 @@
         {
           "id": "V01-C01-N064-A",
           "label": "沿黑线前往旧盐井",
-          "next": "V01-C01-N016"
+          "next": "V01-C01-N016",
+          "no": 1
         },
         {
           "id": "V01-C01-N064-B",
           "label": "返回河床，检查仍未处理的沉船",
-          "next": "V01-C01-N013"
+          "next": "V01-C01-N013",
+          "no": 2
         }
       ],
       "tags": [
@@ -3177,7 +964,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N067"
+          "next": "V01-C01-N067",
+          "no": 1
         },
         {
           "id": "V01-C01-N065-B",
@@ -3189,7 +977,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N068"
+          "next": "V01-C01-N068",
+          "no": 2
         },
         {
           "id": "V01-C01-N065-C",
@@ -3207,7 +996,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N067"
+          "next": "V01-C01-N067",
+          "no": 3
         }
       ],
       "tags": [
@@ -3259,7 +1049,8 @@
               "delta": 2
             }
           ],
-          "next": "V01-C01-N068"
+          "next": "V01-C01-N068",
+          "no": 1
         },
         {
           "id": "V01-C01-N066-B",
@@ -3271,7 +1062,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N068"
+          "next": "V01-C01-N068",
+          "no": 2
         },
         {
           "id": "V01-C01-N066-C",
@@ -3283,7 +1075,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N068"
+          "next": "V01-C01-N068",
+          "no": 3
         }
       ],
       "tags": [
@@ -3329,7 +1122,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N068"
+          "next": "V01-C01-N068",
+          "no": 1
         },
         {
           "id": "V01-C01-N067-B",
@@ -3347,7 +1141,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N068"
+          "next": "V01-C01-N068",
+          "no": 2
         }
       ],
       "tags": [
@@ -3397,12 +1192,14 @@
         {
           "id": "V01-C01-N068-A",
           "label": "前往旧盐井",
-          "next": "V01-C01-N016"
+          "next": "V01-C01-N016",
+          "no": 1
         },
         {
           "id": "V01-C01-N068-B",
           "label": "回祠屋复查供物线索",
-          "next": "V01-C01-N015"
+          "next": "V01-C01-N015",
+          "no": 2
         }
       ],
       "tags": [
@@ -3489,7 +1286,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N041"
+          "next": "V01-C01-N041",
+          "no": 1
         },
         {
           "id": "V01-C01-N014-B",
@@ -3513,7 +1311,8 @@
               "delta": 2
             }
           ],
-          "next": "V01-C01-N041"
+          "next": "V01-C01-N041",
+          "no": 2
         },
         {
           "id": "V01-C01-N014-C",
@@ -3530,7 +1329,8 @@
               "duration": "VOLUME"
             }
           ],
-          "next": "V01-C01-N041"
+          "next": "V01-C01-N041",
+          "no": 3
         }
       ],
       "tags": [
@@ -3625,7 +1425,8 @@
               "value": false
             }
           ],
-          "next": "V01-C01-N065"
+          "next": "V01-C01-N065",
+          "no": 1
         },
         {
           "id": "V01-C01-N015-B",
@@ -3643,7 +1444,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N066"
+          "next": "V01-C01-N066",
+          "no": 2
         }
       ],
       "tags": [
@@ -3715,82 +1517,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N016-E",
-          "label": "在井口召开失踪者家属问询，先决定谁有资格替谁说话",
-          "effects": [
-            {"type": "setFlag", "key": "well.family_hearing_opened", "value": true},
-            {"type": "startQuest", "questId": "Q-V01-SIDE-021"}
-          ],
-          "next": "V01-C01-N197"
+          "no": 1,
+          "id": "V01-C01-N016-E11",
+          "label": "继续：旧盐井（第1部分）",
+          "next": "V01-C01-N016-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N016-A",
-          "label": "准备绳索、陶哨与净水后下井",
-          "enabledWhen": [
-            {
-              "type": "hasAnyItem",
-              "itemIds": [
-                "IT-V01-TOOL-CRACKEDWHISTLE",
-                "IT-V01-MAT-RAINREED"
-              ]
-            }
-          ],
-          "disabledHint": "缺少能辨认井下风向或储存黑雨的工具。",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "well.descent_prepared",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N048"
+          "no": 2,
+          "id": "V01-C01-N016-E21",
+          "label": "继续：旧盐井（第2部分）",
+          "next": "V01-C01-N016-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N016-D",
-          "label": "先在井口安排留守、药物与撤退绳",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-012"
-            }
-          ],
-          "next": "V01-C01-N092"
-        },
-        {
-          "id": "V01-C01-N016-B",
-          "label": "立刻沿井绳下去",
-          "effects": [
-            {
-              "type": "addStatus",
-              "statusId": "ST-BlackRainExposure",
-              "duration": "ACT4"
-            }
-          ],
-          "next": "V01-C01-N048"
-        },
-        {
-          "id": "V01-C01-N016-C",
-          "label": "要求缄婆先公开昼盐旧账",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "village.day_salt_truth_public",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-JIANPO",
-              "axis": "trust",
-              "delta": -1
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-YANBO",
-              "axis": "respect",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N048"
+          "no": 3,
+          "id": "V01-C01-N016-E31",
+          "label": "继续：旧盐井（第3部分）",
+          "next": "V01-C01-N016-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -3828,48 +1573,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N048-A",
-          "label": "沿井壁开采痕下降",
-          "next": "V01-C01-N049"
+          "no": 1,
+          "id": "V01-C01-N048-E11",
+          "label": "继续：井绳记得谁回来（第1部分）",
+          "next": "V01-C01-N048-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N048-B",
-          "label": "循倒流缆绳钻入船底暗渠",
-          "visibleWhen": [
-            {
-              "type": "flagTrue",
-              "key": "side.boat_dungeon_completed"
-            }
-          ],
-          "next": "V01-C01-N050"
+          "no": 2,
+          "id": "V01-C01-N048-E21",
+          "label": "继续：井绳记得谁回来（第2部分）",
+          "next": "V01-C01-N048-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N048-C",
-          "label": "进入封存昼盐账的侧室",
-          "next": "V01-C01-N051"
-        },
-        {
-          "id": "V01-C01-N048-D",
-          "label": "检查绳结后撤回井口",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "well.retreat_prepared",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N016"
-        },
-        {
-          "id": "V01-C01-N041-F",
-          "label": "摊开阿禾记下的旧名，追查被鸟影叼走的那一页",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-015"
-            }
-          ],
-          "next": "V01-C01-N107"
+          "no": 3,
+          "id": "V01-C01-N048-E31",
+          "label": "继续：井绳记得谁回来（第3部分）",
+          "next": "V01-C01-N048-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -3910,7 +1632,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 1
         },
         {
           "id": "V01-C01-N049-B",
@@ -3936,12 +1659,14 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 2
         },
         {
           "id": "V01-C01-N049-C",
           "label": "不碰井壁，原路返回",
-          "next": "V01-C01-N048"
+          "next": "V01-C01-N048",
+          "no": 3
         }
       ],
       "tags": [
@@ -3987,7 +1712,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 1
         },
         {
           "id": "V01-C01-N050-B",
@@ -4004,7 +1730,8 @@
               "value": "stalled"
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 2
         },
         {
           "id": "V01-C01-N050-C",
@@ -4015,7 +1742,8 @@
               "hours": 2
             }
           ],
-          "next": "V01-C01-N048"
+          "next": "V01-C01-N048",
+          "no": 3
         }
       ],
       "tags": [
@@ -4066,7 +1794,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 1
         },
         {
           "id": "V01-C01-N051-B",
@@ -4078,7 +1807,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 2
         },
         {
           "id": "V01-C01-N051-C",
@@ -4096,7 +1826,8 @@
               "delta": 2
             }
           ],
-          "next": "V01-C01-N052"
+          "next": "V01-C01-N052",
+          "no": 3
         }
       ],
       "tags": [
@@ -4130,7 +1861,8 @@
         {
           "id": "V01-C01-N052-A",
           "label": "推开盐门，进入白昼盐池",
-          "next": "V01-C01-N017"
+          "next": "V01-C01-N017",
+          "no": 1
         },
         {
           "id": "V01-C01-N052-B",
@@ -4151,7 +1883,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N016"
+          "next": "V01-C01-N016",
+          "no": 2
         },
         {
           "id": "V01-C01-N048-E",
@@ -4162,7 +1895,8 @@
               "questId": "Q-V01-SIDE-016"
             }
           ],
-          "next": "V01-C01-N112"
+          "next": "V01-C01-N112",
+          "no": 3
         }
       ],
       "onExitEffects": [
@@ -4224,122 +1958,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N017-G",
-          "label": "不攻击也不诱离，先让含晦背上的嘴按‘亲见、转述、猜测’各说一次",
-          "effects": [{"type": "setFlag", "key": "hanhui.testimony_sorted", "value": true}],
-          "next": "V01-C01-N277"
+          "no": 1,
+          "id": "V01-C01-N017-E11",
+          "label": "继续：井底的一小块白天（第1部分）",
+          "next": "V01-C01-N017-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N017-F",
-          "label": "先安置被白昼盐光灼伤的人，再决定是否深入追问",
-          "effects": [
-            {"type": "setFlag", "key": "saltwell.rescue_before_truth", "value": true},
-            {"type": "startQuest", "questId": "Q-V01-SIDE-026"}
-          ],
-          "next": "V01-C01-N218"
+          "no": 2,
+          "id": "V01-C01-N017-E21",
+          "label": "继续：井底的一小块白天（第2部分）",
+          "next": "V01-C01-N017-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N017-A",
-          "label": "用扶桑烬照见它吞下的第一句话",
-          "enabledWhen": [
-            {
-              "type": "itemRecognitionAtLeast",
-              "itemId": "IT-V01-MAT-EMBERLEAF",
-              "stage": "verified"
-            }
-          ],
-          "costs": [
-            {
-              "type": "item",
-              "itemId": "IT-V01-MAT-EMBERLEAF",
-              "quantity": 1
-            },
-            {
-              "type": "memory",
-              "amount": 1
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "hanhui.first_words_revealed",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N018"
-        },
-        {
-          "id": "V01-C01-N017-B",
-          "label": "用陶哨引它离开白昼盐池",
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-TOOL-CRACKEDWHISTLE",
-              "quantity": 1
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "hanhui.displaced",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N019"
-        },
-        {
-          "id": "V01-C01-N017-C",
-          "label": "割破雨芦，让黑雨倒灌进它体内",
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-MAT-RAINREED",
-              "quantity": 1
-            }
-          ],
-          "costs": [
-            {
-              "type": "item",
-              "itemId": "IT-V01-MAT-RAINREED",
-              "quantity": 1
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "hanhui.overfed",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N019"
-        },
-        {
-          "id": "V01-C01-N017-D",
-          "label": "正面攻击含晦",
-          "effects": [
-            {
-              "type": "beginCombat",
-              "encounterId": "EN-V01-ELITE-HANHUI",
-              "solution": "force"
-            }
-          ],
-          "next": "V01-C01-N020"
-        },
-        {
-          "id": "V01-C01-N017-E",
-          "label": "撤回井口，准备后再来",
-          "effects": [
-            {
-              "type": "advanceTime",
-              "hours": 6
-            },
-            {
-              "type": "changeWorldVar",
-              "key": "village.water_sickness",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N016"
+          "no": 3,
+          "id": "V01-C01-N017-E31",
+          "label": "继续：井底的一小块白天（第3部分）",
+          "next": "V01-C01-N017-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -4467,7 +2104,8 @@
               "duration": "VOLUME"
             }
           ],
-          "next": "V01-C01-N021"
+          "next": "V01-C01-N021",
+          "no": 1
         },
         {
           "id": "V01-C01-N018-B",
@@ -4479,7 +2117,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N021"
+          "next": "V01-C01-N021",
+          "no": 2
         }
       ],
       "tags": [
@@ -4571,7 +2210,8 @@
               "quantity": 1
             }
           ],
-          "next": "V01-C01-N021"
+          "next": "V01-C01-N021",
+          "no": 1
         },
         {
           "id": "V01-C01-N019-B",
@@ -4588,7 +2228,8 @@
               "value": "dispersed"
             }
           ],
-          "next": "V01-C01-N021"
+          "next": "V01-C01-N021",
+          "no": 2
         }
       ],
       "tags": [
@@ -4677,7 +2318,8 @@
         {
           "id": "V01-C01-N020-A",
           "label": "带铸范返回井口",
-          "next": "V01-C01-N021"
+          "next": "V01-C01-N021",
+          "no": 1
         }
       ],
       "tags": [
@@ -4786,64 +2428,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N021-D",
-          "label": "在交出证据前，要求羿说明空箭囊里为何有九次弦声",
-          "effects": [{"type": "setFlag", "key": "yi.nine_sounds_investigated", "value": true}],
-          "next": "V01-C01-N240"
+          "no": 1,
+          "id": "V01-C01-N021-E11",
+          "label": "继续：羿从西边来（第1部分）",
+          "next": "V01-C01-N021-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N021-A",
-          "label": "把所有证据交给羿",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-YI",
-              "axis": "trust",
-              "delta": 2
-            },
-            {
-              "type": "setFlag",
-              "key": "yi.has_full_evidence",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N053"
+          "no": 2,
+          "id": "V01-C01-N021-E21",
+          "label": "继续：羿从西边来（第2部分）",
+          "next": "V01-C01-N021-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N021-B",
-          "label": "隐去昼盐旧账，只谈扶桑",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-YI",
-              "axis": "trust",
-              "delta": -1
-            },
-            {
-              "type": "setFlag",
-              "key": "yi.village_crime_hidden",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N053"
-        },
-        {
-          "id": "V01-C01-N021-C",
-          "label": "质问羿为何带着空箭囊",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-YI",
-              "axis": "respect",
-              "delta": 1
-            },
-            {
-              "type": "setFlag",
-              "key": "clue.yi_dreamed_shots",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N053"
+          "no": 3,
+          "id": "V01-C01-N021-E31",
+          "label": "继续：羿从西边来（第3部分）",
+          "next": "V01-C01-N021-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -4874,165 +2477,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N053-AC",
-          "label": "旁观一堂雨后初课：让孩子与守夜人亲手检验那些刚写下的规则",
-          "next": "V01-C01-N362"
+          "no": 1,
+          "id": "V01-C01-N053-E11",
+          "label": "继续：第七日之前（第1部分）",
+          "next": "V01-C01-N053-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N053-AB",
-          "label": "整理雨中未送达的回执：让失散、借用与拒绝也能留下可追问的去处",
-          "next": "V01-C01-N356"
+          "no": 2,
+          "id": "V01-C01-N053-E21",
+          "label": "继续：第七日之前（第2部分）",
+          "next": "V01-C01-N053-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N053-AA",
-          "label": "在终局前巡看六处普通人的小事：看它们怎样被写进能用的明日",
-          "next": "V01-C01-N348"
-        },
-        {
-          "id": "V01-C01-N053-Z",
-          "label": "翻阅黑雨七日记，重走那些决定村子没有立刻散掉的日常片段",
-          "next": "V01-C01-N340"
-        },
-        {
-          "id": "V01-C01-N053-Y",
-          "label": "回到第一夜的几处门槛，看看黑雨改变后人与人如何重新相认",
-          "next": "V01-C01-N335"
-        },
-        {
-          "id": "V01-C01-N053-X",
-          "label": "在终局前参与第一次公开听证：让材料、证词与未决问题各有位置",
-          "next": "V01-C01-N325"
-        },
-        {
-          "id": "V01-C01-N053-W",
-          "label": "在第七日前完成一次公开准备演练，检验村约能否真的带人穿过混乱",
-          "next": "V01-C01-N320"
-        },
-        {
-          "id": "V01-C01-N053-V",
-          "label": "走进砚伯封存的旧档案间，重读那些把人写成代号的年份",
-          "next": "V01-C01-N315"
-        },
-        {
-          "id": "V01-C01-N053-U",
-          "label": "听砚童召集孩子们的短会：他们要决定大人没看见的三件事",
-          "next": "V01-C01-N311"
-        },
-        {
-          "id": "V01-C01-N053-T",
-          "label": "在村口设一张雨中书信桌，为失散的人写下不必立刻寄出的信",
-          "next": "V01-C01-N306"
-        },
-        {
-          "id": "V01-C01-N053-S",
-          "label": "追查船、林、井共同出现的红线，把三处异象并到一张可核验的路图上",
-          "next": "V01-C01-N296"
-        },
-        {
-          "id": "V01-C01-N053-R",
-          "label": "整理黑雨中被冲散的记忆碎片，决定哪些应当归还、哪些可以暂缓",
-          "next": "V01-C01-N291"
-        },
-        {
-          "id": "V01-C01-N053-Q",
-          "label": "参加黑雨第六日的共修：修屋、清沟、守灯与写下轮班表",
-          "effects": [{"type": "setFlag", "key": "village.day_six_common_repair", "value": true}],
-          "next": "V01-C01-N281"
-        },
-        {
-          "id": "V01-C01-N053-P",
-          "label": "接下雨后巡查板上的紧急求助，先处理一处正在发生的小危机",
-          "next": "V01-C01-N259"
-        },
-        {
-          "id": "V01-C01-N053-O",
-          "label": "在第七日前最后一个夜晚，分别听几个人说完没说出口的话",
-          "next": "V01-C01-N244"
-        },
-        {
-          "id": "V01-C01-N053-N",
-          "label": "在最终会议前，回应一件只有你出身能读懂的旧物",
-          "next": "V01-C01-N227"
-        },
-        {
-          "id": "V01-C01-N053-M",
-          "label": "在雨势稍歇时参与一轮村市：处理材料、借贷与夜行装备",
-          "effects": [{"type": "setFlag", "key": "village.rain_market_opened", "value": true}],
-          "next": "V01-C01-N222"
-        },
-        {
-          "id": "V01-C01-N053-L",
-          "label": "召集所有持有证词的人，先决定哪些事不能用来交换",
-          "effects": [
-            {"type": "setFlag", "key": "final.civic_compact_discussed", "value": true},
-            {"type": "startQuest", "questId": "Q-V01-SIDE-022"}
-          ],
-          "next": "V01-C01-N201"
-        },
-        {
-          "id": "V01-C01-N053-A",
-          "label": "协助砚伯核对撤村名册",
-          "next": "V01-C01-N054"
-        },
-        {
-          "id": "V01-C01-N053-B",
-          "label": "前往盐泽棚屋听黎苇的条件",
-          "next": "V01-C01-N056"
-        },
-        {
-          "id": "V01-C01-N053-C",
-          "label": "要求季狸解释真印与迁徙文书",
-          "next": "V01-C01-N058"
-        },
-        {
-          "id": "V01-C01-N053-D",
-          "label": "向羿询问第十次没有放开的弦",
-          "next": "V01-C01-N060"
-        },
-        {
-          "id": "V01-C01-N053-E",
-          "label": "召集众人进入北滩最终会议",
-          "next": "V01-C01-N022"
-        },
-        {
-          "id": "V01-C01-N053-F",
-          "label": "趁雨势稍缓，逐户处理未结的人情与缺口",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-013"
-            }
-          ],
-          "next": "V01-C01-N095"
-        },
-        {
-          "id": "V01-C01-N053-H",
-          "label": "召集四方代表，先把证据和代价摆到同一张桌上",
-          "effects": [
-            {
-              "type": "startQuest",
-              "questId": "Q-V01-SIDE-018"
-            }
-          ],
-          "next": "V01-C01-N122"
-        },
-        {
-          "id": "V01-C01-N053-I",
-          "label": "沿黑雨后的村巷巡一遍，找仍在发生的小异象",
-          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-024"}],
-          "next": "V01-C01-N164"
-        },
-        {
-          "id": "V01-C01-N053-J",
-          "label": "把现有材料带到雨棚，完成一次实地显形与互证",
-          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-025"}],
-          "next": "V01-C01-N169"
-        },
-        {
-          "id": "V01-C01-N053-K",
-          "label": "在雨棚熄灯前，听六个人把各自不肯说的话说完",
-          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-026"}],
-          "next": "V01-C01-N174"
+          "no": 3,
+          "id": "V01-C01-N053-E31",
+          "label": "继续：第七日之前（第3部分）",
+          "next": "V01-C01-N053-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -5080,7 +2543,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N055"
+          "next": "V01-C01-N055",
+          "no": 1
         },
         {
           "id": "V01-C01-N054-B",
@@ -5092,7 +2556,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N055"
+          "next": "V01-C01-N055",
+          "no": 2
         },
         {
           "id": "V01-C01-N054-C",
@@ -5114,7 +2579,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N055"
+          "next": "V01-C01-N055",
+          "no": 3
         }
       ],
       "tags": [
@@ -5150,7 +2616,8 @@
         {
           "id": "V01-C01-N055-A",
           "label": "回到前夜路口",
-          "next": "V01-C01-N053"
+          "next": "V01-C01-N053",
+          "no": 1
         }
       ],
       "tags": [
@@ -5182,58 +2649,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N056-D",
-          "label": "与黎苇共同走一段盐泽路，核验她所说的路不是空头承诺",
-          "effects": [{"type": "setFlag", "key": "saltmarsh.route_walked", "value": true}],
-          "next": "V01-C01-N272"
+          "no": 1,
+          "id": "V01-C01-N056-E11",
+          "label": "继续：盐泽人不借命（第1部分）",
+          "next": "V01-C01-N056-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N056-A",
-          "label": "承诺流民与村民同列撤离名单",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "liwei.equal_evacuation_pact",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-LIWEI",
-              "axis": "trust",
-              "delta": 2
-            }
-          ],
-          "next": "V01-C01-N057"
+          "no": 2,
+          "id": "V01-C01-N056-E21",
+          "label": "继续：盐泽人不借命（第2部分）",
+          "next": "V01-C01-N056-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N056-B",
-          "label": "请求黎苇先送孩子走，成年人留下守村",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "liwei.children_first_route",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N057"
-        },
-        {
-          "id": "V01-C01-N056-C",
-          "label": "拒绝交易，要求流民自行决定去留",
-          "effects": [
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-LIWEI",
-              "axis": "respect",
-              "delta": 1
-            },
-            {
-              "type": "setFlag",
-              "key": "liwei.autonomous_route",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N057"
+          "no": 3,
+          "id": "V01-C01-N056-E31",
+          "label": "继续：盐泽人不借命（第3部分）",
+          "next": "V01-C01-N056-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -5269,7 +2703,8 @@
         {
           "id": "V01-C01-N057-A",
           "label": "回到前夜路口",
-          "next": "V01-C01-N053"
+          "next": "V01-C01-N053",
+          "no": 1
         }
       ],
       "tags": [
@@ -5301,67 +2736,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N058-D",
-          "label": "要求季狸带你看一眼文书生效后真正由谁执行",
-          "effects": [{"type": "setFlag", "key": "jili.execution_chain_checked", "value": true}],
-          "next": "V01-C01-N275"
+          "no": 1,
+          "id": "V01-C01-N058-E11",
+          "label": "继续：真印压不住雨（第1部分）",
+          "next": "V01-C01-N058-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N058-A",
-          "label": "要求季狸当众在文书上补写不可强制归属",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "jili.public_limit_clause",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-JILI",
-              "axis": "respect",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N059"
+          "no": 2,
+          "id": "V01-C01-N058-E21",
+          "label": "继续：真印压不住雨（第2部分）",
+          "next": "V01-C01-N058-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N058-B",
-          "label": "出示倒船货单，要求他解释未铸之印",
-          "visibleWhen": [
-            {
-              "type": "anyFlagTrue",
-              "keys": [
-                "clue.north_trade_used_unborn_seal",
-                "item.north_manifest_kept"
-              ]
-            }
-          ],
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "jili.unborn_seal_confronted",
-              "value": true
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-JILI",
-              "axis": "trust",
-              "delta": -1
-            }
-          ],
-          "next": "V01-C01-N059"
-        },
-        {
-          "id": "V01-C01-N058-C",
-          "label": "收下文书，但不交出尸体归属",
-          "effects": [
-            {
-              "type": "setFlag",
-              "key": "jili.documents_accepted_without_corpse",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N059"
+          "no": 3,
+          "id": "V01-C01-N058-E31",
+          "label": "继续：真印压不住雨（第3部分）",
+          "next": "V01-C01-N058-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -5397,7 +2790,8 @@
         {
           "id": "V01-C01-N059-A",
           "label": "回到前夜路口",
-          "next": "V01-C01-N053"
+          "next": "V01-C01-N053",
+          "no": 1
         }
       ],
       "tags": [
@@ -5444,7 +2838,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N053"
+          "next": "V01-C01-N053",
+          "no": 1
         },
         {
           "id": "V01-C01-N060-B",
@@ -5462,7 +2857,8 @@
               "delta": -1
             }
           ],
-          "next": "V01-C01-N053"
+          "next": "V01-C01-N053",
+          "no": 2
         },
         {
           "id": "V01-C01-N060-C",
@@ -5474,7 +2870,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N053"
+          "next": "V01-C01-N053",
+          "no": 3
         }
       ],
       "tags": [
@@ -5492,57 +2889,114 @@
       "blocks": [
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "finale.threshold_talk_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "finale.threshold_talk_completed"
+            }
+          ],
           "text": "北滩的长桌还没摆稳，门槛上已经留着三处湿印：一枚儿童名牌、一块旧船蜡印、半只沾泥的量米瓢。它们谁也不能替代尸体和箭，却让所有人知道，今夜不止有神异要被决定。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "finale.child_records_shared"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "finale.child_records_shared"
+            }
+          ],
           "text": "阿禾把抄下的儿童名页压在灯盏下，手指仍沾着桑叶汁。砚童站在她身后，没有躲进大人腿边；他只是小声补了一句：『名字不是拿来换船位的。』"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "jili.transport_liability_written"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "jili.transport_liability_written"
+            }
+          ],
           "text": "季狸面前多了一份写着自己名字的运输责任状。纸很薄，压不住风；他却第一次没有把它翻到背面。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "finale.rations_publicly_witnessed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "finale.rations_publicly_witnessed"
+            }
+          ],
           "text": "粮仓的量米瓢被放在最靠外的位置。青芽说，谁想拿尸体换撤离，先报出今晚哪一家少半碗；这不是反对撤离，只是不许任何人把饥饿藏进大词里。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "worldVarEquals", "key": "boat.evidence_custody", "value": "double_copy"}],
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "boat.evidence_custody",
+              "value": "double_copy"
+            }
+          ],
           "text": "两份船舱抄本分别压在宿沙和缬婆手下。它们的字并不完全一样，正因如此，谁也无法轻易把另一份说成伪造。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "worldVarEquals", "key": "well.voice_layer_fate", "value": "revealed"}],
+          "when": [
+            {
+              "type": "worldVarEquals",
+              "key": "well.voice_layer_fate",
+              "value": "revealed"
+            }
+          ],
           "text": "旧井第一句命令被写在残盐纸上：先记货，后记人。纸上的盐粒像尚未愈合的伤口，没人敢说这是祖辈留下的规矩，仿佛规矩就会因此变得轻一点。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.boat_revisit_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.boat_revisit_completed"
+            }
+          ],
           "text": "北滩外多了一盏渡灯，灯柄上缠着还没干透的三色布。宿沙没有把它带进会里；他说灯该照门槛，不该替任何人把话照得更好看。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "boat.triage_recorded"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "boat.triage_recorded"
+            }
+          ],
           "text": "青芽把浅滩上没能喝足药的第三个孩子也写在配给板上。她不许任何人把那一行擦掉：『不是为了羞辱谁，是为了以后有人说药够时，知道该问哪一碗。』"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "grove.leave_permission_public"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "grove.leave_permission_public"
+            }
+          ],
           "text": "阿禾把一块路标靠在长桌旁，背面写着『人、羊与守井者均可离开』。砚伯看了很久才说字太少；阿禾回他：『字够不够，你先问被留下的人。』"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "well.families_heard_first"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "well.families_heard_first"
+            }
+          ],
           "text": "缄婆把半齿井钥匙放进木碗，碗边压着家属的布条。她说：『今夜若有人要讲井，就先对着听过的人讲；别再把他们请来当最后一排。』"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "well.water_by_need_public"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "well.water_by_need_public"
+            }
+          ],
           "text": "青芽把井水分配板也带到了北滩。她没让它成为谁的清白证，只让每个要求别人牺牲的人先看清：今晚的水，是按病势，不是按谁更像该受罚的人分的。"
         },
         {
@@ -5606,94 +3060,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N022-F",
-          "label": "在定下最终方案前，让四方各自说明他们愿意承担、却不愿再转嫁的代价",
-          "next": "V01-C01-N254"
+          "no": 1,
+          "id": "V01-C01-N022-E11",
+          "label": "继续：第七日以前（第1部分）",
+          "next": "V01-C01-N022-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N022-A",
-          "label": "支持羿，在北滩守到雨停",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "finale.plan",
-              "value": "guard"
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-YI",
-              "axis": "trust",
-              "delta": 1
-            }
-          ],
-          "next": "V01-C01-N023"
+          "no": 2,
+          "id": "V01-C01-N022-E21",
+          "label": "继续：第七日以前（第2部分）",
+          "next": "V01-C01-N022-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N022-B",
-          "label": "公开全部旧账，迫使村民共同决定",
-          "visibleWhen": [
-            {
-              "type": "worldVarEquals",
-              "key": "village.day_salt_truth_public",
-              "value": true
-            }
-          ],
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "finale.plan",
-              "value": "assembly"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "village.self_rule",
-              "value": 1
-            }
-          ],
-          "next": "V01-C01-N023"
-        },
-        {
-          "id": "V01-C01-N022-C",
-          "label": "与季狸交易，用尸体换取全村撤离",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "finale.plan",
-              "value": "trade"
-            },
-            {
-              "type": "setFlag",
-              "key": "corpse.claimed_by_north",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N023"
-        },
-        {
-          "id": "V01-C01-N022-D",
-          "label": "听从黎苇，连夜把尸体送进盐泽",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "finale.plan",
-              "value": "smuggle"
-            },
-            {
-              "type": "changeRelation",
-              "npcId": "NPC-LIWEI",
-              "axis": "trust",
-              "delta": 2
-            }
-          ],
-          "next": "V01-C01-N023"
-        },
-        {
-          "id": "V01-C01-N022-E",
-          "label": "让四方先各自写下不能被交易的事",
-          "effects": [
-            {"type": "startQuest", "questId": "Q-V01-SIDE-022"}
-          ],
-          "next": "V01-C01-N144"
+          "no": 3,
+          "id": "V01-C01-N022-E31",
+          "label": "继续：第七日以前（第3部分）",
+          "next": "V01-C01-N022-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -5710,37 +3095,72 @@
       "blocks": [
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.four_boundaries_written"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.four_boundaries_written"
+            }
+          ],
           "text": "四张底线纸仍压在北滩石上。雨水把墨洇进石纹，『名字不是货』『不在最后一排』『印不能替手说话』『箭先说明靶』彼此挨着，没有一条替另一条取胜。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "finale.saltmarsh_co_decides"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "finale.saltmarsh_co_decides"
+            }
+          ],
           "text": "黎苇没有退到人群外。她与杳湾人并肩站在白灰线内，手里拿着一份有盐泽名字的撤离单；这次没人可以说她只是来讨价还价。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "finale.arrow_accountability"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "finale.arrow_accountability"
+            }
+          ],
           "text": "羿把无弦弓放在所有人能看见的地方，先开口说：『谁把箭交给我，都可以在我松手前问我想射谁。』这不是保证，却让他第一次没能躲在未来后面。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.village_last_round_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.village_last_round_completed"
+            }
+          ],
           "text": "北滩桌角还压着一块未染完的布、一盏守夜灯和药锅的缺口记录。它们没有资格替箭作证，却让所有提议『牺牲少数』的人都不得不先看见少数今晚睡在哪里。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "material.allocation_gap_public"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "material.allocation_gap_public"
+            }
+          ],
           "text": "昼盐浮尘在配给板空白处泛着微光。青芽没有把它擦掉：『这不是多出来的粮，是原本就被算没的人。谁谈撤离，先谈他们。』"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "material.first_command_verified"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "material.first_command_verified"
+            }
+          ],
           "text": "缄婆把『先记货，后记人』的核验页放在所有文书上面。她说它不替任何人定罪，只负责让往后每一笔类似的账，都没法再假装是偶然。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "qingya.hero_ration_ledger"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "qingya.hero_ration_ledger"
+            }
+          ],
           "text": "青芽把北滩行动的粮账钉在柱上。她对羿说：『箭若要粮，就写下谁少吃几天。你不写，我就当你不饿。』羿没有反驳。"
         },
         {
@@ -5803,126 +3223,25 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N023-A",
-          "label": "拔出赤金箭，交给羿",
-          "irreversible": true,
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "NPC-YI"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "released"
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_yi",
-              "value": true
-            }
-          ],
-      "next": "V01-C01-N236"
+          "no": 1,
+          "id": "V01-C01-N023-E11",
+          "label": "继续：黑雨停了（第1部分）",
+          "next": "V01-C01-N023-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N023-B",
-          "label": "让尸体带箭继续向东",
-          "irreversible": true,
-          "enabledWhen": [
-            {
-              "type": "anyFlagTrue",
-              "keys": [
-                "clue.corpse_is_road",
-                "clue.bone_token_fusang"
-              ]
-            }
-          ],
-          "disabledHint": "你还不知道尸体究竟是一具人，还是一条路。",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "NPC-THREESHADOW"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "eastbound"
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_east",
-              "value": true
-            }
-          ],
-      "next": "V01-C01-N237"
+          "no": 2,
+          "id": "V01-C01-N023-E21",
+          "label": "继续：黑雨停了（第2部分）",
+          "next": "V01-C01-N023-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N023-C",
-          "label": "折断箭杆，把箭镞留给人间",
-          "irreversible": true,
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-CLUE-ARROWMOLD",
-              "quantity": 1
-            }
-          ],
-          "disabledHint": "你不知道赤金箭的受力与铸造弱点。",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "PLAYER"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "unmade"
-            },
-            {
-              "type": "addItem",
-              "itemId": "IT-V01-UNIQUE-REDARROWHEAD",
-              "quantity": 1
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_mortal",
-              "value": true
-            }
-          ],
-      "next": "V01-C01-N238"
-        },
-        {
-          "id": "V01-C01-N023-D",
-          "label": "允许季狸接管尸体，兑现撤村交易",
-          "irreversible": true,
-          "visibleWhen": [
-            {
-              "type": "worldVarEquals",
-              "key": "finale.plan",
-              "value": "trade"
-            }
-          ],
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "FACTION-NORTH"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "seized"
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_north",
-              "value": true
-            }
-          ],
-      "next": "V01-C01-N239"
+          "no": 3,
+          "id": "V01-C01-N023-E31",
+          "label": "继续：黑雨停了（第3部分）",
+          "next": "V01-C01-N023-G31",
+          "effects": []
         }
       ],
       "tags": [
@@ -5981,7 +3300,8 @@
         {
           "id": "V01-C01-N024-A",
           "label": "在羿东行前，先处理他留下的九道箭痕",
-          "next": "V01-C01-N156"
+          "next": "V01-C01-N156",
+          "no": 1
         }
       ],
       "tags": [
@@ -6035,7 +3355,8 @@
         {
           "id": "V01-C01-N025-A",
           "label": "沿东行河岸处理三条留下的路",
-          "next": "V01-C01-N158"
+          "next": "V01-C01-N158",
+          "no": 1
         }
       ],
       "tags": [
@@ -6102,7 +3423,8 @@
         {
           "id": "V01-C01-N026-A",
           "label": "在迟日被写进户册前，先问他想留下什么",
-          "next": "V01-C01-N160"
+          "next": "V01-C01-N160",
+          "no": 1
         }
       ],
       "tags": [
@@ -6167,7 +3489,8 @@
         {
           "id": "V01-C01-N027-A",
           "label": "在迁徙队离开前，核对木牌上的住处与债主",
-          "next": "V01-C01-N162"
+          "next": "V01-C01-N162",
+          "no": 1
         }
       ],
       "tags": [
@@ -6216,7 +3539,8 @@
         {
           "id": "V01-C01-N069-A",
           "label": "回看杳湾与众人的余响",
-          "next": "V01-C01-N028"
+          "next": "V01-C01-N028",
+          "no": 1
         }
       ],
       "tags": [
@@ -6265,7 +3589,8 @@
         {
           "id": "V01-C01-N070-A",
           "label": "回看杳湾与众人的余响",
-          "next": "V01-C01-N028"
+          "next": "V01-C01-N028",
+          "no": 1
         }
       ],
       "tags": [
@@ -6320,7 +3645,8 @@
         {
           "id": "V01-C01-N071-A",
           "label": "回看杳湾与众人的余响",
-          "next": "V01-C01-N028"
+          "next": "V01-C01-N028",
+          "no": 1
         }
       ],
       "tags": [
@@ -6375,7 +3701,8 @@
         {
           "id": "V01-C01-N072-A",
           "label": "回看杳湾与众人的余响",
-          "next": "V01-C01-N028"
+          "next": "V01-C01-N028",
+          "no": 1
         }
       ],
       "tags": [
@@ -6421,7 +3748,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 1
         },
         {
           "id": "V01-C01-N073-B",
@@ -6438,7 +3766,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 2
         },
         {
           "id": "V01-C01-N073-C",
@@ -6450,7 +3779,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 3
         }
       ],
       "tags": [
@@ -6509,7 +3839,8 @@
               "layer": "echo"
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 1
         },
         {
           "id": "V01-C01-N074-B",
@@ -6527,7 +3858,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 2
         },
         {
           "id": "V01-C01-N074-C",
@@ -6545,7 +3877,8 @@
               "delta": 1
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 3
         }
       ],
       "tags": [
@@ -6603,7 +3936,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 1
         },
         {
           "id": "V01-C01-N075-B",
@@ -6615,7 +3949,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N076"
+          "next": "V01-C01-N076",
+          "no": 2
         }
       ],
       "tags": [
@@ -6666,7 +4001,8 @@
               "layer": "evidence"
             }
           ],
-          "next": "V01-C01-N077"
+          "next": "V01-C01-N077",
+          "no": 1
         },
         {
           "id": "V01-C01-N076-B",
@@ -6678,7 +4014,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N077"
+          "next": "V01-C01-N077",
+          "no": 2
         },
         {
           "id": "V01-C01-N076-C",
@@ -6690,7 +4027,8 @@
               "value": true
             }
           ],
-          "next": "V01-C01-N077"
+          "next": "V01-C01-N077",
+          "no": 3
         }
       ],
       "tags": [
@@ -6736,7 +4074,8 @@
         {
           "id": "V01-C01-N077-A",
           "label": "继续查看杳湾余响",
-          "next": "V01-C01-N028"
+          "next": "V01-C01-N028",
+          "no": 1
         }
       ],
       "tags": [
@@ -6753,42 +4092,82 @@
       "blocks": [
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.boat_revisit_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.boat_revisit_completed"
+            }
+          ],
           "text": "归还者号后来没有被拖走。它被留在浅滩当渡口的坏榜样：船骨上既刻失踪者，也刻分药、守灯和没有署名的路线。宿沙说，船不能替人还债，最多替人把欠着什么露在水面上。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "boat.last_tide_unchecked"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "boat.last_tide_unchecked"
+            }
+          ],
           "text": "浅滩仍留着一串没清完的半脚印。每逢水涨，村里就有人争论那是鬼、车夫，还是一个终于没有被写进名单的人；争到最后，总有谁把渡灯提过去。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.grove_revisit_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.grove_revisit_completed"
+            }
+          ],
           "text": "东桑第十巢外的路标背面还留着『可离开』。雨后它被许多人抄走，有人拿来救自己，有人用来质问家里；阿禾说这比把路标钉得笔直有用得多。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.well_revisit_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.well_revisit_completed"
+            }
+          ],
           "text": "旧盐井棚下的木碗后来一直没有收走。半齿钥匙、药勺、黑羽和家属布条在那里碰响，让每次开井或封井都再也不能被说成只是守井人的事。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "granary.black_millet_trial_kept"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "granary.black_millet_trial_kept"
+            }
+          ],
           "text": "粮仓留下了半袋没有煮掉的黑粟。青芽把它种在离井最远的坡地，谁也不许把这叫作希望；她只说，明年若还有人，就能看见它到底长出什么。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "dyeworks.cloth_for_shelter"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "dyeworks.cloth_for_shelter"
+            }
+          ],
           "text": "染坊的半匹布被裁成许多不一样大的避雨披。罗娘说它们不够漂亮，却足够让几个人在夜里不因发冷而忘了自己要说什么。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.material_chain_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.material_chain_completed"
+            }
+          ],
           "text": "祠屋雨棚的材料记录仍被钉在墙上。它没有告诉后人哪一件器物最神，只留下谁使用、谁反对、谁承担代价的笔迹，让神异第一次不得不带着人的签名离开杳湾。"
         },
         {
           "type": "conditional",
-          "when": [{"type": "flagTrue", "key": "side.character_truths_completed"}],
+          "when": [
+            {
+              "type": "flagTrue",
+              "key": "side.character_truths_completed"
+            }
+          ],
           "text": "雨棚那一夜说出的害怕后来传成不同版本。唯一没被改掉的是阿禾那句话：谁害怕得说不出口，谁就不该拿这份害怕去让别人死。"
         },
         {
@@ -6979,60 +4358,604 @@
       ],
       "choices": [
         {
-          "id": "V01-C01-N028-G",
-          "label": "在离开杳湾前，整理四封将把问题带进下一卷的信",
-          "next": "V01-C01-N330"
+          "no": 1,
+          "id": "V01-C01-N028-E11",
+          "label": "继续：杳湾余响（第1部分）",
+          "next": "V01-C01-N028-G11",
+          "effects": []
         },
         {
-          "id": "V01-C01-N028-F",
-          "label": "回看箭离开或留下之后，杳湾必须继续支付的那一笔日常代价",
-          "next": "V01-C01-N301"
+          "no": 2,
+          "id": "V01-C01-N028-E21",
+          "label": "继续：杳湾余响（第2部分）",
+          "next": "V01-C01-N028-G21",
+          "effects": []
         },
         {
-          "id": "V01-C01-N028-E",
-          "label": "回到村约桌前，看看被留下的人如何改写第一条规矩",
-          "effects": [{"type": "startQuest", "questId": "Q-V01-SIDE-023"}],
-          "next": "V01-C01-N205"
-        },
-        {
-          "id": "V01-C01-N028-A",
-          "label": "在雨后试验裂陶哨与囚雨芦",
-          "next": "V01-C01-N073"
-        },
-        {
-          "id": "V01-C01-N028-B",
-          "label": "整理杳湾的山海志余响",
-          "next": "V01-C01-N076"
-        },
-        {
-          "id": "V01-C01-N028-C",
-          "label": "【含晦话罐】决定被封存话语的保管方式",
-          "visibleWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-UNIQUE-VOICEJAR",
-              "quantity": 1
-            }
-          ],
-          "next": "V01-C01-N074"
-        },
-        {
-          "id": "V01-C01-N028-D",
-          "label": "【无辞舌骨】决定遗忘留下的器物去处",
-          "visibleWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-MAT-WORDLESSBONE",
-              "quantity": 1
-            }
-          ],
-          "next": "V01-C01-N075"
+          "no": 3,
+          "id": "V01-C01-N028-E31",
+          "label": "继续：杳湾余响（第3部分）",
+          "next": "V01-C01-N028-G31",
+          "effects": []
         }
       ],
       "tags": [
         "main",
         "volume_end",
         "world_echo"
+      ]
+    },
+    {
+      "id": "A1-START",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "雨脚",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "黑雨落下，不像是水，更像是一整片天在往下塌。你站在杳湾村口，衣角已经沉得坠手。"
+        },
+        {
+          "type": "narration",
+          "text": "村子里亮着三处灯：记历棚的灯、渡口的灯、粮仓的灯。雨里各有各的声响。"
+        },
+        {
+          "type": "system",
+          "text": "【第一幕·雨至】先决定你落脚的去处——这会影响你在杳湾最初结下的人情。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-START-c1",
+          "label": "躲进记历棚，找砚伯",
+          "next": "A1-SHED",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "metYanbo",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-START-c2",
+          "label": "沿河去渡口，找宿沙",
+          "next": "A1-FERRY",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "metSusha",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-START-c3",
+          "label": "去粮仓问有没有空屋",
+          "next": "A1-GRANARY",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "metQingya",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-SHED",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "砚伯的棚",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“雨谱不能断。你来得巧，帮我抄两行，还是只想躲一躲？”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-YANBO",
+          "text": "“这雨不干净。村中老井今早开始'哭'——你若好奇，以后自有去处。”"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-SHED-c1",
+          "label": "帮他抄录雨谱",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "helpChronicle",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "key": "knowWellHistory",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-SHED-c2",
+          "label": "追问黑雨的来历",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "seekOrigin",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-SHED-c3",
+          "label": "只躲雨，不掺和",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "aloof",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-FERRY",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "渡口",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "dialogue",
+          "speaker": "NPC-SUSHA",
+          "text": "“浪比平时高半尺。你若是来避雨的，就帮我压住缆——别碰舱里那卷东西。”"
+        },
+        {
+          "type": "narration",
+          "text": "他系缆的桩子被冲得松动，船身一下下磕着石阶。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-FERRY-c1",
+          "label": "帮他修被冲坏的缆桩",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "helpFerry",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-FERRY-c2",
+          "label": "问他河对岸有什么",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "seekRiver",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-FERRY-c3",
+          "label": "趁他转身，偷看舱里那卷东西",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "snoop",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-SUSHA",
+              "axis": "trust",
+              "delta": -1
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-GRANARY",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "粮仓",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "dialogue",
+          "speaker": "NPC-QINGYA",
+          "text": "“空屋没有，饼倒还有半筐。这雨要是连下三天，粮就该发芽了。”"
+        },
+        {
+          "type": "narration",
+          "text": "她把算筹拨得噼啪响，眼睛却一直瞟着门外那道水线。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-GRANARY-c1",
+          "label": "帮她清点存粮",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "helpGranary",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-GRANARY-c2",
+          "label": "提醒她雨会坏粮",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "warnGrain",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-GRANARY-c3",
+          "label": "趁她低头，顺手拿块饼",
+          "next": "A1-MID",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "stoleFood",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-QINGYA",
+              "axis": "trust",
+              "delta": -1
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-MID",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "村中夜议",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“老井在哭。不是水响，是有人在水底下说话。你们谁跟我去看看？”"
+        },
+        {
+          "type": "system",
+          "text": "【第一幕·分叉】三条路在此收束到同一桩'井哭'异象，但你先前结下的人情会改变你能做的事。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-MID-c1",
+          "label": "跟缄婆下井查看",
+          "next": "A1-WELL",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "wentWell",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-MID-c2",
+          "label": "守在井口接应",
+          "next": "A1-WATCH",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "watchedWell",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-MID-c3",
+          "label": "不理井，去北滩探那具浮尸的传闻",
+          "next": "A1-BEACH",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "seekCorpse",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-WELL",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "井底",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "井底结着一层昼盐似的浮尘，墙里嵌着半面残镜，镜子照不出你，只照出一片一直在下的雨。"
+        },
+        {
+          "type": "narration",
+          "text": "井壁渗水声里，隐约有人说话；你分不清那是雨的回声，还是井自己在记一笔旧账。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-WELL-c1",
+          "label": "取走一撮昼盐浮尘",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "hasDaySalt",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "key": "knowHanhui",
+              "value": true
+            },
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-MAT-DAYSALTDUST",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-WELL-c2",
+          "label": "记下残镜的纹路",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "knowMirror",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-WELL-c3",
+          "label": "什么也不动，恭敬退出",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "revereWell",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-WATCH",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "井口",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你守在井口。风灌下去，带回的却不只是水声——是人声，和缄婆的嗓音叠在一起，像在念一个名字。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-WATCH-c1",
+          "label": "喊缄婆快上来",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "warnedWell",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-WATCH-c2",
+          "label": "记下水声与人声叠着的节奏",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "knowWaterSong",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-WATCH-c3",
+          "label": "独自下到一半去探查",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "halfDescent",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-BEACH",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "北滩",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "北滩搁着一具浮尸，雨打在它肩上，泛起赤金色的光。你一抬头，三道影子在雨幕里分立，像在等谁先动。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-BEACH-c1",
+          "label": "近前看尸身肩上的伤",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "sawCorpse",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "key": "knowArrowWound",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-BEACH-c2",
+          "label": "追那三道影子",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "chasedShadow",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-BEACH-c3",
+          "label": "回村报信，不靠近",
+          "next": "A1-END",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "reportedCorpse",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
+      ]
+    },
+    {
+      "id": "A1-END",
+      "chapter": "ACT1_RAIN_ARRIVES",
+      "title": "雨未停",
+      "presentation": "act_break",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "雨没停。天亮前，你得决定以什么身份留在杳湾——这身份会决定你如何撞上第二幕的那具尸。"
+        },
+        {
+          "type": "system",
+          "text": "【第一幕·幕终】承诺一种身份，将作为第二幕的入口与初始立场。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "A1-END-c1",
+          "label": "以记历人之助的身份留下",
+          "next": "A2-CHRONICLE",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "role_chronicler",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 2,
+          "id": "A1-END-c2",
+          "label": "随宿沙的船，做个渡工同伴",
+          "next": "A2-FERRY",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "role_ferrymate",
+              "value": true
+            }
+          ]
+        },
+        {
+          "no": 3,
+          "id": "A1-END-c3",
+          "label": "谁也不跟，独自追查黑雨与浮尸",
+          "next": "A2-SOLO",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "role_seeker",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main"
       ]
     }
   ]
