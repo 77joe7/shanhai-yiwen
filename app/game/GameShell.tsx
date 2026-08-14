@@ -286,8 +286,9 @@ export function GameShell() {
             <section className="reader" aria-live="polite">
               <div className="reader-heading">
                 <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
-                <h1>{!state.created ? "立身入世" : panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}</h1>
+                <h1>{!state.created ? "立身入世" : panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}{state.created && <StatusBadge state={state} />}</h1>
                 <div className="brush-rule"><i /></div>
+                {state.created && <button type="button" className="reader-exit" onClick={exitToMain} aria-label="退出到主页">退出</button>}
               </div>
               {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel key={activeId} panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} notice={notice} />}
             </section>
@@ -355,7 +356,7 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
 }
 
 function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, selectPanel, openOverlay, openDetail, notice }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void; notice: string }) {
-  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} typewriter={typewriter} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} notice={notice} />;
+  if (panel === "story") return <><StoryPanel state={state} advanceStory={advanceStory} typewriter={typewriter} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} /><StorySafeArea state={state} notice={notice} /></>;
   if (panel === "map") return <MapPanel state={state} />;
   if (panel === "codex") return <CodexPanel state={state} openDetail={openDetail} />;
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
@@ -374,6 +375,14 @@ function StartPage({ onEnter }: { onEnter: () => void }) {
       <p className="start-page-foot">第一卷《黑雨》内容包已载入 · v3.0.0</p>
     </div>
   </section>;
+}
+
+function StatusBadge({ state }: { state: GameState }) {
+  const hasStatus = Object.keys(state.flags ?? {}).some((key) => key.startsWith("status."));
+  const hasQuest = (state.activeQuests?.length ?? 0) > 0;
+  if (hasStatus) return <span className="status-badge status-badge-danger">异兆缠身</span>;
+  if (hasQuest) return <span className="status-badge status-badge-quest">任务中</span>;
+  return <span className="status-badge status-badge-safe">暂无重伤</span>;
 }
 
 function StartPanel({ openCreate, openSettings, openSaves }: { openCreate: () => void; openSettings: () => void; openSaves: () => void }) {
@@ -420,7 +429,7 @@ function CharacterSelect({ characters, activeId, onEnter, onRemove, onCreate }: 
   </section>;
 }
 
-function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate, notice }: { state: GameState; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; openCreate: () => void; notice: string }) {
+function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; openCreate: () => void }) {
   const node = currentStoryNode(state);
   const blocks = visibleBlocks(state);
   const choices = visibleChoices(state).map((choice) => state.created ? choice : { ...choice, enabled: false, disabledHint: "请先建立角色，再以出身进入故事。" });
@@ -506,16 +515,19 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
     <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
     {isTyping ? <div className="story-choices-pending" aria-hidden="true">……</div> : <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>}
     <div ref={transcriptEndRef} />
-    <footer className="story-safe-area" aria-label="当前情境与提醒">
-      <span className="safe-header">情境 · 安全区</span>
-      <span className="safe-label">所在</span>
-      <span className="safe-location">{state.location}</span>
-      <span className="safe-divider">·</span>
-      <span className="safe-label">时日</span>
-      <span className="safe-time">第{state.day}日 · {state.period}</span>
-      {notice && <span className="safe-notice">{notice}</span>}
-    </footer>
   </article>;
+}
+
+function StorySafeArea({ state, notice }: { state: GameState; notice: string }) {
+  return <footer className="story-safe-area" aria-label="当前情境与提醒">
+    <span className="safe-header">情境 · 安全区</span>
+    <span className="safe-label">所在</span>
+    <span className="safe-location">{state.location}</span>
+    <span className="safe-divider">·</span>
+    <span className="safe-label">时日</span>
+    <span className="safe-time">第{state.day}日 · {state.period}</span>
+    {notice && <span className="safe-notice">{notice}</span>}
+  </footer>;
 }
 
 function MapPanel({ state }: { state: GameState }) {
