@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1.0",
-  "contentVersion": "4.3.1",
+  "contentVersion": "4.3.2",
   "characters": [
     {
       "id": "NPC-AHE",
@@ -586,9 +586,9 @@
     },
     {
       "id": "NPC-JILI2",
-      "name": "季璃",
+      "name": "季缨",
       "aliases": [
-        "盐井家属",
+        "红丝",
         "季槐之姐"
       ],
       "sourceTags": [
