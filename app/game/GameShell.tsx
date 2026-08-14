@@ -63,6 +63,20 @@ function highlightText(text: string): React.ReactNode {
   });
 }
 
+/**
+ * 逐字展开时的双缓冲渲染：隐藏的完整文本撑起稳定高度，可见文本逐字覆盖显示，
+ * 避免逐字截断导致段落高度随换行变化、下方内容跳动重排。
+ */
+function typewriterText(visible: React.ReactNode, full: React.ReactNode, typing: boolean): React.ReactNode {
+  if (!typing) return full;
+  return (
+    <span className="tw-stack">
+      <span className="tw-visible">{visible}</span>
+      <span className="tw-ghost" aria-hidden="true">{full}</span>
+    </span>
+  );
+}
+
 export function GameShell() {
   const [state, setState] = useState<GameState | null>(null);
   const [characters, setCharacters] = useState<CharacterSummary[]>([]);
@@ -451,11 +465,12 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
   }, [currentEntries, isTyping, reducedMotion, revealCharacters, revealIndex]);
 
   // 逐字展开 / 换节点时自动跟随到最新底部；玩家主动上翻时不打断。
+  // 逐字过程用瞬时滚动（behavior:"auto"），避免每 30ms 一次 smooth 动画叠加造成滚动幅度小、顿挫。
   useEffect(() => {
     if (awayFromLatest) return;
     const target = transcriptEndRef.current;
-    window.requestAnimationFrame(() => target?.scrollIntoView({ block: "end", behavior: reducedMotion ? "auto" : "smooth" }));
-  }, [revealCharacters, revealIndex, node.id, awayFromLatest, reducedMotion]);
+    window.requestAnimationFrame(() => target?.scrollIntoView({ block: "end", behavior: "auto" }));
+  }, [revealCharacters, revealIndex, node.id, awayFromLatest]);
 
   return <article className="story-panel story-runtime">
     <header className="story-kicker"><span>{node.chapter.replace("ACT", "第")}</span><small>{node.presentation === "prologue" ? "卷首" : "剧情节点"}</small></header>
@@ -465,7 +480,7 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
       const isCurrentEntry = currentIndex === displayIndex;
       if (currentIndex > displayIndex) return null;
       const text = isCurrentEntry ? entry.text.slice(0, displayCharacters) : entry.text;
-      return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "") } · 对话</cite><p>{highlightText(text)}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {highlightText(text)}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{highlightText(text)}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{highlightText(text)}</p></article>}</div>;
+      return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "")}</cite><p>{typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</p></article>}</div>;
     })}</div>
     <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
     {isTyping ? <div className="story-choices-pending" aria-hidden="true">……</div> : <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>}

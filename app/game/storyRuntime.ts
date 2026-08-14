@@ -42,7 +42,9 @@ function recognitionRank(stage: string) { return ({ first_sight: 1, rumor: 2, ve
 
 export function interpolate(state: GameState, text: string) {
   const origin = originById.get(state.player.origin);
-  return text.replaceAll("{{player.originScene}}", origin?.originScene ?? "站在杳湾的雨里");
+  return text
+    .replaceAll("{{player.originScene}}", origin?.originScene ?? "站在杳湾的雨里")
+    .replaceAll("{{player.originName}}", origin?.name ?? "无名之人");
 }
 
 export function currentStoryNode(state: GameState) {
@@ -147,7 +149,14 @@ export function applyEffects(state: GameState, effects: Effect[] = []) {
 
 export function enterCurrentNode(state: GameState) {
   const node = currentStoryNode(state);
-  if (state.visitedNodes?.includes(node.id)) return { state, notes: [] as string[] };
+  if (state.visitedNodes?.includes(node.id)) {
+    // 回访已访问节点：截断 storyHistory 到该节点第一次出现之前，再重新呈现该节点内容，
+    // 避免 StoryPanel 用 findIndex(第一个匹配)+slice 提取历史时把中间旧节点历史重复显示。
+    const history = state.storyHistory ?? [];
+    const firstIdx = history.findIndex((entry) => entry.nodeId === node.id);
+    const truncated = firstIdx >= 0 ? history.slice(0, firstIdx) : history;
+    return { state: { ...state, storyHistory: [...truncated, ...nodeHistory(state)] }, notes: [] as string[] };
+  }
   const entered = applyEffects(state, node.onEnterEffects as Effect[] | undefined);
   return { state: { ...entered.state, visitedNodes: [...(entered.state.visitedNodes ?? []), node.id], storyHistory: [...(entered.state.storyHistory ?? []), ...nodeHistory(entered.state)] }, notes: entered.notes };
 }
