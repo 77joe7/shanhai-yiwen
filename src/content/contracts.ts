@@ -31,6 +31,8 @@ export interface Choice {
   analyticsKey?: string;
 }
 
+export type BranchClass = "sediment" | "reflow" | "fork";
+
 export interface StoryNode {
   id: string;
   chapter: string;
@@ -42,6 +44,8 @@ export interface StoryNode {
   choices: Choice[];
   onEnterEffects?: Effect[];
   onExitEffects?: Effect[];
+  /** V1.4 §2.3② 选项分级：sediment(沉积,≤3) / reflow(汇流,≤4) / fork(命运,≤6 且全部不可逆)。缺省 sediment。 */
+  branchClass?: BranchClass;
   tags: string[];
 }
 

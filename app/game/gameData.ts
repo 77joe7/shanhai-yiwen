@@ -8,19 +8,27 @@ export const origins = blackRainContent.origins.map((origin) => ({
   bonus: Object.entries(origin.statBonuses).map(([stat, amount]) => `${statLabels[stat] ?? stat} +${amount}`).join(" · "),
 }));
 
-export const natures = [
+/** V1.4 §3.1 天性：优先内容包（player-origins.json natures 段），旧内容包缺字段时回退内置。 */
+const fallbackNatures = [
   { id: "cautious", name: "谨慎", note: "更早看到风险与撤退机会。" },
   { id: "curious", name: "好奇", note: "更容易发现被忽略的细节。" },
   { id: "kind", name: "仁厚", note: "关系增长更快，也更难弃人不顾。" },
   { id: "resolute", name: "狠决", note: "危急时更稳定，代价也更直接。" },
+  { id: "suspicious", name: "多疑", note: "更早察觉谎言与隐瞒，也更容易把好意当成试探。" },
+  { id: "stubborn", name: "执拗", note: "认定的事不易动摇，谈判与让步更难，但承诺也更重。" },
 ] as const;
-
-export const flaws = [
+/** V1.4 §3.1 缺陷：优先内容包，旧内容包缺字段时回退内置。 */
+const fallbackFlaws = [
   { id: "water", name: "怕水", note: "涉水时定力受压；未来可反转为「敬水」。" },
   { id: "night", name: "夜盲", note: "夜间观察受限，但更依赖声音与气味。" },
   { id: "injury", name: "旧伤", note: "长途跋涉消耗更多，能理解伤者的迟疑。" },
   { id: "speech", name: "不善言辞", note: "正式交涉不利，沉默有时反而让人卸防。" },
+  { id: "frail", name: "体弱", note: "负重与长时间劳作吃亏；更早学会节省体力。" },
+  { id: "beast_bait", name: "易招异兽", note: "靠近异兽更容易被注意；也因此更早察觉它们。" },
 ] as const;
+
+export const natures = blackRainContent.natures.length > 0 ? blackRainContent.natures : fallbackNatures;
+export const flaws = blackRainContent.flaws.length > 0 ? blackRainContent.flaws : fallbackFlaws;
 
 export function createInitialState(draft?: CharacterDraft): GameState {
   const player: CharacterDraft = draft ?? { name: "无名之人", origin: "hunter", nature: "cautious", flaw: "water" };

@@ -72,9 +72,17 @@ def validate() -> dict[str, Any]:
 
     errors: list[str] = []
     choice_ids: set[str] = set()
+    # V1.4 §2.3② branchClass 选项分级上限（缺省 sediment）
+    branch_limits = {"sediment": 3, "reflow": 4, "fork": 6}
     for node in nodes:
         if not node.get("blocks"):
             errors.append(f"{node['id']} has no blocks")
+        bclass = node.get("branchClass", "sediment")
+        limit = branch_limits.get(bclass, 3)
+        if len(node.get("choices", [])) > limit:
+            errors.append(f"{node['id']} branchClass={bclass} choices {len(node.get('choices', []))} exceeds limit {limit}")
+        if bclass == "fork" and not all(c.get("irreversible") for c in node.get("choices", [])):
+            errors.append(f"{node['id']} branchClass=fork requires all choices irreversible")
         for choice in node.get("choices", []):
             if choice["id"] in choice_ids:
                 errors.append(f"Duplicate choice ID: {choice['id']}")
@@ -170,7 +178,7 @@ def render_manuscript(data: dict[str, Any]) -> str:
         "ACT2_THREE_SHADOWS": "第二幕　三影",
         "ACT3_RIVER_REVERSED": "第三幕　倒河",
         "ACT4_NIGHT_WITHOUT_SUN": "第四幕　无日之夜",
-        "ACT5_TEN_SUN_OMEN": "第五幕　十日之兆",
+        "ACT5_TEN_SUN_OMEN": "第五幕　赤日之兆",
     }
     lines = [
         "# 山海异闻录：天地未定",

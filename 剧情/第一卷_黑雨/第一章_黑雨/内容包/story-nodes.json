@@ -59,7 +59,8 @@
         "small_dungeon",
         "ahe",
         "fusang"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N042",
@@ -473,7 +474,8 @@
         "side",
         "dungeon_climax",
         "future_echo"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N047",
@@ -611,7 +613,8 @@
         "main",
         "exploration",
         "river"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N061",
@@ -1542,7 +1545,8 @@
         "main",
         "dungeon",
         "collective_guilt"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N048",
@@ -1983,7 +1987,8 @@
         "main",
         "elite_encounter",
         "multi_solution"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N018",
@@ -2125,7 +2130,8 @@
         "main",
         "truth",
         "memory_cost"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N019",
@@ -2453,7 +2459,8 @@
         "main",
         "yi",
         "revelation"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N053",
@@ -2503,7 +2510,8 @@
         "faction_hub",
         "revisit",
         "day_seven"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N054",
@@ -3085,7 +3093,8 @@
         "main",
         "final_plan",
         "faction"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N023",
@@ -3223,32 +3232,210 @@
       ],
       "choices": [
         {
-          "no": 1,
-          "id": "V01-C01-N023-E11",
-          "label": "继续：黑雨停了（第1部分）",
-          "next": "V01-C01-N023-G11",
-          "effects": []
+          "id": "V01-C01-N023-A",
+          "label": "拔出赤金箭，交给羿",
+          "irreversible": true,
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "NPC-YI"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "released"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_yi",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N236",
+          "no": 1
         },
         {
-          "no": 2,
-          "id": "V01-C01-N023-E21",
-          "label": "继续：黑雨停了（第2部分）",
-          "next": "V01-C01-N023-G21",
-          "effects": []
+          "id": "V01-C01-N023-B",
+          "label": "让尸体带箭继续向东",
+          "irreversible": true,
+          "enabledWhen": [
+            {
+              "type": "anyFlagTrue",
+              "keys": [
+                "clue.corpse_is_road",
+                "clue.bone_token_fusang"
+              ]
+            }
+          ],
+          "disabledHint": "你还不知道尸体究竟是一具人，还是一条路。",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "NPC-THREESHADOW"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "eastbound"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_east",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N237",
+          "no": 2
         },
         {
-          "no": 3,
-          "id": "V01-C01-N023-E31",
-          "label": "继续：黑雨停了（第3部分）",
-          "next": "V01-C01-N023-G31",
-          "effects": []
+          "id": "V01-C01-N023-C",
+          "label": "折断箭杆，把箭镞留给人间",
+          "irreversible": true,
+          "enabledWhen": [
+            {
+              "type": "hasItem",
+              "itemId": "IT-V01-CLUE-ARROWMOLD",
+              "quantity": 1
+            }
+          ],
+          "disabledHint": "你不知道赤金箭的受力与铸造弱点。",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "PLAYER"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "unmade"
+            },
+            {
+              "type": "addItem",
+              "itemId": "IT-V01-UNIQUE-REDARROWHEAD",
+              "quantity": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_mortal",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N238",
+          "no": 3
+        },
+        {
+          "id": "V01-C01-N023-D",
+          "label": "允许季狸接管尸体，兑现撤村交易",
+          "irreversible": true,
+          "visibleWhen": [
+            {
+              "type": "worldVarEquals",
+              "key": "finale.plan",
+              "value": "trade"
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "FACTION-NORTH"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "seized"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_north",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N239",
+          "no": 4
+        },
+        {
+          "id": "V01-C01-N023-E",
+          "label": "封井永守：把井、盐与真相都留在杳湾自己手里",
+          "irreversible": true,
+          "visibleWhen": [
+            {
+              "type": "worldVarEquals",
+              "key": "village.day_salt_truth_public",
+              "value": true
+            },
+            {
+              "type": "worldVarEquals",
+              "key": "village.memories_restored",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "VILLAGE"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "released"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "village.seventh_well_isolated",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_sealed_well",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N264",
+          "no": 5
+        },
+        {
+          "id": "V01-C01-N023-F",
+          "label": "谁也不交：让三影者自己决定箭与去留",
+          "irreversible": true,
+          "visibleWhen": [
+            {
+              "type": "worldVarEquals",
+              "key": "ending.chiri_name_open",
+              "value": true
+            }
+          ],
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "unique.red_arrow.owner",
+              "value": "NPC-THREESHADOW"
+            },
+            {
+              "type": "setWorldVar",
+              "key": "corpse.fate",
+              "value": "released"
+            },
+            {
+              "type": "setFlag",
+              "key": "ending.path_shadow_free",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N266",
+          "no": 6
         }
       ],
       "tags": [
         "main",
         "climax",
         "irreversible"
-      ]
+      ],
+      "branchClass": "fork"
     },
     {
       "id": "V01-C01-N024",
@@ -4383,7 +4570,8 @@
         "main",
         "volume_end",
         "world_echo"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "A1-START",
@@ -4956,7 +5144,8 @@
       ],
       "tags": [
         "main"
-      ]
+      ],
+      "branchClass": "reflow"
     }
   ]
 }

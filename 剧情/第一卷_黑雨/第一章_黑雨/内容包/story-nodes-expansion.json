@@ -15242,7 +15242,8 @@
       ],
       "tags": [
         "main"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "A2-ARROW",
@@ -17618,189 +17619,6 @@
         "main",
         "final_plan",
         "faction"
-      ]
-    },
-    {
-      "id": "V01-C01-N023-G11",
-      "chapter": "ACT5_TEN_SUN_OMEN",
-      "title": "黑雨停了 · 续1",
-      "presentation": "climax",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你继续处理黑雨停了的分支。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N023-A",
-          "label": "拔出赤金箭，交给羿",
-          "irreversible": true,
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "NPC-YI"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "released"
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_yi",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N236",
-          "no": 1
-        },
-        {
-          "id": "V01-C01-N023-B",
-          "label": "让尸体带箭继续向东",
-          "irreversible": true,
-          "enabledWhen": [
-            {
-              "type": "anyFlagTrue",
-              "keys": [
-                "clue.corpse_is_road",
-                "clue.bone_token_fusang"
-              ]
-            }
-          ],
-          "disabledHint": "你还不知道尸体究竟是一具人，还是一条路。",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "NPC-THREESHADOW"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "eastbound"
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_east",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N237",
-          "no": 2
-        }
-      ],
-      "tags": [
-        "main",
-        "climax",
-        "irreversible"
-      ]
-    },
-    {
-      "id": "V01-C01-N023-G21",
-      "chapter": "ACT5_TEN_SUN_OMEN",
-      "title": "黑雨停了 · 续2",
-      "presentation": "climax",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你继续处理黑雨停了的分支。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N023-C",
-          "label": "折断箭杆，把箭镞留给人间",
-          "irreversible": true,
-          "enabledWhen": [
-            {
-              "type": "hasItem",
-              "itemId": "IT-V01-CLUE-ARROWMOLD",
-              "quantity": 1
-            }
-          ],
-          "disabledHint": "你不知道赤金箭的受力与铸造弱点。",
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "PLAYER"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "unmade"
-            },
-            {
-              "type": "addItem",
-              "itemId": "IT-V01-UNIQUE-REDARROWHEAD",
-              "quantity": 1
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_mortal",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N238",
-          "no": 1
-        }
-      ],
-      "tags": [
-        "main",
-        "climax",
-        "irreversible"
-      ]
-    },
-    {
-      "id": "V01-C01-N023-G31",
-      "chapter": "ACT5_TEN_SUN_OMEN",
-      "title": "黑雨停了 · 续3",
-      "presentation": "climax",
-      "blocks": [
-        {
-          "type": "narration",
-          "text": "你继续处理黑雨停了的分支。"
-        }
-      ],
-      "choices": [
-        {
-          "id": "V01-C01-N023-D",
-          "label": "允许季狸接管尸体，兑现撤村交易",
-          "irreversible": true,
-          "visibleWhen": [
-            {
-              "type": "worldVarEquals",
-              "key": "finale.plan",
-              "value": "trade"
-            }
-          ],
-          "effects": [
-            {
-              "type": "setWorldVar",
-              "key": "unique.red_arrow.owner",
-              "value": "FACTION-NORTH"
-            },
-            {
-              "type": "setWorldVar",
-              "key": "corpse.fate",
-              "value": "seized"
-            },
-            {
-              "type": "setFlag",
-              "key": "ending.path_north",
-              "value": true
-            }
-          ],
-          "next": "V01-C01-N239",
-          "no": 1
-        }
-      ],
-      "tags": [
-        "main",
-        "climax",
-        "irreversible"
       ]
     },
     {
@@ -20683,6 +20501,132 @@
         "first_lesson",
         "community",
         "high_dialogue"
+      ]
+    },
+    {
+      "id": "V01-C01-N264",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "封井以前，先问井自己同不同意",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "白昼盐的真相已经摆到桌面上，被唤回的记忆也各自回了家。缄婆站在井口，把钥匙举到灯下，第一次没有说'这是守井人的事'。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-JIANPO",
+          "text": "“井认得每一条绳。你若要封它，得先让它知道：不是逃走，是把话留下。”"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "V01-C01-N264-A",
+          "label": "在公开见证下封井，立下共守誓言",
+          "next": "V01-C01-N265",
+          "effects": [
+            {
+              "type": "setWorldVar",
+              "key": "village.seventh_well_isolated",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "main",
+        "hidden_route"
+      ]
+    },
+    {
+      "id": "V01-C01-N265",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "井口不是公堂，哭的人也不该被排在门外（隐藏·封井永守）",
+      "presentation": "ending",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "封井的那一夜，杳湾人把每家的水桶都灌满，再在井口压上一块谁也不搬得动的石板。缄婆把钥匙交给青芽，青芽把它放进粮仓的账册里——不是要藏，是要让下一个人找得到。"
+        },
+        {
+          "type": "narration",
+          "text": "雨没有再下。可每天清晨，都有人经过井口，把耳朵贴近石缝听一会儿。井还在哭，只是哭声从此有了愿意留下来的人。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "V01-C01-N265-A",
+          "label": "让杳湾把封井的日子写进新历书",
+          "next": "V01-C01-N028",
+          "effects": []
+        }
+      ],
+      "tags": [
+        "main",
+        "ending_sealed_well",
+        "hidden_route"
+      ]
+    },
+    {
+      "id": "V01-C01-N266",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "三影者自己决定以前，先让箭离开所有人",
+      "presentation": "scene",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "你唤出过'迟日'，知道他的名字。现在你把赤金箭从所有人手里拿开，放在滩中央，退后三步。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "NPC-THREESHADOW",
+          "text": "“从来没有人问过我要不要射这一箭。你是第一个把箭放回地上的人。”"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "V01-C01-N266-A",
+          "label": "让三影者自己拾起或留下箭，不替他决定",
+          "next": "V01-C01-N267",
+          "effects": []
+        }
+      ],
+      "tags": [
+        "main",
+        "hidden_route"
+      ]
+    },
+    {
+      "id": "V01-C01-N267",
+      "chapter": "ACT5_TEN_SUN_OMEN",
+      "title": "三影者自己决定（隐藏·自由）",
+      "presentation": "ending",
+      "blocks": [
+        {
+          "type": "narration",
+          "text": "三道影子立了很久。最后，中间那道影子弯下腰，把箭拾起来，又轻轻放回原地——他选择不带走任何一件武器，只带走自己的名字。"
+        },
+        {
+          "type": "narration",
+          "text": "'迟日'向东走的时候没有回头。杳湾人后来在河边捡到一支没有主人的箭，谁也没敢收，就让它立在滩上，被风磨成铁锈色的路标。"
+        }
+      ],
+      "choices": [
+        {
+          "no": 1,
+          "id": "V01-C01-N267-A",
+          "label": "把'迟日自由'记进山海志的余响",
+          "next": "V01-C01-N028",
+          "effects": []
+        }
+      ],
+      "tags": [
+        "main",
+        "ending_shadow_free",
+        "hidden_route"
       ]
     }
   ]

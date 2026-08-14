@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1.0",
-  "contentVersion": "3.0.0",
+  "contentVersion": "4.1.0",
   "quests": [
     {
       "id": "Q-V01-SIDE-026",
@@ -2171,6 +2171,76 @@
       "relatedItemIds": [
         "IT-V01-MAT-EMBERLEAF",
         "IT-V01-TOOL-CRACKEDWHISTLE"
+      ]
+    },
+    {
+      "id": "Q-V01-EVENT-NORTHBEACH",
+      "name": "第七日·北滩长桌",
+      "type": "main",
+      "summary": "黑雨第七日，羿、季狸、黎苇与杳湾人在北滩对峙：尸体、赤金箭与全村去留被摆到同一张桌上。这是卷内高潮大型事件副本——多阶段、四方NPC参与、以世界状态结算（不设必须击杀的目标）。",
+      "objectives": [
+        {
+          "id": "stage_open",
+          "text": "进入北滩长桌，确认四方立场（阶段一：对峙）",
+          "completion": [
+            {
+              "type": "visitedNode",
+              "nodeId": "V01-C01-N022"
+            }
+          ]
+        },
+        {
+          "id": "stage_hear",
+          "text": "听取羿/季狸/黎苇/阿禾砚伯各自愿意承担与不愿转嫁的代价（阶段二：四方陈述）",
+          "completion": [
+            {
+              "type": "worldVarExists",
+              "key": "finale.threshold_talk_completed"
+            }
+          ]
+        },
+        {
+          "id": "stage_plan",
+          "text": "在代价与底线之间定下最终方案（阶段三：谈判/抉择）",
+          "completion": [
+            {
+              "type": "worldVarExists",
+              "key": "finale.plan"
+            }
+          ]
+        },
+        {
+          "id": "stage_resolve",
+          "text": "决定赤金箭与三影者的最终归属，结算世界状态（阶段四：终局）",
+          "completion": [
+            {
+              "type": "worldVarExists",
+              "key": "unique.red_arrow.owner"
+            }
+          ]
+        }
+      ],
+      "rewards": [
+        {
+          "type": "setWorldVar",
+          "key": "event.north_beach_resolved",
+          "value": true
+        }
+      ],
+      "failure": null,
+      "relatedNpcIds": [
+        "NPC-YI",
+        "NPC-THREESHADOW",
+        "NPC-JILI",
+        "NPC-LIWEI",
+        "NPC-AHE",
+        "NPC-YANBO",
+        "NPC-JIANPO"
+      ],
+      "relatedItemIds": [
+        "IT-V01-CLUE-ARROWMOLD",
+        "IT-V01-UNIQUE-REDARROWHEAD",
+        "IT-V01-MAT-DAYSALTDUST"
       ]
     }
   ]

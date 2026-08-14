@@ -175,14 +175,20 @@ export function validate(content: BranchingContent): ValidationIssue[] {
   const reachable = (id: string) => id === ACT_ENTRY_SENTINEL || ids.has(id);
 
   for (const node of content.nodes) {
-    // 1) 总选项数 ≤3
-    if (node.choices.length > MAX_CHOICES) {
-      issues.push({ nodeId: node.id, level: "error", message: `选项数 ${node.choices.length} 超过上限 ${MAX_CHOICES}` });
+    // 1) 选项数按 branchClass 分级校验（V1.4 §2.3②：sediment≤3 / reflow≤4 / fork≤6）
+    const limits: Record<string, number> = { sediment: 3, reflow: 4, fork: 6 };
+    const bclass = node.branchClass ?? "sediment";
+    const limit = limits[bclass] ?? 3;
+    if (node.choices.length > limit) {
+      issues.push({ nodeId: node.id, level: "error", message: `选项数 ${node.choices.length} 超过 branchClass=${bclass} 上限 ${limit}` });
     }
-    // 2) 任意 flag 组合下，可见选项也不得超过 3（粗略：按 visibleWhen 分组估算）
+    if (bclass === "fork" && node.choices.some((c) => !c.irreversible)) {
+      issues.push({ nodeId: node.id, level: "error", message: `branchClass=fork 要求全部选项不可逆（${node.id}）` });
+    }
+    // 2) 任意 flag 组合下，可见选项也不得超过该分级上限（粗略：按 visibleWhen 分组估算）
     const gated = node.choices.filter((c) => c.visibleWhen && c.visibleWhen.length > 0);
-    if (gated.length + (node.choices.length - gated.length) > MAX_CHOICES) {
-      issues.push({ nodeId: node.id, level: "warn", message: "存在触发条件选项，最坏情况下可见选项可能超过 3，请复核。" });
+    if (gated.length + (node.choices.length - gated.length) > limit) {
+      issues.push({ nodeId: node.id, level: "warn", message: "存在触发条件选项，最坏情况下可见选项可能超过分级上限，请复核。" });
     }
     // 3) next 可达
     for (const c of node.choices) {

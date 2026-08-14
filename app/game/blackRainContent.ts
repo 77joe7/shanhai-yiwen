@@ -17,6 +17,9 @@ export const blackRainContent = {
   encounters: encountersDocument.encounters,
   items: itemsDocument.items,
   origins: originsDocument.origins,
+  /** V1.4 §3.1 出身/天性/缺陷三层：natures/flaws 为新增层（旧内容包无此字段时为空数组）。 */
+  natures: originsDocument.natures ?? [],
+  flaws: originsDocument.flaws ?? [],
   quests: questsDocument.quests,
   worldDefaults: worldStateDocument.defaults,
 } as const;

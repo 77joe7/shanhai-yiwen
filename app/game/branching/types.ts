@@ -22,6 +22,8 @@ export interface BranchChoice {
   costs?: Effect[];
   /** 选择后果：写入 flag / 世界变量，用于跨幕交叉影响。 */
   effects?: Effect[];
+  /** 不可逆选项（fork 命运节点强制全部不可逆，V1.4 §2.3②）。 */
+  irreversible?: boolean;
 }
 
 export interface BranchNode {
@@ -31,7 +33,9 @@ export interface BranchNode {
   kind?: NodeKind;
   blocks: StoryBlock[];
   onEnterEffects?: Effect[];
-  /** 每节点选项严格 ≤3（引擎 validate 强制）。 */
+  /** V1.4 §2.3② 选项分级：sediment(≤3)/reflow(≤4)/fork(≤6 全部不可逆)，缺省 sediment。 */
+  branchClass?: "sediment" | "reflow" | "fork";
+  /** 每节点选项按 branchClass 分级校验（引擎 validate 强制）。 */
   choices: BranchChoice[];
   /** 幕终节点：记录本幕结局走向，并由角色决定下一幕入口。 */
   actEnd?: { endingId: string; summary: string };
