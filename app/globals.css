@@ -522,6 +522,46 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
 .story-choices-pending { min-height: 56px; display: grid; place-items: center; margin-top: 20px; color: #7d7664; font-size: 13px; letter-spacing: .3em; }
 .mythic-shell .story-choices-pending { color: #b9a47a; }
 
+/* 剧情区底部安全信息区：只在底部显示地点、时间、提醒，与正文有明确视觉边界 */
+.story-safe-area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin-top: 28px;
+  padding: 12px 16px;
+  border: 1px solid rgba(196, 164, 106, .45);
+  background: rgba(31, 27, 23, .82);
+  color: #eadbbb;
+  font-size: 13px;
+  letter-spacing: .08em;
+  position: relative;
+}
+.story-safe-area::before {
+  content: "情境 · 安全区";
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  padding: 0 8px;
+  background: #1f1b17;
+  color: #c4a46a;
+  font-size: 10px;
+  letter-spacing: .18em;
+}
+.story-safe-area .safe-label { color: #b9a47a; font-size: 11px; letter-spacing: .14em; }
+.story-safe-area .safe-location { color: #c4a46a; font-weight: 600; }
+.story-safe-area .safe-time { color: #fff2de; }
+.story-safe-area .safe-divider { color: #776f63; }
+.story-safe-area .safe-notice {
+  flex-basis: 100%;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(196, 164, 106, .3);
+  color: #d8a45a;
+  font-size: 12px;
+}
+.mythic-shell .story-safe-area { border-color: rgba(196, 164, 106, .54); background: rgba(23, 19, 15, .88); }
+
 /* 旁白保持纯文本，绝不带气泡；对话气泡统一字号（桌面 14px）。 */
 .story-transcript .narration { background: transparent; border: 0; padding: 0; }
 .story-transcript .npc-dialogue, .story-transcript .player-message { box-sizing: border-box; }
