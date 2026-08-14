@@ -16,6 +16,10 @@
 - 补充开场角色交代：卷首明确玩家角色身份与所处情境（按出身插值「你是杳湾的〈出身〉，此刻正〈情境〉」），使「我」的存在不再悬空。
 - 新增第一幕《雨至》与第二幕《三影》分支剧情系统（`app/game/branching/`）：每决策节点可选项严格 ≤3 且显式编号（`no`），避免单一结局导向；第一幕三条路线（记历棚/渡口/粮仓）收束于幕终「承诺角色」，据角色分流到第二幕三个入口；第二幕于北滩浮尸处分三后果轴（羿箭 / 迟日 / 含晦），玩家选择引发不同走向；第一幕 flag 经 `visibleWhen` 跨幕影响第二幕可见分支与文本（如渡工线偷看货→第二幕渡口专属选项、取昼盐→独行线取盐选项）。引擎含 `validate()` 强制 ≤3 选项与 `next` 可达，并提供 `scripts/verify-branching.ts` 校验（连通性、三路线贯通、跨幕交叉影响、自动备份与恢复均通过）；剧情数据生成/更新时经平台适配层自动写带时间戳副本，支持 `list`/`restore`（`StoryDataBackup`）。说明见 `docs/branching-acts12.md`。
 
+### 修复
+
+- 分支剧情系统类型检查修复：`types.ts` 对 `src/content/contracts` 的相对导入路径由错误两级（`../../src/content/contracts`，指向不存在的 `app/src/content/contracts`）改正为三级（`../../../src/content/contracts`）；并补齐 `types.ts` 对 `Predicate/Effect/StoryBlock` 的「本地导入 + 再导出」与 `engine.ts` 对 `BranchState` 等类型再导出，使 `engine.ts`/`scripts/verify-branching.ts` 的类型引用可在 `tsc` 下解析；`tsconfig.json` 开启 `allowImportingTsExtensions`（已 `noEmit`，仅影响类型检查）以放行验证脚本的 `.ts` 扩展名导入。修复后 `tsc --noEmit` 全量错误回落至基线 19（分支系统零新增错误），`scripts/verify-branching.ts` 五组校验仍全绿。
+
 ### 修改
 
 - 参考 MUD 游戏界面改造剧情区与沉浸感（第一批）：章名行新增状态徽章（异兆缠身／任务中／暂无重伤三色）与「退出到主页」快捷入口；关键选项（带来源）改用朱砂描边 + 稍大尺寸形成视觉层级；暗色主题叠加极淡噪声纹理、阅读区顶部加暗角、章名 eyebrow 右侧加朱砂小印，强化氛围与质感。

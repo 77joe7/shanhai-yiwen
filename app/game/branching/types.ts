@@ -1,7 +1,8 @@
 // 分支剧情系统类型定义。
 // 复用 src/content/contracts.ts 的 Predicate / Effect / StoryBlock 契约，
 // 在其上扩展「带编号选项」「幕标识」「幕终/卷终」等分支剧情所需字段。
-import type { Predicate, Effect, StoryBlock } from "../../src/content/contracts";
+import type { Predicate, Effect, StoryBlock } from "../../../src/content/contracts";
+export type { Predicate, Effect, StoryBlock } from "../../../src/content/contracts";
 
 export type ActId = 1 | 2;
 export type NodeKind = "story" | "act-end" | "volume-end";

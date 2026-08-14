@@ -11,6 +11,16 @@ import type {
   Effect,
 } from "./types";
 
+export type {
+  BranchingContent,
+  BranchNode,
+  BranchState,
+  BranchChoice,
+  BranchNote,
+  Predicate,
+  Effect,
+} from "./types";
+
 const ACT_ENTRY_SENTINEL = "A2-ENTRY";
 const MAX_CHOICES = 3;
 
