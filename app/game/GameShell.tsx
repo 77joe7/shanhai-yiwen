@@ -302,7 +302,6 @@ export function GameShell() {
         </section>
       )}
 
-      <div className="toast" role="status"><span />{notice}</div>
       {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} activeId={activeId} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} exitToMain={exitToMain} createNewCharacter={createNewCharacter} />}
       {detail && <DetailCardModal card={detail} close={() => setDetail(null)} />}
       <input ref={importRef} hidden type="file" accept="application/json,.json" onChange={(e) => receiveImport(e.target.files?.[0])} />
@@ -424,9 +423,18 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
   const displayCharacters = shouldType ? revealCharacters : 0;
   const isTyping = shouldType && revealIndex < currentEntries.length;
 
+  function scrollToFraction(target: HTMLElement | null, fraction: number, behavior: "auto" | "smooth") {
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    window.scrollTo({ top: Math.max(0, window.scrollY + rect.top - window.innerHeight * fraction), behavior });
+  }
+
   function scrollToLatest(position: "start" | "end" = "end") {
     const target = position === "start" ? latestNodeRef.current : transcriptEndRef.current;
-    window.requestAnimationFrame(() => target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: position === "start" ? "center" : "end" }));
+    window.requestAnimationFrame(() => {
+      if (position === "start") target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+      else scrollToFraction(target, 2 / 3, reducedMotion ? "auto" : "smooth");
+    });
   }
 
   function revealAll() { setReveal({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 }); }
@@ -459,12 +467,11 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
     return () => window.clearTimeout(timer);
   }, [currentEntries, isTyping, reducedMotion, revealCharacters, revealIndex]);
 
-  // 逐字展开 / 换节点时自动跟随到最新底部；玩家主动上翻时不打断。
+  // 逐字展开 / 换节点时自动跟随：把最新内容定位到视口约 2/3 高度处，底部留白不贴边；玩家主动上翻时不打断。
   // 逐字过程用瞬时滚动（behavior:"auto"），避免每 30ms 一次 smooth 动画叠加造成滚动幅度小、顿挫。
   useEffect(() => {
     if (awayFromLatest) return;
-    const target = transcriptEndRef.current;
-    window.requestAnimationFrame(() => target?.scrollIntoView({ block: "end", behavior: "auto" }));
+    window.requestAnimationFrame(() => scrollToFraction(transcriptEndRef.current, 2 / 3, "auto"));
   }, [revealCharacters, revealIndex, node.id, awayFromLatest]);
 
   return <article className="story-panel story-runtime">
