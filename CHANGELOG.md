@@ -22,6 +22,8 @@
 
 ### 修复
 
+- 修复对话与选项卡片出现时的闪烁：移除打字中消息的额外底部内边距（`.story-message.is-typing` 的 `padding-bottom:10px`，是旁白/系统消息打字完成瞬间 10px 高度突变的根源）；为对话消息与选项按钮新增一次性入场动画 `@keyframes story-enter`（淡入 + 轻微上移，对话消息 `fill-mode:both`、选项按钮 `fill-mode:backwards` 以免钉住 hover 的 transform），动画仅在元素首次挂载时播放、逐字更新（children 变化但 key 不变）不重复触发；选项按钮按索引错峰（内联 `--i` 变量乘 55ms 延迟）依次淡入，使从「……」占位切换到选项卡片时平滑自然。不影响既有逐字展开、自动跟随滚动与其他动画表现。
+
 - 分支剧情系统类型检查修复：`types.ts` 对 `src/content/contracts` 的相对导入路径由错误两级（`../../src/content/contracts`，指向不存在的 `app/src/content/contracts`）改正为三级（`../../../src/content/contracts`）；并补齐 `types.ts` 对 `Predicate/Effect/StoryBlock` 的「本地导入 + 再导出」与 `engine.ts` 对 `BranchState` 等类型再导出，使 `engine.ts`/`scripts/verify-branching.ts` 的类型引用可在 `tsc` 下解析；`tsconfig.json` 开启 `allowImportingTsExtensions`（已 `noEmit`，仅影响类型检查）以放行验证脚本的 `.ts` 扩展名导入。修复后 `tsc --noEmit` 全量错误回落至基线 19（分支系统零新增错误），`scripts/verify-branching.ts` 五组校验仍全绿。
 
 ### 调整
@@ -32,6 +34,7 @@
 
 - 新增分支剧情详版思维导图 `docs/branching-mindmap.html`：在保留「总分」结构连线的基础上，把每个节点的**人物、剧情原文、三选项与后果变量**，以及两幕间的**背景设定与发展脉络**（黑雨世界观、幕间交叉影响逻辑、第二幕三身份立场、北滩三影者/含晦设定、三后果轴的三种真相姿态）直接标注在对应区域，无需另查文档即可读懂；含可点击跳转的全局结构总览与可折叠节点卡。所有文案与 `app/game/branching/acts.ts` 一致，脉络框为对分散 narration 设定的集中标注，未新增剧情内容。
 - 新增七卷总剧情思维导图 `docs/seven-volumes-mindmap.html`：覆盖全部七卷情节的自包含导图。卷一《黑雨》以已落地完整内容详展开（五幕结构、三个中型副本、十二条人物线、四条结局与三条后果轴、约十项卷一→卷二跨卷状态绑定）；卷二至卷七依 V1.3 总纲以「规划待落地」节点呈现，直接于节点旁标注主题、主角阶段、关键玩法、关键 NPC 与跨卷输入/输出，并附「七卷情绪重心与玩法升级」附表。导图采用卷主干 limbs + 总纲中枢 + 可折叠节点卡，读者无需额外查阅即可理解整体脉络与总分结构；数据来源：V1.3 说明书、第一卷小说母稿、10小时扩展蓝图、内容包 characters/world-state JSON。
+- 新增分支决策树 XMind 文件 `docs/black-rain-decision-tree.xmind`：以标准 XMind Zen 格式（ZIP 内含 content.json）可视化第一幕《雨至》+ 第二幕《三影》的全部选项→结局走向。树状结构含「起点 → 三初始去向 → 三落脚处 →〔收束〕村中夜议 → 井/守/北滩 →〔幕终〕承诺身份 → 三第二幕入口 →〔收束〕北滩有尸 → 三后果轴 → 三卷终」，每个分支节点以「选项N」标签 + 注释标注其文案、跳转目标与后果标记；并以「📊 统计汇总」分支与根节点汇总展示：总走向路径 5265 条、卷终结局 3 个（羿箭轴/迟日轴/含晦轴，互不汇流）、结局子态 9 种（每轴 3 世界变量分支）、每结局汇聚 1755 条。统计由脚本精确枚举所有可达决策序列得出（含 2 个有条件出现选项：A2-FERRY-c3 需先『偷看舱中物』、A2-SOLO-c1 需先『取过昼盐/知含晦』），数据严格来自 `app/game/branching/acts.ts`；生成脚本保留于 `tmp/gen_xmind.py`。
 
 ### 修改
 
