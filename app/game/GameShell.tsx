@@ -87,6 +87,10 @@ export function GameShell() {
   const [settings, setSettings] = useState(defaultSettings);
   const [command, setCommand] = useState("");
   const [notice, setNotice] = useState("第一卷《黑雨》内容包已载入");
+  const [landingSeen, setLandingSeen] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("shanhai.landingSeen") === "true";
+  });
   const importRef = useRef<HTMLInputElement>(null);
   const panelScrollPositions = useRef<Partial<Record<PanelId, number>>>({});
 
@@ -294,6 +298,8 @@ export function GameShell() {
             {navItems.filter((item) => item.id !== "people").map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
           </nav>
         </>
+      ) : !state && !landingSeen ? (
+        <StartPage onEnter={() => { setLandingSeen(true); try { window.localStorage.setItem("shanhai.landingSeen", "true"); } catch {} }} />
       ) : (
         <section className="home-screen">
           {characters.length === 0
@@ -355,6 +361,19 @@ function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, 
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
   if (panel === "people") return <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} />;
   return <MorePanel state={state} openOverlay={openOverlay} openPeople={() => selectPanel("people")} />;
+}
+
+function StartPage({ onEnter }: { onEnter: () => void }) {
+  return <section className="start-page" aria-label="山海异闻录开始页面">
+    <div className="start-page-inner">
+      <div className="start-page-mark"><i /></div>
+      <h1 className="start-page-title">山海異聞錄</h1>
+      <p className="start-page-subtitle">天地未定 · THE UNWRITTEN SHANHAI</p>
+      <p className="start-page-tagline">赤水有尸，天上少了一轮太阳。<br/>杳湾的雨落下以前，每个人都还忙着占满一生的小事。</p>
+      <button type="button" className="start-page-enter" onClick={onEnter}>入 山 海</button>
+      <p className="start-page-foot">第一卷《黑雨》内容包已载入 · v3.0.0</p>
+    </div>
+  </section>;
 }
 
 function StartPanel({ openCreate, openSettings, openSaves }: { openCreate: () => void; openSettings: () => void; openSaves: () => void }) {
