@@ -7293,21 +7293,21 @@
         {
           "no": 1,
           "id": "V01-C01-N227-E11",
-          "label": "检视与你的出身相关的旧物（一）",
+          "label": "检视架上第一层旧物：猎户骨箭、山民扁石与巫祝祭灰",
           "next": "V01-C01-N227-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N227-E21",
-          "label": "检视与你的出身相关的旧物（二）",
+          "label": "检视架上第二层旧物：商旅钱袋、九黎骨文与祭司日名",
           "next": "V01-C01-N227-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N227-E31",
-          "label": "检视与你的出身相关的旧物（三）",
+          "label": "检视架底暗角的旧物：流亡贵胄断印与无名白牌",
           "next": "V01-C01-N227-G31",
           "effects": []
         }
@@ -10134,6 +10134,13 @@
           "label": "回到第六日轮班表",
           "next": "V01-C01-N281",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N282-X",
+          "label": "屋顶暂补，轮班之事到此告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10195,6 +10202,13 @@
           "label": "回到第六日轮班表",
           "next": "V01-C01-N281",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N283-X",
+          "label": "沟水暂通，轮班之事到此告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10261,6 +10275,13 @@
           "label": "回到第六日轮班表",
           "next": "V01-C01-N281",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N284-X",
+          "label": "轮班已排，夜班之事到此告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10322,6 +10343,13 @@
           "label": "回到第六日轮班表",
           "next": "V01-C01-N281",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N285-X",
+          "label": "照护有约，轮班之事到此告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10452,6 +10480,13 @@
           "label": "返回归还桌",
           "next": "V01-C01-N286",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N287-X",
+          "label": "失物各有归处，带着清单沿河床继续走",
+          "next": "V01-C01-N214",
+          "effects": []
         }
       ],
       "tags": [
@@ -10512,6 +10547,13 @@
           "label": "返回归还桌",
           "next": "V01-C01-N286",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N288-X",
+          "label": "婚钗有主，把争执记下，沿河床继续走",
+          "next": "V01-C01-N214",
+          "effects": []
         }
       ],
       "tags": [
@@ -10578,6 +10620,13 @@
           "label": "返回归还桌",
           "next": "V01-C01-N286",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N289-X",
+          "label": "军牌暂存，带着疑问沿河床继续走",
+          "next": "V01-C01-N214",
+          "effects": []
         }
       ],
       "tags": [
@@ -10639,6 +10688,13 @@
           "label": "返回归还桌",
           "next": "V01-C01-N286",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N290-X",
+          "label": "湿账托付妥当，沿河床继续走",
+          "next": "V01-C01-N214",
+          "effects": []
         }
       ],
       "tags": [
@@ -10763,6 +10819,13 @@
           "label": "返回记忆修复台",
           "next": "V01-C01-N291",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N292-X",
+          "label": "渡灯影像暂不追，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10818,6 +10881,13 @@
           "label": "返回记忆修复台",
           "next": "V01-C01-N291",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N293-X",
+          "label": "笔画已寻得方向，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10868,6 +10938,13 @@
           "label": "返回记忆修复台",
           "next": "V01-C01-N291",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N294-X",
+          "label": "鼓点归还与否待定，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10924,6 +11001,13 @@
           "label": "返回记忆修复台",
           "next": "V01-C01-N291",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N295-X",
+          "label": "哭声不认主，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -10970,8 +11054,8 @@
       "choices": [
         {
           "id": "V01-C01-N296-A",
-          "label": "回归还者号查第三扣为何没有断",
-          "next": "A2-END-SALT",
+          "label": "回归还者号核验第三扣为何没有断（回溯沉船线）",
+          "next": "V01-C01-N061",
           "no": 1
         },
         {
@@ -11567,6 +11651,13 @@
           "label": "返回书信桌",
           "next": "V01-C01-N306",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N307-X",
+          "label": "信已代写，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -11622,6 +11713,13 @@
           "label": "返回书信桌",
           "next": "V01-C01-N306",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N308-X",
+          "label": "公开与否留待隗青，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -11673,6 +11771,13 @@
           "label": "返回书信桌",
           "next": "V01-C01-N306",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N309-X",
+          "label": "阿禾的信已折好，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -11729,6 +11834,13 @@
           "label": "返回书信桌",
           "next": "V01-C01-N306",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N310-X",
+          "label": "自白已交缄婆，先回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -11851,6 +11963,13 @@
           "label": "回到孩子短会",
           "next": "V01-C01-N311",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N312-X",
+          "label": "低灯已改，孩子短会告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -11907,6 +12026,13 @@
           "label": "回到孩子短会",
           "next": "V01-C01-N311",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N313-X",
+          "label": "互认牌已议，孩子短会告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -11963,6 +12089,13 @@
           "label": "回到孩子短会",
           "next": "V01-C01-N311",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N314-X",
+          "label": "回传板已定，孩子短会告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12004,6 +12137,10 @@
         {
           "type": "system",
           "text": "【旧档案重读】选择一册档案进行边注：徭役簿、损耗簿、暂住簿或北方来文。边注会补强世界史并回流至人物、路线与终局证词。"
+        },
+        {
+          "type": "narration",
+          "text": "最旧的那卷文书压在最底层，签发栏被人撕去一角。留下的印色泛着盐白——你想起旧盐井账册上，也有过同一枚印。"
         }
       ],
       "choices": [
@@ -12083,6 +12220,13 @@
           "label": "返回旧档案间",
           "next": "V01-C01-N315",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N316-X",
+          "label": "徭役簿已读，合卷回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12139,6 +12283,13 @@
           "label": "返回旧档案间",
           "next": "V01-C01-N315",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N317-X",
+          "label": "损耗簿已读，合卷回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12200,6 +12351,13 @@
           "label": "返回旧档案间",
           "next": "V01-C01-N315",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N318-X",
+          "label": "暂住簿已补，合卷回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12261,6 +12419,13 @@
           "label": "返回旧档案间",
           "next": "V01-C01-N315",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N319-X",
+          "label": "来文已拆，合卷回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12381,6 +12546,13 @@
           "label": "回到演练复盘",
           "next": "V01-C01-N320",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N321-X",
+          "label": "集合信号已补，演练复盘告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12442,6 +12614,13 @@
           "label": "回到演练复盘",
           "next": "V01-C01-N320",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N322-X",
+          "label": "随身清单已立，演练复盘告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12503,6 +12682,13 @@
           "label": "回到演练复盘",
           "next": "V01-C01-N320",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N323-X",
+          "label": "交接牌已设，演练复盘告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12564,6 +12750,13 @@
           "label": "回到演练复盘",
           "next": "V01-C01-N320",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N324-X",
+          "label": "证词罐规则已定，演练复盘告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12684,6 +12877,13 @@
           "label": "返回第一次听证",
           "next": "V01-C01-N325",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N326-X",
+          "label": "沉船文书已听，听证告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12740,6 +12940,13 @@
           "label": "返回第一次听证",
           "next": "V01-C01-N325",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N327-X",
+          "label": "损耗已听，听证告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12791,6 +12998,13 @@
           "label": "返回第一次听证",
           "next": "V01-C01-N325",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N328-X",
+          "label": "失散者已听，听证告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -12847,6 +13061,13 @@
           "label": "返回第一次听证",
           "next": "V01-C01-N325",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N329-X",
+          "label": "来文已听，听证告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13222,6 +13443,13 @@
           "label": "回到门槛回访",
           "next": "V01-C01-N335",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N336-X",
+          "label": "祠屋配水已听，回访告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13278,6 +13506,13 @@
           "label": "回到门槛回访",
           "next": "V01-C01-N335",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N337-X",
+          "label": "低灯报怕已听，回访告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13334,6 +13569,13 @@
           "label": "回到门槛回访",
           "next": "V01-C01-N335",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N338-X",
+          "label": "生民簿已听，回访告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13390,6 +13632,13 @@
           "label": "回到门槛回访",
           "next": "V01-C01-N335",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N339-X",
+          "label": "渡口木桩已听，回访告一段落",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13456,7 +13705,7 @@
     },
     {
       "id": "V01-C01-N341",
-      "chapter": "ACT1_RAIN_ARRIVES",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "第一日：羊圈里留着一扇没关死的门",
       "presentation": "seven_days",
       "blocks": [
@@ -13503,6 +13752,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N341-X",
+          "label": "合上第一日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13514,7 +13770,7 @@
     },
     {
       "id": "V01-C01-N342",
-      "chapter": "ACT2_THREE_SHADOWS",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "第二日：一碗粥没有变公平，只让人先看见谁吞不下",
       "presentation": "seven_days",
       "blocks": [
@@ -13556,6 +13812,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N342-X",
+          "label": "合上第二日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13567,7 +13830,7 @@
     },
     {
       "id": "V01-C01-N343",
-      "chapter": "ACT2_THREE_SHADOWS",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "第三日：梦游者走到屋后，低灯没有替他解释姓名",
       "presentation": "seven_days",
       "blocks": [
@@ -13621,6 +13884,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N343-X",
+          "label": "合上第三日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13632,7 +13902,7 @@
     },
     {
       "id": "V01-C01-N344",
-      "chapter": "ACT3_RIVER_REVERSED",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "第四日：井绳没有断，没人因此被逼着把话说完",
       "presentation": "seven_days",
       "blocks": [
@@ -13691,6 +13961,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N344-X",
+          "label": "合上第四日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13703,7 +13980,7 @@
     },
     {
       "id": "V01-C01-N345",
-      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "第五日：暂住页没有姓名，空凳也没有被收走",
       "presentation": "seven_days",
       "blocks": [
@@ -13757,6 +14034,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N345-X",
+          "label": "合上第五日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13769,7 +14053,7 @@
     },
     {
       "id": "V01-C01-N346",
-      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "第六日：屋顶、沟水与轮班的人，没有谁该永远站在雨里",
       "presentation": "seven_days",
       "blocks": [
@@ -13823,6 +14107,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N346-X",
+          "label": "合上第六日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13889,6 +14180,13 @@
           "label": "回到黑雨七日记",
           "next": "V01-C01-N340",
           "no": 1
+        },
+        {
+          "no": 2,
+          "id": "V01-C01-N347-X",
+          "label": "合上第七日，回筹备",
+          "next": "V01-C01-N053",
+          "effects": []
         }
       ],
       "tags": [
@@ -13959,7 +14257,7 @@
     },
     {
       "id": "V01-C01-N349",
-      "chapter": "ACT1_RAIN_ARRIVES",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "潮门的木楔不贵，难的是承认自己也会被水困住",
       "presentation": "ordinary_affair",
       "blocks": [
@@ -14020,7 +14318,7 @@
     },
     {
       "id": "V01-C01-N350",
-      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "两床无主的毯子晒在北坡，姐妹先晒出了彼此的旧账",
       "presentation": "ordinary_affair",
       "blocks": [
@@ -14085,7 +14383,7 @@
     },
     {
       "id": "V01-C01-N351",
-      "chapter": "ACT3_RIVER_REVERSED",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "河埠的一只空桶，比一袋粮食更难借出去",
       "presentation": "ordinary_affair",
       "blocks": [
@@ -14151,7 +14449,7 @@
     },
     {
       "id": "V01-C01-N352",
-      "chapter": "ACT2_THREE_SHADOWS",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "孩子想把铜勺埋掉，青芽先问他要留下什么声音",
       "presentation": "ordinary_affair",
       "blocks": [
@@ -14211,7 +14509,7 @@
     },
     {
       "id": "V01-C01-N353",
-      "chapter": "ACT3_RIVER_REVERSED",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "旧鞋被人换走以后，盐井边终于有人肯把账摊开",
       "presentation": "ordinary_affair",
       "blocks": [
@@ -14271,7 +14569,7 @@
     },
     {
       "id": "V01-C01-N354",
-      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "轮班表写得够大以后，守夜的人终于不必只靠记住脸",
       "presentation": "ordinary_affair",
       "blocks": [
@@ -14463,7 +14761,7 @@
     },
     {
       "id": "V01-C01-N357",
-      "chapter": "ACT3_RIVER_REVERSED",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "借走的钳子回来了，带回来的不是羞耻而是一只空手",
       "presentation": "return_receipt",
       "blocks": [
@@ -14528,7 +14826,7 @@
     },
     {
       "id": "V01-C01-N358",
-      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "被拒绝的安置不该被改写成忘恩，门外的人也有自己的雨",
       "presentation": "return_receipt",
       "blocks": [
@@ -14588,7 +14886,7 @@
     },
     {
       "id": "V01-C01-N359",
-      "chapter": "ACT2_THREE_SHADOWS",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "回访不是敲开所有门，青芽只把药放在能看见的地方",
       "presentation": "return_receipt",
       "blocks": [
@@ -14828,7 +15126,7 @@
     },
     {
       "id": "V01-C01-N363",
-      "chapter": "ACT2_THREE_SHADOWS",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "灯先被罩住，声音才没有把所有人带进同一条沟",
       "presentation": "first_lesson",
       "blocks": [
@@ -14889,7 +15187,7 @@
     },
     {
       "id": "V01-C01-N364",
-      "chapter": "ACT3_RIVER_REVERSED",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "借桶的人没有站出来，孩子们先学会问“你还好吗”",
       "presentation": "first_lesson",
       "blocks": [
@@ -14955,7 +15253,7 @@
     },
     {
       "id": "V01-C01-N365",
-      "chapter": "ACT4_NIGHT_WITHOUT_SUN",
+      "chapter": "ACT5_TEN_SUN_OMEN",
       "title": "轮班表写错了一笔，暗青没有把炭条从孩子手里夺走",
       "presentation": "first_lesson",
       "blocks": [
@@ -15291,6 +15589,10 @@
         {
           "type": "system",
           "text": "【第二幕·分叉】北滩的浮尸摆在你面前。你打算先处理哪一条线索？"
+        },
+        {
+          "type": "narration",
+          "text": "最先发现这具尸体的是守夜人隗青——他在滩上留下半枚脚印，便退回雨里，天亮前又独自回来确认过一次。北滩尽头停着一辆北方马车的轮廓，车帘没有掀开；昨夜，还有人在尸身旁放了一碗没动过的粟粥。"
         }
       ],
       "choices": [

@@ -9,6 +9,7 @@
 - 将线上部署从 Cloudflare Workers 完整迁移至 EdgeOne Makers（国内直连，region=china）。因 Vinext RSC 默认产出 SSR（无 index.html），新增 `next.config.mjs` 设 `output:"export"` 与 `images.unoptimized:true`，使 `vinext build` 预渲染为静态站点（`dist/client/index.html` 等），经 edgeone-pages MCP `deploy_folder`（projectType=static）上线；已验证首页、JS chunk 与背景图均返回 200。Cloudflare Worker（shanhai-yiwen-system-preview.302628809.workers.dev）保留为兜底，可按需停用。
 - 重新部署第一卷《黑雨》v4.1.0（464 节点）：内容包更新后重新构建静态导出并部署 EdgeOne（V1.4 对齐的 5 页导航、撤回、branchClass、高亮跳转、稀有度标签、幕名修正等代码改动同步上线）。部署前打基线 tag `deploy-v4.1.0-20260814`（指向 commit `89451b3`），剧情内容包完整快照另冻结于 `剧情/.../备份/2026-08-14_v4.1.0/`（zip，含 10 个 JSON + 正文 + 资料）。已验证线上 HTTP 200、`contentVersion:"4.1.0"`。
 - 信息栏（情境安全区）从底部移至标题栏正下方：`StorySafeArea` 的 DOM 位置从 `desktop-grid` 之后移到 `topbar` 之后；`.story-safe-area` 由 `position:fixed; bottom:0` 改为 `top:64px`（移动端 `top:calc(64px + env(safe-area-inset-top))`），`border-bottom:0` 改 `border-top:0`。配套调整：`.mythic-shell .reader` 顶部 padding 42px→106px、`.side-rail` 顶部 padding 30px→94px（避让信息栏）、移动端 `.mobile-status-strip` 加 `margin-top:72px`、移动端 `.reader` 底部 padding `calc(196px+…)`→`calc(104px+…)`（底部信息栏移除后不再需要大留白）。滚动定位（视口 2/3 / reducedMotion 1/3）不变。
+- 导航重构与版面优化（三项）：① 底部导航由「志异/故交/行游/舆图/命录」改为「志异/命录/行游(居中)/行囊/舆图」——命录提前到第 2 位，行囊独立为第 4 大功能页（`PanelId` 移除 `people`、新增 `inventory`，`hlPanel` 同步：人物→命录、物件/线索→行囊）；命录页子标签由「行囊/未竟之事」改为「故交/命轨」（故交渲染 PeoplePanel、命轨渲染 QuestLog）。② 功能页标题去重：`reader-heading`（eyebrow/h1/brush-rule/退出按钮）仅在 story 页渲染，非剧情页由面板内部标题唯一呈现；MapPanel、FatePanel 补统一 `archive-toolbar` 标题（「舆图」「命录」）。③ 顶部大框：`.mythic-shell .topbar` 去掉 `border-bottom`，与信息栏 `.story-safe-area` 连续合并为统一深色大框。
 
 ### 新增
 
@@ -38,6 +39,8 @@
 ### 文档
 
 - 新增第一卷全量审查报告 `docs/black-rain-v1-review.md`：程序化图遍历（选项归一化比对 / Tarjan 环检测 / 从终局 N023 反向可达分析 / 入边与章节归属核查）+ 逐幕人工叙事核对。结论：主线骨架（一二幕分支 + 三-五幕总分 + 六卷终）逻辑自洽；**P0 严重问题 13 项**——N296 跨卷回环（第五幕选项误指第二幕卷终 A2-END-SALT，剧情时间线倒退）、10 个回访死区枢纽 + 2 个中间枢纽（N286/N281/N291/N306/N311/N315/N320/N325/N335/N340 及 N053-G11-G21/G31，进入后无出口回主线，玩家被困无法到达卷终）、build 校验缺反向可达检查；**P1 重要 2 项**——N227 三选项文案归一化后完全重复（仅（一）（二）（三）差异，命中用户排查第 b 类）、22 个回访链节点 chapter 标签错乱（七日记跨标 ACT1-5 等）；**P2 建议 5 项**——第三幕节奏偏平、金乌/第十日/昼盐命令签发者/赤金箭嫁祸者 4 项第二卷伏笔未埋、卷终单选项无再决策空间、HUB 标题机器痕迹、N053/N022 标题近似。每项均附修改动作与可复现脚本口径（修复后反向可达应覆盖 ≥316 节点、死区归零）。
+
+- 第一卷剧情完整性/连贯性修复（内容包 4.2.0→4.3.0，依据 `docs/black-rain-v1-review.md`）：① **消除全部死区**——10 个回访死区枢纽（第三幕归还桌 N286、第五幕轮班表 N281/记忆修复台 N291/书信桌 N306/孩子短会 N311/旧档案间 N315/演练复盘 N320/第一次听证 N325/门槛回访 N335/黑雨七日记 N340）的 42 个子场景各补 1 个「返回主线」出口选项（→N214 或 →N053），玩家不再被困在区内循环；② **修复 N296 跨卷回环**——第五幕「三段红线」的「回归还者号」选项由误指第二幕卷终 A2-END-SALT 改为第三幕沉船线 N061（可达主线），消除时间线倒退；③ **N227 出身旧物三选项差异化**——由「检视旧物（一/二/三）」改为按木架分层内容命名（猎户骨箭/山民扁石/巫祝祭灰、商旅钱袋/九黎骨文/祭司日名、流亡贵胄断印/无名白牌）；④ **22 个回访链节点 chapter 标签统一为第五幕**——黑雨七日记（N341-347）、六件普通事（N349-354）、未送达回执（N357-360）、雨后初课（N363-365）不再跨标 ACT1-5，正文分幕正确；⑤ **补人物出场铺垫**——A2-SHORE 北滩有尸补 narration（隗青为最先发现者、季狸北方马车、砚童供粥伏笔）、A1-GRANARY 青芽对话提及阿禾（牧羊女身份与雨天见识）、N013 河床补黎苇（盐泽流民首领）铺垫；⑥ **补第二卷伏笔**——N315 旧档案间（昼盐命令签发者撕角文书）、N021 羿线（赤金箭刻痕非弓弦所磨、首现沾血可疑=嫁祸者）、N028 余响（云后金乌振翅、七日之后不可数=第十日）。校验：真死区 0（反向可达仅余 51 个结局链正常单向流）、build 全绿（374 节点全可达）、正文重生成 93,278 汉字。修复前快照冻结于 `备份/2026-08-15_v4.3.0/`。
 
 ### 调整
 
