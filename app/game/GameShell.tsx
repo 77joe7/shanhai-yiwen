@@ -290,10 +290,12 @@ export function GameShell() {
                 <div className="brush-rule"><i /></div>
                 {state.created && <button type="button" className="reader-exit" onClick={exitToMain} aria-label="退出到主页">退出</button>}
               </div>
-              {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel key={activeId} panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} notice={notice} />}
+              {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel key={activeId} panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />}
             </section>
             <SideRail panel={panel} setPanel={selectPanel} state={state} />
           </section>
+
+          {state.created && <StorySafeArea state={state} notice={notice} />}
 
           <nav className="mobile-nav" aria-label="主要功能">
             {navItems.filter((item) => item.id !== "people").map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
@@ -355,8 +357,8 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
   </aside>;
 }
 
-function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, selectPanel, openOverlay, openDetail, notice }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void; notice: string }) {
-  if (panel === "story") return <><StoryPanel state={state} advanceStory={advanceStory} typewriter={typewriter} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} /><StorySafeArea state={state} notice={notice} /></>;
+function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, selectPanel, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
+  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} typewriter={typewriter} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} />;
   if (panel === "map") return <MapPanel state={state} />;
   if (panel === "codex") return <CodexPanel state={state} openDetail={openDetail} />;
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
@@ -539,6 +541,7 @@ function MapPanel({ state }: { state: GameState }) {
 
 function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
   const categoryNames: Record<string, string> = { event: "异象", person: "人物", item: "器物", material: "器物", beast: "异兽", place: "地理", document: "文书", tool: "器物" };
+  const categoryTone: Record<string, string> = { event: "event", person: "person", item: "artifact", material: "artifact", beast: "beast", place: "place", document: "document", tool: "artifact" };
   const layerNames: Record<string, string> = { first_sight: "初见", rumor: "传闻", evidence: "行证", insight: "推论", echo: "余响" };
   const categoryGroups: Array<{ id: string; label: string; sources: string[] }> = [
     { id: "event", label: "异象", sources: ["event"] },
@@ -557,7 +560,7 @@ function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card
       const unlocked = new Set(state.codexLayers?.[entry.id] ?? []);
       const layer = entry.layers.filter((candidate) => unlocked.has(candidate.id)).at(-1) ?? entry.layers[0];
       const contradictions = [...new Set(entry.layers.flatMap((candidate) => unlocked.has(candidate.id) ? candidate.contradictions : []))];
-      return <ArchiveRow key={entry.id} eyebrow={`${layerNames[layer.id] ?? layer.id} · ${layer.sourceVoice}`} title={entry.title} note={`认知 ${unlocked.size}/${entry.layers.length} 层${contradictions.length ? " · 有异说" : ""}`} onClick={() => openDetail({
+      return <ArchiveRow key={entry.id} tone={categoryTone[entry.category] ?? "artifact"} eyebrow={`${layerNames[layer.id] ?? layer.id} · ${layer.sourceVoice}`} title={entry.title} note={`认知 ${unlocked.size}/${entry.layers.length} 层${contradictions.length ? " · 有异说" : ""}`} onClick={() => openDetail({
         eyebrow: `${categoryNames[entry.category] ?? entry.category} · 多源见闻`, title: entry.title, text: layer.text,
         source: `当前记录来自：${layer.sourceVoice}；可信度：${layer.reliability}${contradictions.length ? `；待辨异说：${contradictions.join(" / ")}` : ""}`,
         facts: [{ label: "认知层级", value: `${unlocked.size}/${entry.layers.length}` }, { label: "归类", value: categoryNames[entry.category] ?? entry.category }],
@@ -599,7 +602,7 @@ function PeoplePanel({ state, mutate, openDetail }: { state: GameState; mutate: 
   const [category, setCategory] = useState(categories[0]);
   const entries = blackRainContent.characters.filter((character) => (character.factionIds[0] ?? "其他") === category);
   return <ArchiveBrowser label="人物分类" categories={categories} categoryLabels={factionLabels} selectedCategory={category} setSelectedCategory={setCategory} emptyText="此类人物尚未在卷中显形。">
-    {entries.map((character) => { const value = Number(state.relation[character.id] ?? 0); return <ArchiveRow key={character.id} eyebrow={character.state} title={character.name} note={character.identity} onClick={() => openDetail({ eyebrow: "人物 · 关系档案", title: character.name, text: character.desire, source: `言谈：${character.speechGuide}`, facts: [{ label: "当前关系", value: value }, { label: "关系轴", value: character.relationshipAxes.join(" · ") }, { label: "行踪", value: character.location }], action: { label: "留下守约的印象", run: () => mutate(`${character.name}记住了你守约的一次`, (draft) => ({ ...draft, relation: { ...draft.relation, [character.id]: value + 1 } })) } })} />; })}
+    {entries.map((character) => { const value = Number(state.relation[character.id] ?? 0); return <ArchiveRow key={character.id} eyebrow={character.state} title={character.name} note={character.identity} meter={{ value }} onClick={() => openDetail({ eyebrow: "人物 · 关系档案", title: character.name, text: character.desire, source: `言谈：${character.speechGuide}`, facts: [{ label: "当前关系", value: value }, { label: "关系轴", value: character.relationshipAxes.join(" · ") }, { label: "行踪", value: character.location }], action: { label: "留下守约的印象", run: () => mutate(`${character.name}记住了你守约的一次`, (draft) => ({ ...draft, relation: { ...draft.relation, [character.id]: value + 1 } })) } })} />; })}
   </ArchiveBrowser>;
 }
 
@@ -612,8 +615,8 @@ function ArchiveBrowser({ label, categories, categoryLabels = {}, selectedCatego
   </section>;
 }
 
-function ArchiveRow({ eyebrow, title, note, onClick, disabled = false }: { eyebrow: string; title: string; note: string; onClick: () => void; disabled?: boolean }) {
-  return <button className="archive-row" onClick={onClick} disabled={disabled}><span>{eyebrow}</span><b>{title}</b><small>{note}</small><i>{disabled ? "空位" : "查看"}</i></button>;
+function ArchiveRow({ eyebrow, title, note, onClick, disabled = false, tone, meter }: { eyebrow: string; title: string; note: string; onClick: () => void; disabled?: boolean; tone?: string; meter?: { value: number; max?: number } }) {
+  return <button className="archive-row" onClick={onClick} disabled={disabled}>{tone && <i className={`row-tone row-tone-${tone}`} aria-hidden="true" />}<span>{eyebrow}</span><b>{title}</b><small>{note}</small>{meter && <span className={`row-meter ${meter.value >= 0 ? "pos" : "neg"}`} aria-label={`关系 ${meter.value}`}><i><em style={{ width: `${Math.min(100, Math.abs(meter.value) / (meter.max ?? 10) * 100)}%` }} /></i><b>{meter.value > 0 ? `+${meter.value}` : meter.value}</b></span>}<i>{disabled ? "空位" : "查看"}</i></button>;
 }
 
 function MorePanel({ state, openOverlay, openPeople }: { state: GameState; openOverlay: (o: OverlayId) => void; openPeople: () => void }) {
