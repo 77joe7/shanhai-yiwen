@@ -7,6 +7,8 @@
 ### 部署
 
 - 将线上部署从 Cloudflare Workers 完整迁移至 EdgeOne Makers（国内直连，region=china）。因 Vinext RSC 默认产出 SSR（无 index.html），新增 `next.config.mjs` 设 `output:"export"` 与 `images.unoptimized:true`，使 `vinext build` 预渲染为静态站点（`dist/client/index.html` 等），经 edgeone-pages MCP `deploy_folder`（projectType=static）上线；已验证首页、JS chunk 与背景图均返回 200。Cloudflare Worker（shanhai-yiwen-system-preview.302628809.workers.dev）保留为兜底，可按需停用。
+- 重新部署第一卷《黑雨》v4.1.0（464 节点）：内容包更新后重新构建静态导出并部署 EdgeOne（V1.4 对齐的 5 页导航、撤回、branchClass、高亮跳转、稀有度标签、幕名修正等代码改动同步上线）。部署前打基线 tag `deploy-v4.1.0-20260814`（指向 commit `89451b3`），剧情内容包完整快照另冻结于 `剧情/.../备份/2026-08-14_v4.1.0/`（zip，含 10 个 JSON + 正文 + 资料）。已验证线上 HTTP 200、`contentVersion:"4.1.0"`。
+- 信息栏（情境安全区）从底部移至标题栏正下方：`StorySafeArea` 的 DOM 位置从 `desktop-grid` 之后移到 `topbar` 之后；`.story-safe-area` 由 `position:fixed; bottom:0` 改为 `top:64px`（移动端 `top:calc(64px + env(safe-area-inset-top))`），`border-bottom:0` 改 `border-top:0`。配套调整：`.mythic-shell .reader` 顶部 padding 42px→106px、`.side-rail` 顶部 padding 30px→94px（避让信息栏）、移动端 `.mobile-status-strip` 加 `margin-top:72px`、移动端 `.reader` 底部 padding `calc(196px+…)`→`calc(104px+…)`（底部信息栏移除后不再需要大留白）。滚动定位（视口 2/3 / reducedMotion 1/3）不变。
 
 ### 新增
 
@@ -21,6 +23,7 @@
 - 新增第一幕《雨至》与第二幕《三影》分支剧情系统（`app/game/branching/`）：每决策节点可选项严格 ≤3 且显式编号（`no`），避免单一结局导向；第一幕三条路线（记历棚/渡口/粮仓）收束于幕终「承诺角色」，据角色分流到第二幕三个入口；第二幕于北滩浮尸处分三后果轴（羿箭 / 迟日 / 含晦），玩家选择引发不同走向；第一幕 flag 经 `visibleWhen` 跨幕影响第二幕可见分支与文本（如渡工线偷看货→第二幕渡口专属选项、取昼盐→独行线取盐选项）。引擎含 `validate()` 强制 ≤3 选项与 `next` 可达，并提供 `scripts/verify-branching.ts` 校验（连通性、三路线贯通、跨幕交叉影响、自动备份与恢复均通过）；剧情数据生成/更新时经平台适配层自动写带时间戳副本，支持 `list`/`restore`（`StoryDataBackup`）。说明见 `docs/branching-acts12.md`。
 - 第一卷《黑雨》内容包升级 `v3.0.0 → v4.0.0`（全卷选项规范化）：第一、二幕 68 个旧节点替换为分支剧情 19 节点（含三卷终：羿箭轴·箭痕未冷 / 迟日轴·迟日有名 / 含晦轴·盐封启闭，分别桥接第三幕入口）；第三四五幕 42 个超限节点按「无损拆分」扩展为 147 个分组中间节点（每节点选项 ≤3，不删除任何已批准分支）；全部节点选项补 `no` 编号。节点数 365 → 463（全部入口可达），正文母稿重新生成为 99,934 汉字；替换前完整快照冻结于 `备份/2026-08-14_v3.0.0/`。生成脚本：`tmp/apply_branch_v4_step1.py`、`tmp/apply_branch_v4_step2.py`。
 - UI 与内容优化一批（R1/R4/R5/R7/R8/R9）：设置面板新增「文字出现速度」滑块（`Settings.textSpeed`，默认 1x、范围 0.5~3，持久化，打字机延迟 30/280ms 按比例缩放）；开启「减弱界面动效」时最新剧情定位由视口 2/3 改为上部 1/3；信息栏「所在」改为「大地点·场景」两级（`sceneLabels` 将节点 `presentation` 映射为中文场景，如「杳湾 · 副本深处」）；「更多」菜单事件区块「进行中的事件」改名「任务」并新增「已完成事件」标签（据 `activeQuests`/`completedQuests` 区分，标题支持点击收起/展开简介，默认展开）；界面全面汉化（`NEW GAME`/`CONTINUE`/`SETTINGS`/`LOCAL FIRST`/`ABOUT` 等 eyebrow 与 `ACT*` 章名 `chapterLabels` 映射为中文，`内容 v` 改「内容版本」，保留游戏英文副标题为品牌名）。
+- 按 V1.4 说明书对齐信息架构与交互（§2.3⑤/§13）：底部导航由 6 面板重构为 5 页「志异(codex)／故交(people)／行游(story,居中放大)／舆图(map)／命录(fate)」，拆掉「更多」菜单——存档与系统说明并入右上角「设置」、事件与最近记录并入「命录」（命录页含「行囊／未竟之事」两标签）；顶栏右上角只保留「设置」。新增「连续撤回 2 次选择」（`undoStack` 快照栈，选择前压栈、最多 2 个，撤回回退到上一选择点且不重复写入世界状态，选项区上方显示「↩ 撤回上一步」按钮）。选项分级落地 `branchClass` 代码口径（`BranchClass`/`branchClassLimit`：sediment≤3/reflow≤4/fork≤6，缺省 sediment，`validateBranchClass` 供数据校验）。正文高亮由 3 类扩为 5 类（人物/物件/地点/线索/异象，`entityNames` 增 clue/anomaly），高亮词可点击跳转对应功能页（人物→故交、地点/异象→志异、物件/线索→命录）。行囊/详情展示物品稀有度分级标签（凡物/精良/珍异/任务/神话，§5.3）。第五幕《十日之兆》→《赤日之兆》、第三幕《逆流之河》→《倒河》（§2.3①/A1）。
 
 ### 修复
 
@@ -33,6 +36,8 @@
 - 分支剧情系统类型检查修复：`types.ts` 对 `src/content/contracts` 的相对导入路径由错误两级（`../../src/content/contracts`，指向不存在的 `app/src/content/contracts`）改正为三级（`../../../src/content/contracts`）；并补齐 `types.ts` 对 `Predicate/Effect/StoryBlock` 的「本地导入 + 再导出」与 `engine.ts` 对 `BranchState` 等类型再导出，使 `engine.ts`/`scripts/verify-branching.ts` 的类型引用可在 `tsc` 下解析；`tsconfig.json` 开启 `allowImportingTsExtensions`（已 `noEmit`，仅影响类型检查）以放行验证脚本的 `.ts` 扩展名导入。修复后 `tsc --noEmit` 全量错误回落至基线 19（分支系统零新增错误），`scripts/verify-branching.ts` 五组校验仍全绿。
 
 ### 调整
+
+- 剧情内容上下文与选项体验优化（内容包 4.1.0→4.2.0）：① 删除 16 处剧透/导向 system 块（结局名预告「进入『把未来交给射手』结局」、内部变量 `ending.*`、第二卷接口、卷末预告），中性改写 93 处「副本完成/已写入/将影响后续/解锁」导向句为纯完成记录，保留必要玩法规则提示；② A2-SHORE 分叉提示改为不泄露分支方向的中性引导，A2-END-* 卷终变量提示删除；③ v4.0.0 无损拆分产生的 144 个「继续：xxx（第N部分）」机器文案选项处理——30 个 4 选项节点内联恢复为单节点（标 `branchClass=reflow`），54 个保留 HUB 入口改手写语义化引导文案，54 个 HUB 占位 blocks（「你继续处理xxx的分支」）改为有语境的场景过渡叙述，删除 90 个孤儿 HUB 节点，节点 464→374；④ 选项剧透词修正（N015「把真相告诉砚伯」→「把砚童喂尸的事告诉砚伯」）。UI：选项框去掉「待决定 · 」前缀，类型提示（说话/行动/来源）改为独立徽章（`.choice-type`），对话选项不再用朱砂边框色改变图块颜色（`speech-choice` 颜色中性化，类型由徽章表达），避免类型影响选择判断。校验：build 全绿（374 节点全可达/6 结局）、分支校验全绿、分支系统 tsc 0 新增错误。
 
 - 分支剧情结构由「总分总」调整为「总分」：第二幕三条后果轴（羿箭 / 迟日 / 含晦）不再汇流到同一个 `A2-END`（act-end）→ `A2-DONE`（卷终）单一结尾，改为各自落到三个互不相同的卷终节点 `A2-END-ARROW`(箭痕未冷) / `A2-END-SHADOWS`(迟日有名) / `A2-END-SALT`(盐封启闭)（`kind:"volume-end"`，置 `completed=true`）。玩家在第一、二幕的分支选择最终导向三种不同结局，不再收口成一种「待续」。节点数 18→19，`engine.ts` 逻辑无需改动（volume-end 通用处理），`scripts/verify-branching.ts` 第 3 组增强为「三种角色 × 三条后果轴」九条路径均抵达各自卷终且世界变量正确；`tsc` 全量错误维持基线 19。说明见 `docs/branching-acts12.md`。
 

@@ -35,21 +35,21 @@
         {
           "no": 1,
           "id": "V01-C01-N041-E11",
-          "label": "继续：十巢不在同一棵树上（第1部分）",
+          "label": "先理清十巢里的人与名字：湿纸、失散家人、逐棵确认",
           "next": "V01-C01-N041-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N041-E21",
-          "label": "继续：十巢不在同一棵树上（第2部分）",
+          "label": "细察十巢异样：温冷之巢、最远的第十巢、或携发现去旧盐井",
           "next": "V01-C01-N041-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N041-E31",
-          "label": "继续：十巢不在同一棵树上（第3部分）",
+          "label": "在林缘守候鸟影回巢",
           "next": "V01-C01-N041-G31",
           "effects": []
         }
@@ -491,10 +491,6 @@
           "type": "dialogue",
           "speaker": "NPC-AHE",
           "text": "“以后有人问这里死过什么、活过什么，别说一棵树。说一群人怕得要命，还是给东西取了名字。”"
-        },
-        {
-          "type": "system",
-          "text": "副本完成：东桑十巢。阿禾的信任、扶桑预警和三影者后续状态已写入世界变量。"
         }
       ],
       "onExitEffects": [
@@ -590,21 +586,21 @@
         {
           "no": 1,
           "id": "V01-C01-N013-E11",
-          "label": "继续：河床下的路（第1部分）",
+          "label": "为归还之物立规矩：设失物认领桌，或逐段确认被归还的东西",
           "next": "V01-C01-N013-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N013-E21",
-          "label": "继续：河床下的路（第2部分）",
+          "label": "处置沉船舱门：开舱直面，或尊重宿沙的迟疑封舱",
           "next": "V01-C01-N013-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N013-E31",
-          "label": "继续：河床下的路（第3部分）",
+          "label": "沿河床追查：黑线退回的旧物，或浅滩的渔网药箱脚印",
           "next": "V01-C01-N013-G31",
           "effects": []
         }
@@ -888,10 +884,6 @@
           "type": "dialogue",
           "speaker": "NPC-SUSHA",
           "text": "“我还会回来开船。不是为了把谁送走，是为了让该过河的人有路。可下一次上船，先写清楚船替谁运什么。”"
-        },
-        {
-          "type": "system",
-          "text": "河床调查完成。宿沙对证词、封存和公开的态度已写入关系与世界状态；所得线索可在旧盐井、季狸交涉与结局余响中触发。"
         }
       ],
       "onExitEffects": [
@@ -1414,7 +1406,7 @@
       "choices": [
         {
           "id": "V01-C01-N015-A",
-          "label": "把真相告诉砚伯",
+          "label": "把砚童喂尸的事告诉砚伯",
           "effects": [
             {
               "type": "changeRelation",
@@ -1522,21 +1514,21 @@
         {
           "no": 1,
           "id": "V01-C01-N016-E11",
-          "label": "继续：旧盐井（第1部分）",
+          "label": "先听井口的人：家属问询，或备好绳索陶哨再下井",
           "next": "V01-C01-N016-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N016-E21",
-          "label": "继续：旧盐井（第2部分）",
+          "label": "决定下井方式：先安排留守与撤退绳，或立刻沿井绳下去",
           "next": "V01-C01-N016-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N016-E31",
-          "label": "继续：旧盐井（第3部分）",
+          "label": "要求缄婆先公开昼盐旧账",
           "next": "V01-C01-N016-G31",
           "effects": []
         }
@@ -1579,21 +1571,21 @@
         {
           "no": 1,
           "id": "V01-C01-N048-E11",
-          "label": "继续：井绳记得谁回来（第1部分）",
+          "label": "择一条井下路线：沿开采痕下降，或循倒流缆绳入船底暗渠",
           "next": "V01-C01-N048-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N048-E21",
-          "label": "继续：井绳记得谁回来（第2部分）",
+          "label": "进封存昼盐账的侧室，或检查绳结后撤回井口",
           "next": "V01-C01-N048-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N048-E31",
-          "label": "继续：井绳记得谁回来（第3部分）",
+          "label": "摊开阿禾记下的旧名，追查被鸟影叼走的那一页",
           "next": "V01-C01-N048-G31",
           "effects": []
         }
@@ -1964,21 +1956,21 @@
         {
           "no": 1,
           "id": "V01-C01-N017-E11",
-          "label": "继续：井底的一小块白天（第1部分）",
+          "label": "先让含晦说话、安置灼伤者，或用扶桑烬照见它吞下的第一句话",
           "next": "V01-C01-N017-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N017-E21",
-          "label": "继续：井底的一小块白天（第2部分）",
+          "label": "驱离含晦：陶哨引离、雨芦灌雨，或正面攻击",
           "next": "V01-C01-N017-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N017-E31",
-          "label": "继续：井底的一小块白天（第3部分）",
+          "label": "撤回井口，备好再战",
           "next": "V01-C01-N017-G31",
           "effects": []
         }
@@ -2434,25 +2426,74 @@
       ],
       "choices": [
         {
-          "no": 1,
-          "id": "V01-C01-N021-E11",
-          "label": "继续：羿从西边来（第1部分）",
-          "next": "V01-C01-N021-G11",
-          "effects": []
+          "id": "V01-C01-N021-D",
+          "label": "在交出证据前，要求羿说明空箭囊里为何有九次弦声",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "yi.nine_sounds_investigated",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N240",
+          "no": 1
         },
         {
-          "no": 2,
-          "id": "V01-C01-N021-E21",
-          "label": "继续：羿从西边来（第2部分）",
-          "next": "V01-C01-N021-G21",
-          "effects": []
+          "id": "V01-C01-N021-A",
+          "label": "把所有证据交给羿",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "trust",
+              "delta": 2
+            },
+            {
+              "type": "setFlag",
+              "key": "yi.has_full_evidence",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053",
+          "no": 2
         },
         {
-          "no": 3,
-          "id": "V01-C01-N021-E31",
-          "label": "继续：羿从西边来（第3部分）",
-          "next": "V01-C01-N021-G31",
-          "effects": []
+          "id": "V01-C01-N021-B",
+          "label": "隐去昼盐旧账，只谈扶桑",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "trust",
+              "delta": -1
+            },
+            {
+              "type": "setFlag",
+              "key": "yi.village_crime_hidden",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053",
+          "no": 3
+        },
+        {
+          "id": "V01-C01-N021-C",
+          "label": "质问羿为何带着空箭囊",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-YI",
+              "axis": "respect",
+              "delta": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "clue.yi_dreamed_shots",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N053",
+          "no": 4
         }
       ],
       "tags": [
@@ -2486,21 +2527,21 @@
         {
           "no": 1,
           "id": "V01-C01-N053-E11",
-          "label": "继续：第七日之前（第1部分）",
+          "label": "回访雨后日常：初课、未送达的回执、六件小事与七日记",
           "next": "V01-C01-N053-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N053-E21",
-          "label": "继续：第七日之前（第2部分）",
+          "label": "并置异象、整理记忆或参加共修：红线、碎片、第六日与巡查板",
           "next": "V01-C01-N053-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N053-E31",
-          "label": "继续：第七日之前（第3部分）",
+          "label": "与各方交涉，准备最终抉择：季狸、羿、北滩会议与村市",
           "next": "V01-C01-N053-G31",
           "effects": []
         }
@@ -2657,32 +2698,76 @@
       ],
       "choices": [
         {
-          "no": 1,
-          "id": "V01-C01-N056-E11",
-          "label": "继续：盐泽人不借命（第1部分）",
-          "next": "V01-C01-N056-G11",
-          "effects": []
+          "id": "V01-C01-N056-D",
+          "label": "与黎苇共同走一段盐泽路，核验她所说的路不是空头承诺",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "saltmarsh.route_walked",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N272",
+          "no": 1
         },
         {
-          "no": 2,
-          "id": "V01-C01-N056-E21",
-          "label": "继续：盐泽人不借命（第2部分）",
-          "next": "V01-C01-N056-G21",
-          "effects": []
+          "id": "V01-C01-N056-A",
+          "label": "承诺流民与村民同列撤离名单",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "liwei.equal_evacuation_pact",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-LIWEI",
+              "axis": "trust",
+              "delta": 2
+            }
+          ],
+          "next": "V01-C01-N057",
+          "no": 2
         },
         {
-          "no": 3,
-          "id": "V01-C01-N056-E31",
-          "label": "继续：盐泽人不借命（第3部分）",
-          "next": "V01-C01-N056-G31",
-          "effects": []
+          "id": "V01-C01-N056-B",
+          "label": "请求黎苇先送孩子走，成年人留下守村",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "liwei.children_first_route",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N057",
+          "no": 3
+        },
+        {
+          "id": "V01-C01-N056-C",
+          "label": "拒绝交易，要求流民自行决定去留",
+          "effects": [
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-LIWEI",
+              "axis": "respect",
+              "delta": 1
+            },
+            {
+              "type": "setFlag",
+              "key": "liwei.autonomous_route",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N057",
+          "no": 4
         }
       ],
       "tags": [
         "main",
         "liwei_arc",
         "faction"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N057",
@@ -2744,32 +2829,85 @@
       ],
       "choices": [
         {
-          "no": 1,
-          "id": "V01-C01-N058-E11",
-          "label": "继续：真印压不住雨（第1部分）",
-          "next": "V01-C01-N058-G11",
-          "effects": []
+          "id": "V01-C01-N058-D",
+          "label": "要求季狸带你看一眼文书生效后真正由谁执行",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.execution_chain_checked",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N275",
+          "no": 1
         },
         {
-          "no": 2,
-          "id": "V01-C01-N058-E21",
-          "label": "继续：真印压不住雨（第2部分）",
-          "next": "V01-C01-N058-G21",
-          "effects": []
+          "id": "V01-C01-N058-A",
+          "label": "要求季狸当众在文书上补写不可强制归属",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.public_limit_clause",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JILI",
+              "axis": "respect",
+              "delta": 1
+            }
+          ],
+          "next": "V01-C01-N059",
+          "no": 2
         },
         {
-          "no": 3,
-          "id": "V01-C01-N058-E31",
-          "label": "继续：真印压不住雨（第3部分）",
-          "next": "V01-C01-N058-G31",
-          "effects": []
+          "id": "V01-C01-N058-B",
+          "label": "出示倒船货单，要求他解释未铸之印",
+          "visibleWhen": [
+            {
+              "type": "anyFlagTrue",
+              "keys": [
+                "clue.north_trade_used_unborn_seal",
+                "item.north_manifest_kept"
+              ]
+            }
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.unborn_seal_confronted",
+              "value": true
+            },
+            {
+              "type": "changeRelation",
+              "npcId": "NPC-JILI",
+              "axis": "trust",
+              "delta": -1
+            }
+          ],
+          "next": "V01-C01-N059",
+          "no": 3
+        },
+        {
+          "id": "V01-C01-N058-C",
+          "label": "收下文书，但不交出尸体归属",
+          "effects": [
+            {
+              "type": "setFlag",
+              "key": "jili.documents_accepted_without_corpse",
+              "value": true
+            }
+          ],
+          "next": "V01-C01-N059",
+          "no": 4
         }
       ],
       "tags": [
         "main",
         "jili_arc",
         "faction"
-      ]
+      ],
+      "branchClass": "reflow"
     },
     {
       "id": "V01-C01-N059",
@@ -3070,21 +3208,21 @@
         {
           "no": 1,
           "id": "V01-C01-N022-E11",
-          "label": "继续：第七日以前（第1部分）",
+          "label": "先听四方各自愿付的代价，或支持羿守到雨停",
           "next": "V01-C01-N022-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N022-E21",
-          "label": "继续：第七日以前（第2部分）",
+          "label": "公开全部旧账逼村民共决，或与季狸交易换全村撤离",
           "next": "V01-C01-N022-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N022-E31",
-          "label": "继续：第七日以前（第3部分）",
+          "label": "听从黎苇连夜送尸进盐泽，或让四方先写下不可交易的事",
           "next": "V01-C01-N022-G31",
           "effects": []
         }
@@ -4547,21 +4685,21 @@
         {
           "no": 1,
           "id": "V01-C01-N028-E11",
-          "label": "继续：杳湾余响（第1部分）",
+          "label": "收束卷末：整理四封信、回看箭的日常代价、重回村约桌前",
           "next": "V01-C01-N028-G11",
           "effects": []
         },
         {
           "no": 2,
           "id": "V01-C01-N028-E21",
-          "label": "继续：杳湾余响（第2部分）",
+          "label": "整理器物与图鉴：试裂陶哨囚雨芦、山海志余响、处置含晦话罐",
           "next": "V01-C01-N028-G21",
           "effects": []
         },
         {
           "no": 3,
           "id": "V01-C01-N028-E31",
-          "label": "继续：杳湾余响（第3部分）",
+          "label": "处置无辞舌骨的去处",
           "next": "V01-C01-N028-G31",
           "effects": []
         }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.1.0",
-  "contentVersion": "4.1.0",
+  "contentVersion": "4.2.0",
   "id": "CONTENT-V01-BLACK-RAIN",
   "name": "第一卷《黑雨》可接入内容包",
   "entryNodeId": "A1-START",
@@ -24,7 +24,7 @@
     "integrationGuide": "../资料/接入说明.md"
   },
   "counts": {
-    "storyNodes": 464,
+    "storyNodes": 374,
     "characters": 11,
     "origins": 8,
     "items": 28,
