@@ -219,9 +219,9 @@ const NODES: BranchNode[] = [
       { type: "narration", text: "若你第一幕追问过黑雨来历，你会注意到箭痕里缠着一丝黑雨的纹路。", when: [{ type: "flagTrue", key: "seekOrigin" }] },
     ],
     choices: [
-      { no: 1, id: "A2-ARROW-c1", label: "把箭痕拓下，与羿共保管", next: "A2-END", effects: [{ type: "setWorldVar", key: "ending.yi_arrow_marks_shared", value: true }] },
-      { no: 2, id: "A2-ARROW-c2", label: "把箭交还羿，让他独自去追", next: "A2-END", effects: [{ type: "setFlag", key: "yi_returned", value: true }] },
-      { no: 3, id: "A2-ARROW-c3", label: "质问羿为何箭会离手", next: "A2-END", effects: [{ type: "setFlag", key: "yi_doubted", value: true }] },
+      { no: 1, id: "A2-ARROW-c1", label: "把箭痕拓下，与羿共保管", next: "A2-END-ARROW", effects: [{ type: "setWorldVar", key: "ending.yi_arrow_marks_shared", value: true }] },
+      { no: 2, id: "A2-ARROW-c2", label: "把箭交还羿，让他独自去追", next: "A2-END-ARROW", effects: [{ type: "setFlag", key: "yi_returned", value: true }] },
+      { no: 3, id: "A2-ARROW-c3", label: "质问羿为何箭会离手", next: "A2-END-ARROW", effects: [{ type: "setFlag", key: "yi_doubted", value: true }] },
     ],
   },
 
@@ -233,9 +233,9 @@ const NODES: BranchNode[] = [
       { type: "narration", text: "中间那道影子慢慢立起，像要认一个名字。另外两道影子一左一右，把它往回拖。" },
     ],
     choices: [
-      { no: 1, id: "A2-SHADOWS-c1", label: "唤它一声'迟日'", next: "A2-END", effects: [{ type: "setWorldVar", key: "ending.chiri_name_open", value: true }] },
-      { no: 2, id: "A2-SHADOWS-c2", label: "按住它，让它沉回影里", next: "A2-END", effects: [{ type: "setFlag", key: "chiri_submerged", value: true }] },
-      { no: 3, id: "A2-SHADOWS-c3", label: "只记下三影的方位，不插手", next: "A2-END", effects: [{ type: "setFlag", key: "shadowMap", value: true }] },
+      { no: 1, id: "A2-SHADOWS-c1", label: "唤它一声'迟日'", next: "A2-END-SHADOWS", effects: [{ type: "setWorldVar", key: "ending.chiri_name_open", value: true }] },
+      { no: 2, id: "A2-SHADOWS-c2", label: "按住它，让它沉回影里", next: "A2-END-SHADOWS", effects: [{ type: "setFlag", key: "chiri_submerged", value: true }] },
+      { no: 3, id: "A2-SHADOWS-c3", label: "只记下三影的方位，不插手", next: "A2-END-SHADOWS", effects: [{ type: "setFlag", key: "shadowMap", value: true }] },
     ],
   },
 
@@ -248,34 +248,45 @@ const NODES: BranchNode[] = [
       { type: "narration", text: "若你第一幕取过昼盐或记过残镜，你能读出盐纹里那行字的一角。", when: [{ type: "anyFlagTrue", keys: ["hasDaySalt", "knowMirror"] }] },
     ],
     choices: [
-      { no: 1, id: "A2-SALT-c1", label: "揭开封盐的话罐", next: "A2-END", effects: [{ type: "setWorldVar", key: "ending.hanhui_open", value: true }] },
-      { no: 2, id: "A2-SALT-c2", label: "把话罐交给北方来的使者", next: "A2-END", effects: [{ type: "setWorldVar", key: "ending.north_debt_marked", value: true }] },
-      { no: 3, id: "A2-SALT-c3", label: "原样封回井里，不动", next: "A2-END", effects: [{ type: "setFlag", key: "hanhui_sealed", value: true }] },
+      { no: 1, id: "A2-SALT-c1", label: "揭开封盐的话罐", next: "A2-END-SALT", effects: [{ type: "setWorldVar", key: "ending.hanhui_open", value: true }] },
+      { no: 2, id: "A2-SALT-c2", label: "把话罐交给北方来的使者", next: "A2-END-SALT", effects: [{ type: "setWorldVar", key: "ending.north_debt_marked", value: true }] },
+      { no: 3, id: "A2-SALT-c3", label: "原样封回井里，不动", next: "A2-END-SALT", effects: [{ type: "setFlag", key: "hanhui_sealed", value: true }] },
     ],
   },
 
+  // 三条后果轴各自落到不同的卷终结局（不再汇流成单一"待续"），构成"总分"结构。
   {
-    id: "A2-END",
+    id: "A2-END-ARROW",
     act: 2,
-    title: "三影之后",
-    kind: "act-end",
-    actEnd: { endingId: "a2-concluded", summary: "第二幕收束于你择定的那条后果轴；第三幕待续（本系统仅实现第一、二幕）。" },
-    blocks: [
-      { type: "narration", text: "雨还是没停，但杳湾记住了你选的路。你第一幕结下的人情、取走的物件、许下的身份，都在这条路上回响了。" },
-      { type: "system", text: "【第二幕·幕终】本节点记录你触发的后果轴(world 变量 ending.*)，供第三幕消费。" },
-    ],
-    choices: [
-      { no: 1, id: "A2-END-c1", label: "（剧情已抵达本幕终点）", next: "A2-DONE", effects: [] },
-    ],
-  },
-
-  {
-    id: "A2-DONE",
-    act: 2,
-    title: "待续",
+    title: "箭痕未冷",
     kind: "volume-end",
     blocks: [
-      { type: "system", text: "第一、二幕分支剧情到此。后续幕由续作内容承接。" },
+      { type: "narration", text: "赤金箭痕在雨里仍泛着光。你把这段因果收进了自己的路径——它不会再是'待续'二字能盖过的了。" },
+      { type: "system", text: "【羿箭轴·卷终】结局分支由 ending.yi_arrow_marks_shared / yi_returned / yi_doubted 决定；第三幕羿线据此承接。" },
+    ],
+    choices: [],
+  },
+
+  {
+    id: "A2-END-SHADOWS",
+    act: 2,
+    title: "迟日有名",
+    kind: "volume-end",
+    blocks: [
+      { type: "narration", text: "中间那道影子立了又沉。无论你唤没唤出'迟日'，三影都已记住你站过的位置。" },
+      { type: "system", text: "【迟日轴·卷终】结局分支由 ending.chiri_name_open / chiri_submerged / shadowMap 决定；第三幕影线据此承接。" },
+    ],
+    choices: [],
+  },
+
+  {
+    id: "A2-END-SALT",
+    act: 2,
+    title: "盐封启闭",
+    kind: "volume-end",
+    blocks: [
+      { type: "narration", text: "井盐的气息退进雨里。那句被封着的话，是揭是掩，都已成了你身上背得动或背不动的东西。" },
+      { type: "system", text: "【含晦轴·卷终】结局分支由 ending.hanhui_open / north_debt_marked / hanhui_sealed 决定；第三幕盐线据此承接。" },
     ],
     choices: [],
   },

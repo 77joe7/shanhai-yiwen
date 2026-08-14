@@ -10,14 +10,16 @@
 |---|---|
 | 每决策节点可选项 ≤3 | 数据中每个节点 `choices` 数组长度 ≤3；`engine.validate()` 静态强制，超限报 error |
 | 选项显式编号，便于修改 | 每个选项带 `no`（1..3），渲染与定位均以此为准 |
-| 多分支、避免单一结局 | 第一幕三条路线 + 幕终"承诺角色"；第二幕于北滩分**三后果轴**（羿箭 / 迟日 / 含晦），互不汇流 |
+| 多分支、避免单一结局 | 第一幕三条路线 + 幕终"承诺角色"；第二幕于北滩分**三后果轴**（羿箭 / 迟日 / 含晦），**互不汇流且各自落到不同卷终**（箭痕未冷 / 迟日有名 / 盐封启闭），构成“总分”结构而非“总分总” |
 | 触发条件明确 | 选项 `visibleWhen` 谓词（flagTrue / flagFalse / anyFlagTrue 等） |
 | 两幕连贯 + 交叉影响 | 第一幕 flag 经 `visibleWhen` 改变第二幕入口与可见分支（见末节映射表） |
 
-## 节点总览（18 节点）
+## 节点总览（19 节点，总分结构）
 
-第一幕 10 节点：`A1-START → A1-SHED/A1-FERRY/A1-GRANARY → A1-MID → A1-WELL/A1-WATCH/A1-BEACH → A1-END(幕终)`
-第二幕 8 节点：`A2-CHRONICLE/A2-FERRY/A2-SOLO → A2-SHORE → A2-ARROW/A2-SHADOWS/A2-SALT → A2-END(幕终) → A2-DONE(卷终)`
+> 结构为 **总分**：开场统一（A1-START）→ 分支展开（第一幕三路线 + 第二幕三后果轴）→ **三后果轴各自落到不同的卷终**，不再汇流成单一“待续”结局。
+
+第一幕 10 节点：`A1-START → A1-SHED/A1-FERRY/A1-GRANARY → A1-MID → A1-WELL/A1-WATCH/A1-BEACH → A1-END(幕终·承诺角色)`
+第二幕 9 节点：`A2-CHRONICLE/A2-FERRY/A2-SOLO → A2-SHORE → A2-ARROW/A2-SHADOWS/A2-SALT → A2-END-ARROW / A2-END-SHADOWS / A2-END-SALT（三个独立卷终，互不汇流）`
 
 ---
 
@@ -121,30 +123,35 @@
 ### A2-ARROW「赤金箭痕」　（触发：A2-SHORE-c1）
 **描述**：羿现身，称箭是他的，却没射人。`flagTrue(seekOrigin)`（第一幕追问过黑雨）时追加"箭痕缠着黑雨纹路"的细节。
 **选项（3）**（后果轴①）：
-1. `A2-ARROW-c1` 把箭痕拓下，与羿共保管 → `A2-END`｜设 `ending.yi_arrow_marks_shared`
-2. `A2-ARROW-c2` 把箭交还羿，让他独自去追 → `A2-END`｜设 `yi_returned`
-3. `A2-ARROW-c3` 质问羿为何箭会离手 → `A2-END`｜设 `yi_doubted`
+1. `A2-ARROW-c1` 把箭痕拓下，与羿共保管 → `A2-END-ARROW`｜设 `ending.yi_arrow_marks_shared`
+2. `A2-ARROW-c2` 把箭交还羿，让他独自去追 → `A2-END-ARROW`｜设 `yi_returned`
+3. `A2-ARROW-c3` 质问羿为何箭会离手 → `A2-END-ARROW`｜设 `yi_doubted`
 
 ### A2-SHADOWS「三影分立」　（触发：A2-SHORE-c2）
 **描述**：中间那道影子慢慢立起，像要认一个名字。
 **选项（3）**（后果轴②）：
-1. `A2-SHADOWS-c1` 唤它一声"迟日" → `A2-END`｜设 `ending.chiri_name_open`
-2. `A2-SHADOWS-c2` 按住它，让它沉回影里 → `A2-END`｜设 `chiri_submerged`
-3. `A2-SHADOWS-c3` 只记下三影的方位，不插手 → `A2-END`｜设 `shadowMap`
+1. `A2-SHADOWS-c1` 唤它一声"迟日" → `A2-END-SHADOWS`｜设 `ending.chiri_name_open`
+2. `A2-SHADOWS-c2` 按住它，让它沉回影里 → `A2-END-SHADOWS`｜设 `chiri_submerged`
+3. `A2-SHADOWS-c3` 只记下三影的方位，不插手 → `A2-END-SHADOWS`｜设 `shadowMap`
 
 ### A2-SALT「含晦之盐」　（触发：A2-SHORE-c3）
 **描述**：缄婆说老井连着"含晦"，盐里封着一句话。`anyFlagTrue(hasDaySalt, knowMirror)` 时追加"你能读出盐纹里那行字的一角"。
 **选项（3）**（后果轴③）：
-1. `A2-SALT-c1` 揭开封盐的话罐 → `A2-END`｜设 `ending.hanhui_open`
-2. `A2-SALT-c2` 把话罐交给北方来的使者 → `A2-END`｜设 `ending.north_debt_marked`
-3. `A2-SALT-c3` 原样封回井里，不动 → `A2-END`｜设 `hanhui_sealed`
+1. `A2-SALT-c1` 揭开封盐的话罐 → `A2-END-SALT`｜设 `ending.hanhui_open`
+2. `A2-SALT-c2` 把话罐交给北方来的使者 → `A2-END-SALT`｜设 `ending.north_debt_marked`
+3. `A2-SALT-c3` 原样封回井里，不动 → `A2-END-SALT`｜设 `hanhui_sealed`
 
-### A2-END「三影之后」　（幕终，kind=act-end，ending=`a2-concluded`）
-**描述**：雨没停，但杳湾记住了你选的路；记录触发的后果轴（`world.ending.*`）供第三幕消费。
-**选项（1）**：`A2-END-c1` → `A2-DONE`
+### A2-END-ARROW「箭痕未冷」　（kind=volume-end，置 `completed=true`）
+**描述**：赤金箭痕在雨里仍泛着光。玩家与那道箭痕的纠葛收进自己的路径，不再以"待续"二字盖过。
+**结局分支**：由 `ending.yi_arrow_marks_shared` / `yi_returned` / `yi_doubted` 决定第三幕羿线走向。无选项。
 
-### A2-DONE「待续」　（kind=volume-end，置 `completed=true`）
-**描述**：第一、二幕分支剧情到此；后续幕由续作内容承接。无选项。
+### A2-END-SHADOWS「迟日有名」　（kind=volume-end，置 `completed=true`）
+**描述**：中间那道影子立了又沉。无论是否唤出"迟日"，三影都已记住玩家站过的位置。
+**结局分支**：由 `ending.chiri_name_open` / `chiri_submerged` / `shadowMap` 决定第三幕影线走向。无选项。
+
+### A2-END-SALT「盐封启闭」　（kind=volume-end，置 `completed=true`）
+**描述**：井盐的气息退进雨里。那句被封着的话是揭是掩，都成了玩家身上背得动或背不动的东西。
+**结局分支**：由 `ending.hanhui_open` / `ending.north_debt_marked` / `hanhui_sealed` 决定第三幕盐线走向。无选项。
 
 ---
 

@@ -58,9 +58,9 @@ console.log("[2] 连通性 BFS");
   check(`全部 ${ids.size} 个节点从 A1-START 可达`, seen.size === ids.size);
 }
 
-// ---- 3. 三种角色均能完成两幕并抵达卷终 ----
-console.log("[3] 三路线贯通（角色→第二幕入口→卷终）");
-function playToEnd(role: string, startChoices: number[]): BranchState {
+// ---- 3. 三种角色 × 三条后果轴 均能完成两幕并抵达各自卷终 ----
+console.log("[3] 三路线 × 三后果轴贯通（角色→第二幕入口→后果轴→卷终）");
+function playToEnd(role: string, startChoices: number[], axisChoice = 1): BranchState {
   const s = createInitialState();
   // startChoices: [START选项, SHED/FERRY/GRANARY选项, MID选项, WELL/WATCH/BEACH选项]
   for (const no of startChoices) {
@@ -72,23 +72,28 @@ function playToEnd(role: string, startChoices: number[]): BranchState {
     (c.effects ?? []).some((e) => e.type === "setFlag" && (e as any).key === "role" && (e as any).value === role),
   );
   choose(branchingContent, s, roleChoice ? roleChoice.no : 1);
-  // 第二幕：入口选1 → A2-SHORE选1 → A2-ARROW选1 → A2-END选1
+  // 第二幕：入口选1 → A2-SHORE选 axisChoice → 对应后果轴选1（直达各自卷终，不再汇流）
   choose(branchingContent, s, 1);
-  choose(branchingContent, s, 1);
-  choose(branchingContent, s, 1);
+  choose(branchingContent, s, axisChoice);
   choose(branchingContent, s, 1);
   return s;
 }
 
+const AXIS_ENDING: Record<number, string> = { 1: "A2-END-ARROW", 2: "A2-END-SHADOWS", 3: "A2-END-SALT" };
 for (const role of ["chronicler", "ferrymate", "seeker"] as const) {
   const startNo = role === "chronicler" ? 1 : role === "ferrymate" ? 2 : 3;
-  const s = playToEnd(role, [startNo, 1, 1, 1]);
-  check(
-    `${role}：进入第二幕且抵达卷终(completed=${s.completed}, actEndings=${s.actEndings.join(",")})`,
-    s.act === 2 && s.completed && s.actEndings.includes("a2-concluded"),
-  );
-  check(`${role}：触发后果轴 ending.yi_arrow_marks_shared`, s.world["ending.yi_arrow_marks_shared"] === true);
+  for (const axis of [1, 2, 3] as const) {
+    const s = playToEnd(role, [startNo, 1, 1, 1], axis);
+    const expected = AXIS_ENDING[axis];
+    check(
+      `${role} × 轴${axis}：抵达卷终 ${s.currentNodeId}（completed=${s.completed}）`,
+      s.act === 2 && s.completed && s.currentNodeId === expected && s.actEndings.includes("a1-survived"),
+    );
+  }
 }
+check("后果轴1(羿箭)触发 ending.yi_arrow_marks_shared", playToEnd("chronicler", [1, 1, 1, 1], 1).world["ending.yi_arrow_marks_shared"] === true);
+check("后果轴2(迟日)触发 ending.chiri_name_open", playToEnd("chronicler", [1, 1, 1, 1], 2).world["ending.chiri_name_open"] === true);
+check("后果轴3(含晦)触发 ending.hanhui_open", playToEnd("chronicler", [1, 1, 1, 1], 3).world["ending.hanhui_open"] === true);
 
 // ---- 4. 跨幕交叉影响 ----
 console.log("[4] 跨幕交叉影响（第一幕 flag 改变第二幕可见选项）");
