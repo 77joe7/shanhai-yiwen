@@ -4,6 +4,10 @@
 
 ## [未发布]
 
+### 部署
+
+- 将线上部署从 Cloudflare Workers 完整迁移至 EdgeOne Makers（国内直连，region=china）。因 Vinext RSC 默认产出 SSR（无 index.html），新增 `next.config.mjs` 设 `output:"export"` 与 `images.unoptimized:true`，使 `vinext build` 预渲染为静态站点（`dist/client/index.html` 等），经 edgeone-pages MCP `deploy_folder`（projectType=static）上线；已验证首页、JS chunk 与背景图均返回 200。Cloudflare Worker（shanhai-yiwen-system-preview.302628809.workers.dev）保留为兜底，可按需停用。
+
 ### 新增
 
 - 山海志改为与行囊一致的单卡片标签结构，移除下拉分类；按第一章叙事重要性重排为异象、人物、地理、异兽、器物、材料、文书，其中器物合并器具，并改为无横向滚动的自动换行标签。
@@ -23,6 +27,10 @@
 ### 调整
 
 - 分支剧情结构由「总分总」调整为「总分」：第二幕三条后果轴（羿箭 / 迟日 / 含晦）不再汇流到同一个 `A2-END`（act-end）→ `A2-DONE`（卷终）单一结尾，改为各自落到三个互不相同的卷终节点 `A2-END-ARROW`(箭痕未冷) / `A2-END-SHADOWS`(迟日有名) / `A2-END-SALT`(盐封启闭)（`kind:"volume-end"`，置 `completed=true`）。玩家在第一、二幕的分支选择最终导向三种不同结局，不再收口成一种「待续」。节点数 18→19，`engine.ts` 逻辑无需改动（volume-end 通用处理），`scripts/verify-branching.ts` 第 3 组增强为「三种角色 × 三条后果轴」九条路径均抵达各自卷终且世界变量正确；`tsc` 全量错误维持基线 19。说明见 `docs/branching-acts12.md`。
+
+### 文档
+
+- 新增分支剧情详版思维导图 `docs/branching-mindmap.html`：在保留「总分」结构连线的基础上，把每个节点的**人物、剧情原文、三选项与后果变量**，以及两幕间的**背景设定与发展脉络**（黑雨世界观、幕间交叉影响逻辑、第二幕三身份立场、北滩三影者/含晦设定、三后果轴的三种真相姿态）直接标注在对应区域，无需另查文档即可读懂；含可点击跳转的全局结构总览与可折叠节点卡。所有文案与 `app/game/branching/acts.ts` 一致，脉络框为对分散 narration 设定的集中标注，未新增剧情内容。
 
 ### 修改
 

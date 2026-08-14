@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>《山海异闻录：天地未定》第一卷《黑雨》·第一幕《雨至》+第二幕《三影》分支剧情思维导图（详版）</title>
+<style>
+  :root{
+    --bg:#f4f5fb; --card:#ffffff; --ink:#2a2e3a; --sub:#6b7180;
+    --line:#d9dce8; --primary:#5B6CF0;
+    --act1:#8B7CF0; --act1bg:#f1effe;
+    --act2:#EB7FA6; --act2bg:#fdeef4;
+    --hub:#3aa0c4; --hubbg:#e7f4f9;
+    --end-red:#e0584f; --end-redbg:#fdeceb;
+    --end-amber:#d9922b; --end-amberbg:#fbf2e2;
+    --end-teal:#2fa18a; --end-tealbg:#e7f5f1;
+    --ctx:#6b5b2e; --ctxbg:#fbf6e6; --ctxline:#e7d8a8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.6;font-size:14px}
+  .wrap{max-width:1200px;margin:0 auto;padding:28px 22px 80px}
+  header.top{margin-bottom:18px}
+  header.top h1{font-size:21px;margin:0 0 6px;color:var(--primary)}
+  header.top p{margin:2px 0;color:var(--sub);font-size:13px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);
+    background:var(--card);border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+  .ctx{background:var(--ctxbg);border:1px dashed var(--ctxline);border-left:4px solid var(--ctx);
+    border-radius:8px;padding:11px 15px;margin:14px 0;color:#5a4d28}
+  .ctx b{color:#4a3f1c}
+  .act{margin-top:26px;padding:10px 16px;border-radius:8px;color:#fff;font-size:16px;font-weight:600}
+  .act.a1{background:linear-gradient(90deg,var(--act1),#a99bf5)}
+  .act.a2{background:linear-gradient(90deg,var(--act2),#f3a8c4)}
+  .act small{font-weight:400;opacity:.9;font-size:12px;margin-left:8px}
+  .node{background:var(--card);border:1px solid var(--line);border-radius:8px;
+    box-shadow:0 1px 3px rgba(30,40,90,.06);padding:12px 14px;margin:10px 0;position:relative}
+  .node.actend{border-left:4px solid var(--primary)}
+  .node.converge{border-left:4px solid #9aa3b8}
+  .node.a1{border-left:4px solid var(--act1)}
+  .node.a2{border-left:4px solid var(--act2)}
+  .node.end-red{border-left:4px solid var(--end-red)}
+  .node.end-amber{border-left:4px solid var(--end-amber)}
+  .node.end-teal{border-left:4px solid var(--end-teal)}
+  .nhead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .nid{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--sub);
+    background:#f0f1f7;border-radius:4px;padding:1px 6px}
+  .ntitle{font-size:15px;font-weight:700}
+  .ntag{font-size:11px;color:#fff;border-radius:4px;padding:1px 7px;margin-left:auto}
+  .tag-start{background:#7a8290}.tag-conv{background:#9aa3b8}.tag-end{background:var(--primary)}
+  .tag-entry{background:var(--act2)}.tag-axis{background:#b06a8c}
+  .vid-red{background:var(--end-red)}.vid-amber{background:var(--end-amber)}.vid-teal{background:var(--end-teal)}
+  .meta{font-size:12px;color:var(--sub);margin:4px 0}
+  .meta .lbl{color:var(--ink);font-weight:600}
+  .story{font-size:13.5px;background:#fafbff;border:1px solid #eef0f7;border-radius:6px;
+    padding:8px 10px;margin:7px 0}
+  .story .sp{color:var(--primary);font-weight:600}
+  .cond{font-size:12px;color:#9a6b00;background:#fff7e6;border:1px solid #f3e2bd;
+    border-radius:5px;padding:4px 8px;margin:6px 0;display:inline-block}
+  .opts{margin:8px 0 2px;padding:0;list-style:none}
+  .opts li{border:1px solid var(--line);border-radius:6px;padding:6px 9px;margin:5px 0;background:#fff}
+  .opts .no{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;
+    border-radius:50%;background:var(--primary);color:#fff;font-size:12px;font-weight:700;margin-right:7px}
+  .opts .next{color:#2a7fb8;font-family:ui-monospace,monospace;font-size:11px}
+  .opts .eff{margin-top:3px;display:flex;flex-wrap:wrap;gap:5px}
+  .chip{font-size:11px;border-radius:4px;padding:1px 7px;border:1px solid transparent}
+  .chip.flag{background:#eef1fe;color:#3a4bd0;border-color:#cdd4fb}
+  .chip.world{background:#f3eaff;color:#7b3fd0;border-color:#e0ccf7}
+  .chip.rel{background:#fdeceb;color:#c0392b;border-color:#f5c6c2}
+  .chip.item{background:#fbf0e2;color:#b9770f;border-color:#f1d9b5}
+  .chip.cond{background:#fff7e6;color:#9a6b00;border-color:#f3e2bd}
+  .branch{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 6px 18px;position:relative}
+  .branch::before{content:"";position:absolute;left:-12px;top:-6px;bottom:50%;width:2px;background:var(--line)}
+  .branch .node{flex:1 1 280px;margin:6px 0}
+  .branch-label{font-size:12px;color:var(--sub);margin:2px 0 0 18px;font-weight:600}
+  .hub{background:var(--hubbg);border:1px solid #bfe2ee;border-left:4px solid var(--hub);
+    border-radius:8px;padding:12px 15px;margin:14px 0}
+  .hub b{color:#1f6f8c}
+  .hub .map{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .hub .map div{flex:1 1 200px;background:#fff;border:1px solid #cfe6ef;border-radius:6px;padding:7px 10px;font-size:13px}
+  .hub .map code{font-family:ui-monospace,monospace;font-size:11px;color:var(--hub)}
+  .overview{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin:10px 0;
+    box-shadow:0 1px 3px rgba(30,40,90,.06);overflow-x:auto}
+  .overview svg{display:block;max-width:100%;height:auto}
+  a.nodelink{text-decoration:none}
+  a.nodelink:hover rect{stroke-width:2.5}
+  footer{margin-top:34px;color:var(--sub);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
+  .toggle{cursor:pointer;user-select:none}
+  .toggle::before{content:"▾ ";}
+  .collapsed .body{display:none}
+  .collapsed .toggle::before{content:"▸ ";}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>分支剧情思维导图（详版）· 第一幕《雨至》+ 第二幕《三影》</h1>
+    <p>《山海异闻录：天地未定》第一卷《黑雨》｜ 配套代码 <code>app/game/branching/</code> ｜ 结构：<b>总分</b>（开场统一 → 分支展开 → 三后果轴各自落不同卷终）</p>
+    <p>说明：本图把每个节点的<b>人物、剧情原文、三选项与后果、以及两幕间背景/脉络</b>直接标注在对应区域，无需另查文档即可读懂。点击节点标题可折叠/展开。</p>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--act1)"></i>第一幕《雨至》</span>
+      <span><i class="dot" style="background:var(--act2)"></i>第二幕《三影》</span>
+      <span><i class="dot" style="background:var(--hub)"></i>角色分流枢纽</span>
+      <span><i class="dot" style="background:var(--end-red)"></i>卷终·羿箭轴</span>
+      <span><i class="dot" style="background:var(--end-amber)"></i>卷终·迟日轴</span>
+      <span><i class="dot" style="background:var(--end-teal)"></i>卷终·含晦轴</span>
+      <span><i class="dot" style="background:var(--ctx)"></i>背景 / 脉络（未单列节点）</span>
+    </div>
+  </header>
+
+  <div class="overview">
+    <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--sub)">▍全局结构总览（点击方块跳转至下方详卡）</div>
+    <svg viewBox="0 0 680 720" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#aab"/></marker>
+      </defs>
+      <style>
+        .b{fill:#fff;stroke:#c4c9da;stroke-width:1.4}
+        .b1{stroke:var(--act1)} .b2{stroke:var(--act2)} .bh{stroke:var(--hub)}
+        .br{stroke:var(--end-red)} .ba{stroke:var(--end-amber)} .bt{stroke:var(--end-teal)}
+        .t{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;font-size:11px;fill:#2a2e3a}
+        .c{stroke:#cfd4e3;stroke-width:1.2;fill:none}
+      </style>
+      <path class="c" d="M340,40 L200,80 M340,40 L340,80 M340,40 L480,80" marker-end="url(#ar)"/>
+      <path class="c" d="M200,120 L340,160 M340,120 L340,160 M480,120 L340,160" marker-end="url(#ar)"/>
+      <path class="c" d="M340,200 L200,240 M340,200 L340,240 M340,200 L480,240" marker-end="url(#ar)"/>
+      <path class="c" d="M340,280 L340,320" marker-end="url(#ar)"/>
+      <path class="c" d="M340,360 L200,400 M340,360 L340,400 M340,360 L480,400" marker-end="url(#ar)"/>
+      <path class="c" d="M340,440 L200,480 M340,440 L340,480 M340,440 L480,480" marker-end="url(#ar)"/>
+      <path class="c" d="M200,520 L200,560 M340,520 L340,560 M480,520 L480,560" marker-end="url(#ar)"/>
+      <a class="nodelink" href="#A1-START"><rect class="b b1" x="300" y="18" width="80" height="22" rx="5"/><text class="t" x="340" y="33" text-anchor="middle">雨脚</text></a>
+      <a class="nodelink" href="#A1-SHED"><rect class="b b1" x="160" y="78" width="80" height="22" rx="5"/><text class="t" x="200" y="93" text-anchor="middle">砚伯棚</text></a>
+      <a class="nodelink" href="#A1-FERRY"><rect class="b b1" x="300" y="78" width="80" height="22" rx="5"/><text class="t" x="340" y="93" text-anchor="middle">渡口</text></a>
+      <a class="nodelink" href="#A1-GRANARY"><rect class="b b1" x="440" y="78" width="80" height="22" rx="5"/><text class="t" x="480" y="93" text-anchor="middle">粮仓</text></a>
+      <a class="nodelink" href="#A1-MID"><rect class="b b1" x="300" y="158" width="80" height="22" rx="5"/><text class="t" x="340" y="173" text-anchor="middle">夜议</text></a>
+      <a class="nodelink" href="#A1-WELL"><rect class="b b1" x="160" y="238" width="80" height="22" rx="5"/><text class="t" x="200" y="253" text-anchor="middle">井底</text></a>
+      <a class="nodelink" href="#A1-WATCH"><rect class="b b1" x="300" y="238" width="80" height="22" rx="5"/><text class="t" x="340" y="253" text-anchor="middle">井口</text></a>
+      <a class="nodelink" href="#A1-BEACH"><rect class="b b1" x="440" y="238" width="80" height="22" rx="5"/><text class="t" x="480" y="253" text-anchor="middle">北滩</text></a>
+      <a class="nodelink" href="#A1-END"><rect class="b b1" x="300" y="318" width="80" height="22" rx="5"/><text class="t" x="340" y="333" text-anchor="middle">雨未停</text></a>
+      <a class="nodelink" href="#HUB"><rect class="b bh" x="290" y="358" width="100" height="22" rx="5"/><text class="t" x="340" y="373" text-anchor="middle">角色分流</text></a>
+      <a class="nodelink" href="#A2-CHRONICLE"><rect class="b b2" x="160" y="398" width="80" height="22" rx="5"/><text class="t" x="200" y="413" text-anchor="middle">记历棚</text></a>
+      <a class="nodelink" href="#A2-FERRY"><rect class="b b2" x="300" y="398" width="80" height="22" rx="5"/><text class="t" x="340" y="413" text-anchor="middle">渡口</text></a>
+      <a class="nodelink" href="#A2-SOLO"><rect class="b b2" x="440" y="398" width="80" height="22" rx="5"/><text class="t" x="480" y="413" text-anchor="middle">独行</text></a>
+      <a class="nodelink" href="#A2-SHORE"><rect class="b b2" x="300" y="478" width="80" height="22" rx="5"/><text class="t" x="340" y="493" text-anchor="middle">北滩有尸</text></a>
+      <a class="nodelink" href="#A2-ARROW"><rect class="b b2" x="160" y="518" width="80" height="22" rx="5"/><text class="t" x="200" y="533" text-anchor="middle">赤金箭痕</text></a>
+      <a class="nodelink" href="#A2-SHADOWS"><rect class="b b2" x="300" y="518" width="80" height="22" rx="5"/><text class="t" x="340" y="533" text-anchor="middle">三影分立</text></a>
+      <a class="nodelink" href="#A2-SALT"><rect class="b b2" x="440" y="518" width="80" height="22" rx="5"/><text class="t" x="480" y="533" text-anchor="middle">含晦之盐</text></a>
+      <a class="nodelink" href="#A2-END-ARROW"><rect class="b br" x="160" y="558" width="80" height="22" rx="5"/><text class="t" x="200" y="573" text-anchor="middle">箭痕未冷</text></a>
+      <a class="nodelink" href="#A2-END-SHADOWS"><rect class="b ba" x="300" y="558" width="80" height="22" rx="5"/><text class="t" x="340" y="573" text-anchor="middle">迟日有名</text></a>
+      <a class="nodelink" href="#A2-END-SALT"><rect class="b bt" x="440" y="558" width="80" height="22" rx="5"/><text class="t" x="480" y="573" text-anchor="middle">盐封启闭</text></a>
+    </svg>
+  </div>
+
+  <!-- 背景脉络：第一幕世界观 -->
+  <div class="ctx">
+    <b>【世界背景 · 黑雨与杳湾（未单列节点的设定，先读此处）】</b><br/>
+    「黑雨」不像是水，<b>更像一整片天在往下塌</b>；雨里混着不属于人间的纹路（后文称「黑雨纹路」）。故事发生在滨海村落 <b>杳湾村</b>，村中有三处长明灯火——<b>记历棚（砚伯）、渡口（宿沙）、粮仓（青芽）</b>——它们既是避雨的去处，也是玩家最初结下人情的三个起点。村子深处有一口 <b>会「哭」的老井</b>：不是水响，是有人在水底下说话；井底结着「昼盐」浮尘，墙里嵌着半面残镜（照不出人，只照出一直在下的雨）。村外 <b>北滩</b> 常漂来异象——本幕核心是一具肩带赤金箭痕的 <b>「三影者」浮尸</b>，与三道在雨幕里分立、似在等谁先动的影子。这些设定贯穿两幕，是分支抉择的底层语境。
+  </div>
+
+  <!-- ===================== 第一幕 ===================== -->
+  <div class="act a1">第一幕《雨至》 <small>玩家抵达杳湾，三条路线结人情 → 汇于「井哭」异象 → 三去向 → 幕终承诺身份</small></div>
+
+  <div class="node a1 toggle" id="A1-START">
+    <div class="nhead"><span class="nid">A1-START</span><span class="ntitle">雨脚</span><span class="ntag tag-start">起点</span></div>
+    <div class="body">
+    <div class="meta"><span class="lbl">人物：</span>无（玩家独白/旁白）；远处三处灯对应砚伯、宿沙、青芽</div>
+    <div class="story">黑雨落下，不像是水，更像是一整片天在往下塌。你站在杳湾村口，衣角已经沉得坠手。村子里亮着三处灯：记历棚的灯、渡口的灯、粮仓的灯。雨里各有各的声响。</div>
+    <ul class="opts">
+      <li><span class="no">1</span>躲进记历棚，找砚伯 <span class="next">→ A1-SHED</span><div class="eff"><span class="chip flag">setFlag metYanbo</span></div></li>
+      <li><span class="no">2</span>沿河去渡口，找宿沙 <span class="next">→ A1-FERRY</span><div class="eff"><span class="chip flag">setFlag metSusha</span></div></li>
+      <li><span class="no">3</span>去粮仓问有没有空屋 <span class="next">→ A1-GRANARY</span><div class="eff"><span class="chip flag">setFlag metQingya</span></div></li>
+    </ul>
+    </div>
+  </div>
+
+  <div class="branch-label">↓ 三路线分叉（各自结下不同人情）</div>
+  <div class="branch">
+    <div class="node a1 toggle" id="A1-SHED">
+      <div class="nhead"><span class="nid">A1-SHED</span><span class="ntitle">砚伯的棚</span><span class="ntag tag-conv">路线①</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>砚伯（记历棚长者，抄录「雨谱」）</div>
+      <div class="story"><span class="sp">砚伯：</span>「雨谱不能断。你来得巧，帮我抄两行，还是只想躲一躲？」<br/><span class="sp">砚伯：</span>「这雨不干净。村中老井今早开始『哭』——你若好奇，以后自有去处。」</div>
+      <ul class="opts">
+        <li><span class="no">1</span>帮他抄录雨谱 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">helpChronicle</span><span class="chip flag">knowWellHistory（懂井来历）</span></div></li>
+        <li><span class="no">2</span>追问黑雨的来历 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">seekOrigin（影响第二幕羿箭线细节）</span></div></li>
+        <li><span class="no">3</span>只躲雨，不掺和 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">aloof</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a1 toggle" id="A1-FERRY">
+      <div class="nhead"><span class="nid">A1-FERRY</span><span class="ntitle">渡口</span><span class="ntag tag-conv">路线②</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>宿沙（船夫）；其舱中藏着「那卷东西」</div>
+      <div class="story"><span class="sp">宿沙：</span>「浪比平时高半尺。你若是来避雨的，就帮我压住缆——别碰舱里那卷东西。」<br/>他系缆的桩子被冲得松动，船身一下下磕着石阶。</div>
+      <ul class="opts">
+        <li><span class="no">1</span>帮他修被冲坏的缆桩 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">helpFerry</span></div></li>
+        <li><span class="no">2</span>问他河对岸有什么 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">seekRiver</span></div></li>
+        <li><span class="no">3</span>趁他转身，偷看舱里那卷东西 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">snoop（解锁第二幕渡口专属选项）</span><span class="chip rel">NPC-SUSHA 好感 −1</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a1 toggle" id="A1-GRANARY">
+      <div class="nhead"><span class="nid">A1-GRANARY</span><span class="ntitle">粮仓</span><span class="ntag tag-conv">路线③</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>青芽（粮仓管事，拨算筹）</div>
+      <div class="story"><span class="sp">青芽：</span>「空屋没有，饼倒还有半筐。这雨要是连下三天，粮就该发芽了。」<br/>她把算筹拨得噼啪响，眼睛却一直瞟着门外那道水线。</div>
+      <ul class="opts">
+        <li><span class="no">1</span>帮她清点存粮 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">helpGranary</span></div></li>
+        <li><span class="no">2</span>提醒她雨会坏粮 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">warnGrain</span></div></li>
+        <li><span class="no">3</span>趁她低头，顺手拿块饼 <span class="next">→ A1-MID</span><div class="eff"><span class="chip flag">stoleFood</span><span class="chip rel">NPC-QINGYA 好感 −1</span></div></li>
+      </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="node converge toggle" id="A1-MID">
+    <div class="nhead"><span class="nid">A1-MID</span><span class="ntitle">村中夜议</span><span class="ntag tag-conv">三路线收束</span></div>
+    <div class="body">
+    <div class="meta"><span class="lbl">人物：</span>缄婆（村中通晓异象者）</div>
+    <div class="story"><span class="sp">缄婆：</span>「老井在哭。不是水响，是有人在水底下说话。你们谁跟我去看看？」<br/><i style="color:#9aa3b8">【第一幕·分叉】三条路在此收束到同一桩『井哭』异象，但你先前结下的人情会改变你能做的事。</i></div>
+    <ul class="opts">
+      <li><span class="no">1</span>跟缄婆下井查看 <span class="next">→ A1-WELL</span><div class="eff"><span class="chip flag">wentWell</span></div></li>
+      <li><span class="no">2</span>守在井口接应 <span class="next">→ A1-WATCH</span><div class="eff"><span class="chip flag">watchedWell</span></div></li>
+      <li><span class="no">3</span>不理井，去北滩探那具浮尸的传闻 <span class="next">→ A1-BEACH</span><div class="eff"><span class="chip flag">seekCorpse</span></div></li>
+    </ul>
+    </div>
+  </div>
+
+  <div class="branch-label">↓ 三去向分叉（井 / 井口 / 北滩，最后都汇入幕终）</div>
+  <div class="branch">
+    <div class="node a1 toggle" id="A1-WELL">
+      <div class="nhead"><span class="nid">A1-WELL</span><span class="ntitle">井底</span><span class="ntag tag-conv">去向①</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>无（旁白）；半面残镜、昼盐浮尘</div>
+      <div class="story">井底结着一层昼盐似的浮尘，墙里嵌着半面残镜，镜子照不出你，只照出一片一直在下的雨。</div>
+      <div class="cond">⚑ 若未帮砚伯抄雨谱（knowWellHistory=false）：追加「你不懂这井的来历，只觉得脚下的水声比雨更急——这是没抄过雨谱的人才会有的茫然。」</div>
+      <ul class="opts">
+        <li><span class="no">1</span>取走一撮昼盐浮尘 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">hasDaySalt</span><span class="chip flag">knowHanhui（解锁第二幕独行线取盐）</span><span class="chip item">得 IT-DAY-SALT 昼盐</span></div></li>
+        <li><span class="no">2</span>记下残镜的纹路 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">knowMirror（影响含晦线盐纹细节）</span></div></li>
+        <li><span class="no">3</span>什么也不动，恭敬退出 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">revereWell</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a1 toggle" id="A1-WATCH">
+      <div class="nhead"><span class="nid">A1-WATCH</span><span class="ntitle">井口</span><span class="ntag tag-conv">去向②</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>缄婆（井底远处，嗓音叠着人声）</div>
+      <div class="story">你守在井口。风灌下去，带回的却不只是水声——是人声，和缄婆的嗓音叠在一起，像在念一个名字。</div>
+      <ul class="opts">
+        <li><span class="no">1</span>喊缄婆快上来 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">warnedWell</span></div></li>
+        <li><span class="no">2</span>记下水声与人声叠着的节奏 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">knowWaterSong</span></div></li>
+        <li><span class="no">3</span>独自下到一半去探查 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">halfDescent</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a1 toggle" id="A1-BEACH">
+      <div class="nhead"><span class="nid">A1-BEACH</span><span class="ntitle">北滩</span><span class="ntag tag-conv">去向③</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>无（旁白）；三道影子（远）</div>
+      <div class="story">北滩搁着一具浮尸，雨打在它肩上，泛起赤金色的光。你一抬头，三道影子在雨幕里分立，像在等谁先动。</div>
+      <ul class="opts">
+        <li><span class="no">1</span>近前看尸身肩上的伤 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">sawCorpse</span><span class="chip flag">knowArrowWound</span></div></li>
+        <li><span class="no">2</span>追那三道影子 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">chasedShadow</span></div></li>
+        <li><span class="no">3</span>回村报信，不靠近 <span class="next">→ A1-END</span><div class="eff"><span class="chip flag">reportedCorpse</span></div></li>
+      </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="node actend toggle" id="A1-END">
+    <div class="nhead"><span class="nid">A1-END</span><span class="ntitle">雨未停</span><span class="ntag tag-end">第一幕·幕终</span></div>
+    <div class="body">
+    <div class="meta"><span class="lbl">人物：</span>无（玩家决策）；结局标记 <code>a1-survived</code></div>
+    <div class="story">雨没停。天亮前，你得决定以什么身份留在杳湾——这身份会决定你如何撞上第二幕的那具尸。<br/><i style="color:#9aa3b8">【第一幕·幕终】承诺一种身份，将作为第二幕的入口与初始立场。</i></div>
+    <ul class="opts">
+      <li><span class="no">1</span>以记历人之助的身份留下 <span class="next">→ A2-ENTRY</span><div class="eff"><span class="chip flag">role = chronicler</span></div></li>
+      <li><span class="no">2</span>随宿沙的船，做个渡工同伴 <span class="next">→ A2-ENTRY</span><div class="eff"><span class="chip flag">role = ferrymate</span></div></li>
+      <li><span class="no">3</span>谁也不跟，独自追查黑雨与浮尸 <span class="next">→ A2-ENTRY</span><div class="eff"><span class="chip flag">role = seeker</span></div></li>
+    </ul>
+    </div>
+  </div>
+
+  <!-- 幕间脉络 -->
+  <div class="ctx" id="HUB">
+    <b>【幕间脉络 · 第一幕如何「交叉影响」第二幕（未单列节点的承接逻辑）】</b><br/>
+    第一幕里你结下的<b>人情</b>（helpChronicle / helpFerry / helpGranary…）与偷得的<b>秘密</b>（snoop 偷看宿沙的货、knowHanhui 取过昼盐、seekOrigin 追问黑雨、knowWellHistory 抄过雨谱）会被第二幕读取：<br/>
+    ① <b>role</b> 决定第二幕从哪个入口开局；② <b>snoop</b> 让第二幕渡口线多出「又去瞟舱里那卷」专属选项；③ <b>knowHanhui</b> 让第二幕独行线多出「先去井边取昼盐」选项、并让含晦线读出盐纹一角；④ <b>seekOrigin</b> 让第二幕羿箭线追加「箭痕缠黑雨纹路」细节；⑤ <b>knowWellHistory</b> 让井底不再有茫然描写。<br/>
+    这些 <code>visibleWhen</code> 只是「同一节点 ≤3 选项里哪些出现」的门槛，<b>绝不突破每节点 3 选项的上限</b>。
+  </div>
+
+  <!-- 角色分流枢纽 -->
+  <div class="hub">
+    <b>角色分流枢纽</b>（代码中的 <code>act2EntryByRole</code>：读取第一幕 <code>role</code>，把玩家送到不同第二幕入口）
+    <div class="map">
+      <div><code>chronicler</code> → <b>记历棚的清晨</b>（A2-CHRONICLE）<br/>立场：记录真相 / 选择性隐瞒</div>
+      <div><code>ferrymate</code> → <b>渡口的清晨</b>（A2-FERRY）<br/>立场：水上行动 / 与宿沙共船</div>
+      <div><code>seeker</code> → <b>独行的清晨</b>（A2-SOLO）<br/>立场：自由追查黑雨与浮尸</div>
+    </div>
+  </div>
+
+  <!-- ===================== 第二幕 ===================== -->
+  <div class="act a2">第二幕《三影》 <small>三入口按身份开局 → 汇入北滩浮尸 → 真分叉为三后果轴 → 各自落不同卷终（总分，不汇流）</small></div>
+
+  <div class="ctx">
+    <b>【第二幕前情脉络 · 三种身份 = 三种开场立场（未单列节点的设定）】</b><br/>
+    第二幕不再重复「落脚去处」，而是承接第一幕的 <b>role</b>：<b>记历人</b>从砚伯的棚开场，天然带着「该不该把井与尸写进雨谱」的抉择；<b>渡工同伴</b>随宿沙出船，重心在水上行动与那卷始终不许看的货物；<b>独行者</b>谁也不靠，直接追昨夜的三道影子。三条开场都指向同一桩异象——北滩浮尸，但玩家手里已握着不同的筹码（人情、昼盐、黑雨线索）。
+  </div>
+
+  <div class="branch-label">↓ 三入口（由第一幕 role 决定从哪个进入）</div>
+  <div class="branch">
+    <div class="node a2 toggle" id="A2-CHRONICLE">
+      <div class="nhead"><span class="nid">A2-CHRONICLE</span><span class="ntitle">记历棚的清晨</span><span class="ntag tag-entry">入口·记历人</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>砚伯｜触发：第一幕 role=chronicler</div>
+      <div class="story"><span class="sp">砚伯：</span>「你是记历棚的人了。昨夜的雨、井、尸，都该进谱——可有的事，进了谱就收不回来了。」</div>
+      <ul class="opts">
+        <li><span class="no">1</span>如实记，连井与尸都记 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">chronicledAll</span></div></li>
+        <li><span class="no">2</span>只记天气，其余装没看见 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">chronicledWeather</span></div></li>
+        <li><span class="no">3</span>借抄谱偷查村中旧档 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">snoopedArchive</span><span class="chip flag">knowMirror</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a2 toggle" id="A2-FERRY">
+      <div class="nhead"><span class="nid">A2-FERRY</span><span class="ntitle">渡口的清晨</span><span class="ntag tag-entry">入口·渡工</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>宿沙｜触发：第一幕 role=ferrymate</div>
+      <div class="story"><span class="sp">宿沙：</span>「跟我去北滩。河面上漂着不该漂的东西——你若还惦记舱里那卷，趁早别看。」</div>
+      <ul class="opts">
+        <li><span class="no">1</span>帮他撑篙靠岸 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">rowedBoat</span></div></li>
+        <li><span class="no">2</span>留意对岸的动静 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">watchedFarBank</span></div></li>
+        <li><span class="no">3</span>又去瞟舱里那卷东西 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip cond">⚑ 仅当第一幕 snoop（偷看货）才出现</span><span class="chip flag">snoopCargo2</span><span class="chip rel">NPC-SUSHA 好感 −1</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a2 toggle" id="A2-SOLO">
+      <div class="nhead"><span class="nid">A2-SOLO</span><span class="ntitle">独行的清晨</span><span class="ntag tag-entry">入口·独行</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>无（玩家独行）｜触发：第一幕 role=seeker</div>
+      <div class="story">谁也不靠。你裹紧湿衣，直接往北滩走——昨夜那三道影子，你没忘。</div>
+      <ul class="opts">
+        <li><span class="no">1</span>先去井边取走昼盐（你昨晚见过） <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip cond">⚑ 仅当第一幕 knowHanhui（取过昼盐）才出现</span><span class="chip flag">carriedSalt</span></div></li>
+        <li><span class="no">2</span>直奔北滩看那具尸 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">seeksCorpse2</span></div></li>
+        <li><span class="no">3</span>绕去粮仓找青芽打听 <span class="next">→ A2-SHORE</span><div class="eff"><span class="chip flag">askedQingya</span></div></li>
+      </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="node a2 toggle" id="A2-SHORE">
+    <div class="nhead"><span class="nid">A2-SHORE</span><span class="ntitle">北滩有尸</span><span class="ntag tag-conv">第二幕·真分叉</span></div>
+    <div class="body">
+    <div class="meta"><span class="lbl">人物：</span>无（旁白）；三影（远）｜三入口在此汇合</div>
+    <div class="story">浮尸搁浅在北滩，肩上一道赤金箭痕还在渗光。三道影子退到雨里，像在等你怎么处置这具『三影者』。<br/><i style="color:#9aa3b8">【第二幕·真分叉】以下三条路互不汇流，分别导向三种后续发展（羿箭 / 迟日 / 含晦）。你第一幕的积淀会改变每条路上的细节。</i></div>
+    <ul class="opts">
+      <li><span class="no">1</span>验尸：看那道赤金箭痕 <span class="next">→ A2-ARROW</span><div class="eff"><span class="chip flag">examineArrow</span></div></li>
+      <li><span class="no">2</span>追那三道影子，问它们要一个名字 <span class="next">→ A2-SHADOWS</span><div class="eff"><span class="chip flag">chaseShadow2</span></div></li>
+      <li><span class="no">3</span>听缄婆说井盐与「含晦」 <span class="next">→ A2-SALT</span><div class="eff"><span class="chip flag">listenSalt</span></div></li>
+    </ul>
+    </div>
+  </div>
+
+  <div class="ctx">
+    <b>【北滩异象脉络 · 浮尸、三影与含晦（未单列节点的设定）】</b><br/>
+    北滩浮尸是一具 <b>「三影者」</b>——肩头那道 <b>赤金箭痕</b> 来自 <b>羿</b>（本幕现身的人物），但羿声称箭不是他射出的，而是「有人把我的箭，钉进了一具早该安息的身子」，指向一桩被栽赃的往事。<b>三道影子</b> 是被封之名/被掩之人的化身，中间那道似要认一个名字（后文揭为「迟日」），另两道却把它往回拖。<b>「含晦」</b> 则是老井深处封着的一句话——缄婆说「盐里封着一句话，揭了，就有人要来讨债」，与北方来的使者、昼盐同源，是另一条被掩埋的因果线。三后果轴正对应玩家对这三桩「真相」的不同姿态。
+  </div>
+
+  <div class="branch-label">↓ 三后果轴（互不汇流）</div>
+  <div class="branch">
+    <div class="node a2 toggle" id="A2-ARROW">
+      <div class="nhead"><span class="nid">A2-ARROW</span><span class="ntitle">赤金箭痕</span><span class="ntag tag-axis">后果轴①·羿箭</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>羿｜触发：A2-SHORE-c1</div>
+      <div class="story"><span class="sp">羿：</span>「那箭是我的。可我没射人——是有人把我的箭，钉进了一具早该安息的身子。」</div>
+      <div class="cond">⚑ 若第一幕追问过黑雨（seekOrigin=true）：追加「你会注意到箭痕里缠着一丝黑雨的纹路。」</div>
+      <ul class="opts">
+        <li><span class="no">1</span>把箭痕拓下，与羿共保管 <span class="next">→ A2-END-ARROW</span><div class="eff"><span class="chip world">ending.yi_arrow_marks_shared</span></div></li>
+        <li><span class="no">2</span>把箭交还羿，让他独自去追 <span class="next">→ A2-END-ARROW</span><div class="eff"><span class="chip flag">yi_returned</span></div></li>
+        <li><span class="no">3</span>质问羿为何箭会离手 <span class="next">→ A2-END-ARROW</span><div class="eff"><span class="chip flag">yi_doubted</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a2 toggle" id="A2-SHADOWS">
+      <div class="nhead"><span class="nid">A2-SHADOWS</span><span class="ntitle">三影分立</span><span class="ntag tag-axis">后果轴②·迟日</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>三影（中间一道欲认名）｜触发：A2-SHORE-c2</div>
+      <div class="story">中间那道影子慢慢立起，像要认一个名字。另外两道影子一左一右，把它往回拖。</div>
+      <ul class="opts">
+        <li><span class="no">1</span>唤它一声「迟日」 <span class="next">→ A2-END-SHADOWS</span><div class="eff"><span class="chip world">ending.chiri_name_open</span></div></li>
+        <li><span class="no">2</span>按住它，让它沉回影里 <span class="next">→ A2-END-SHADOWS</span><div class="eff"><span class="chip flag">chiri_submerged</span></div></li>
+        <li><span class="no">3</span>只记下三影的方位，不插手 <span class="next">→ A2-END-SHADOWS</span><div class="eff"><span class="chip flag">shadowMap</span></div></li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="node a2 toggle" id="A2-SALT">
+      <div class="nhead"><span class="nid">A2-SALT</span><span class="ntitle">含晦之盐</span><span class="ntag tag-axis">后果轴③·含晦</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">人物：</span>缄婆｜触发：A2-SHORE-c3</div>
+      <div class="story"><span class="sp">缄婆：</span>「老井连着『含晦』。盐里封着一句话，揭了，就有人要来讨债。」</div>
+      <div class="cond">⚑ 若第一幕取过昼盐或记过残镜（anyFlagTrue(hasDaySalt, knowMirror)）：追加「你能读出盐纹里那行字的一角。」</div>
+      <ul class="opts">
+        <li><span class="no">1</span>揭开封盐的话罐 <span class="next">→ A2-END-SALT</span><div class="eff"><span class="chip world">ending.hanhui_open</span></div></li>
+        <li><span class="no">2</span>把话罐交给北方来的使者 <span class="next">→ A2-END-SALT</span><div class="eff"><span class="chip world">ending.north_debt_marked</span></div></li>
+        <li><span class="no">3</span>原样封回井里，不动 <span class="next">→ A2-END-SALT</span><div class="eff"><span class="chip flag">hanhui_sealed</span></div></li>
+      </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctx">
+    <b>【三后果轴脉络 · 三种「真相姿态」对应三种卷终（未单列节点的结果导向）】</b><br/>
+    玩家在「北滩有尸」选了哪条轴，就进入哪一种对「真相」的处理方式：<br/>
+    · <b>羿箭轴</b>＝追查「谁把羿的箭栽进尸体」——把箭痕拓下共管 / 交还羿独自追 / 质问羿，最终收敛为 <b>箭痕未冷</b>；<br/>
+    · <b>迟日轴</b>＝给被封之影「正名」——唤出「迟日」/ 按住沉回 / 只记方位，最终收敛为 <b>迟日有名</b>；<br/>
+    · <b>含晦轴</b>＝处置「井里被封的那句话」——揭罐 / 交使者 / 原样封回，最终收敛为 <b>盐封启闭</b>。<br/>
+    三者<b>互不汇流</b>，各自独立成卷终，因此第一、二幕整体呈「总分」而非「总分总」。
+  </div>
+
+  <div class="branch-label">↓ 三卷终（各自独立，互不相同）</div>
+  <div class="branch">
+    <div class="node end-red toggle" id="A2-END-ARROW">
+      <div class="nhead"><span class="nid">A2-END-ARROW</span><span class="ntitle">箭痕未冷</span><span class="ntag vid-red">卷终·羿箭轴</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">类型：</span>volume-end（置 completed=true）｜后续由 ending.yi_arrow_marks_shared / yi_returned / yi_doubted 决定第三幕羿线</div>
+      <div class="story">赤金箭痕在雨里仍泛着光。你把这段因果收进了自己的路径——它不会再是「待续」二字能盖过的了。</div>
+      </div>
+    </div>
+
+    <div class="node end-amber toggle" id="A2-END-SHADOWS">
+      <div class="nhead"><span class="nid">A2-END-SHADOWS</span><span class="ntitle">迟日有名</span><span class="ntag vid-amber">卷终·迟日轴</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">类型：</span>volume-end（置 completed=true）｜后续由 ending.chiri_name_open / chiri_submerged / shadowMap 决定第三幕影线</div>
+      <div class="story">中间那道影子立了又沉。无论你唤没唤出「迟日」，三影都已记住你站过的位置。</div>
+      </div>
+    </div>
+
+    <div class="node end-teal toggle" id="A2-END-SALT">
+      <div class="nhead"><span class="nid">A2-END-SALT</span><span class="ntitle">盐封启闭</span><span class="ntag vid-teal">卷终·含晦轴</span></div>
+      <div class="body">
+      <div class="meta"><span class="lbl">类型：</span>volume-end（置 completed=true）｜后续由 ending.hanhui_open / north_debt_marked / hanhui_sealed 决定第三幕盐线</div>
+      <div class="story">井盐的气息退进雨里。那句被封着的话，是揭是掩，都已成了你身上背得动或背不动的东西。</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    配套代码：<code>app/game/branching/</code>（types / acts / engine / backup / index）｜ 校验脚本：<code>scripts/verify-branching.ts</code>（9 条路径全绿）｜ 节点结构说明：<code>docs/branching-acts12.md</code><br/>
+    本思维导图由上述代码与文档直接整理，所有剧情文案、人物、选项与后果变量均与 <code>acts.ts</code> 一致；背景/脉络框为对分散在各节点 narration 中设定的集中标注，未新增任何剧情内容。
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.node.toggle').forEach(function(n){
+    var head=n.querySelector('.nhead');
+    head.style.cursor='pointer';
+    head.addEventListener('click',function(){ n.classList.toggle('collapsed'); });
+  });
+</script>
+</body>
+</html>
