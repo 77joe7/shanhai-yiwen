@@ -21,6 +21,7 @@ export interface CharacterSummary {
   location: string;
   day: number;
   period: string;
+  stats?: Record<"体魄" | "身法" | "灵识" | "心志" | "机巧" | "言契", number>;
   createdAt: string;
   updatedAt: string;
 }

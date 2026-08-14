@@ -418,6 +418,7 @@ function CharacterSelect({ characters, activeId, onEnter, onRemove, onCreate }: 
             <h3>{character.name}</h3>
             <p className="card-origin">{originName(character.origin)} · {natureName(character.nature)} · {flawName(character.flaw)}</p>
             <p className="card-location">{character.location} · 第{character.day}日 · {character.period}</p>
+            {character.stats && <div className="card-stats">{Object.entries(character.stats).map(([key, value]) => <span className="card-stat" key={key}><b>{key}</b><i><em style={{ width: `${Math.min(100, (value / 10) * 100)}%` }} /></i><strong>{value}</strong></span>)}</div>}
             <p className="card-time">最近保存：{new Date(character.updatedAt).toLocaleString("zh-CN")}</p>
           </div>
           <div className="card-actions">
@@ -536,7 +537,7 @@ function MapPanel({ state }: { state: GameState }) {
   const places = [
     { name: "杳湾", tag: "起点", x: 49, y: 48 }, { name: "北滩无名尸", tag: "线索", x: 27, y: 29 }, { name: "东桑林", tag: "异象", x: 72, y: 26 }, { name: "旧盐井", tag: "深处", x: 68, y: 69 },
   ];
-  return <div className="map-panel"><p>本章的行旅由剧情选择推进。舆图记录已经在故事中显形的地点与线索；当前所在：{state.location}。</p><div className="map-canvas">{places.map((p) => <button key={p.name} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.name !== state.location}><i /><b>{p.name}</b><small>{p.name === state.location ? "当前" : p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已抵达</span><span><i />剧情线索</span><span><i className="locked-dot" />尚待剧情开启</span></div></div>;
+  return <div className="map-panel"><p>本章的行旅由剧情选择推进。舆图记录已经在故事中显形的地点与线索；当前所在：{state.location}。</p><div className="map-canvas">{places.map((p) => <button key={p.name} className={p.name === state.location ? "is-here" : ""} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.name !== state.location}><i /><b>{p.name}</b><small>{p.name === state.location ? "此间" : p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已抵达</span><span><i />剧情线索</span><span><i className="locked-dot" />尚待剧情开启</span></div></div>;
 }
 
 function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {

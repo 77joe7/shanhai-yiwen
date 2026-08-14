@@ -131,6 +131,7 @@ export function saveCharacter(id: string, state: GameState): CharacterSummary {
     location: payload.location,
     day: payload.day,
     period: payload.period,
+    stats: payload.stats,
     createdAt: existing?.createdAt ?? payload.lastSavedAt ?? new Date().toISOString(),
     updatedAt: payload.lastSavedAt ?? new Date().toISOString(),
   };

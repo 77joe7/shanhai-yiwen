@@ -783,3 +783,20 @@ html[data-texture="simple"] .game-shell::before, html[data-texture="simple"] .re
 .row-meter > b { font-size: 11px; font-weight: 500; }
 .row-meter.pos { color: #e4ae70; }
 .row-meter.neg { color: #e27958; }
+
+/* 批3：舆图此间徽章 + 角色卡六维进度条 + 导航金色下划线 */
+.map-canvas button.is-here {
+  border-color: #c4a46a;
+  box-shadow: 0 0 16px rgba(196, 164, 106, .5), 0 0 0 1px #c4a46a;
+}
+.map-canvas button.is-here small { color: #c4a46a; font-weight: 600; }
+
+.card-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px 12px; margin: 6px 0 2px; }
+.card-stat { display: grid; grid-template-columns: 30px minmax(0, 1fr) 18px; align-items: center; gap: 5px; }
+.card-stat > b { color: #a89d8b; font-size: 10px; font-weight: 500; letter-spacing: .06em; }
+.card-stat > i { height: 3px; background: rgba(196, 164, 106, .18); border-radius: 2px; overflow: hidden; }
+.card-stat > i > em { display: block; height: 100%; background: #c4a46a; }
+.card-stat > strong { font-weight: 600; font-size: 11px; color: #e4b873; text-align: right; }
+
+.side-rail nav button.active { box-shadow: -2px 0 #c4a46a; background: linear-gradient(90deg, rgba(196, 164, 106, .1), transparent); }
+.mobile-nav button.active { box-shadow: inset 0 2px #c4a46a; }
