@@ -11,6 +11,7 @@
 - 信息栏（情境安全区）从底部移至标题栏正下方：`StorySafeArea` 的 DOM 位置从 `desktop-grid` 之后移到 `topbar` 之后；`.story-safe-area` 由 `position:fixed; bottom:0` 改为 `top:64px`（移动端 `top:calc(64px + env(safe-area-inset-top))`），`border-bottom:0` 改 `border-top:0`。配套调整：`.mythic-shell .reader` 顶部 padding 42px→106px、`.side-rail` 顶部 padding 30px→94px（避让信息栏）、移动端 `.mobile-status-strip` 加 `margin-top:72px`、移动端 `.reader` 底部 padding `calc(196px+…)`→`calc(104px+…)`（底部信息栏移除后不再需要大留白）。滚动定位（视口 2/3 / reducedMotion 1/3）不变。
 - 导航重构与版面优化（三项）：① 底部导航由「志异/故交/行游/舆图/命录」改为「志异/命录/行游(居中)/行囊/舆图」——命录提前到第 2 位，行囊独立为第 4 大功能页（`PanelId` 移除 `people`、新增 `inventory`，`hlPanel` 同步：人物→命录、物件/线索→行囊）；命录页子标签由「行囊/未竟之事」改为「故交/命轨」（故交渲染 PeoplePanel、命轨渲染 QuestLog）。② 功能页标题去重：`reader-heading`（eyebrow/h1/brush-rule/退出按钮）仅在 story 页渲染，非剧情页由面板内部标题唯一呈现；MapPanel、FatePanel 补统一 `archive-toolbar` 标题（「舆图」「命录」）。③ 顶部大框：`.mythic-shell .topbar` 去掉 `border-bottom`，与信息栏 `.story-safe-area` 连续合并为统一深色大框。
 - 信息栏仅「行游」剧情界面可见：`StorySafeArea` 渲染条件加 `panel === "story"`；`main` 加 `data-panel={panel}`，用 `[data-panel="story"]` 选择器让避让 padding（`.reader` 顶部 106px、`.side-rail` 顶部 94px、移动端 `.mobile-status-strip` margin-top 72px）仅在剧情页生效，非剧情页恢复默认（reader 42px / side-rail 30px / 状态条 0）。信息栏成为剧情界面专属模块。
+- 剧情界面排版与交互规范（5 项）：① 选项栏内部顺序固定为「序号 + 类型 + 选项内容 + 箭头」——按钮 DOM 改为 `span(序号)/em.choice-type(类型)/b.choice-label(内容)/i(箭头)`，grid 改 `42px auto 1fr 26px`，类型渲染为小标签（说话/行动/来源）。② 系统提示两行排版——`story-system` 拆为 `b.story-system-title`（标题，按首个冒号提取、缺省「异兆记录」）+ `p.story-system-body`（内容），打字机仅作用于正文、标题固定。③ 取消文字特效时定位最新内容顶部至界面 1/3 高度——自动滚动 `fraction` 由 `reducedMotion ? 1/3 : 2/3` 改为 `shouldType ? 2/3 : 1/3`，且无特效时定位 `latestNodeRef`（顶部）而非底部。④ 逐字时上翻查看历史不冲突（沿用 IntersectionObserver `awayFromLatest` 暂停自动滚动 + tw-stack 双缓冲稳定高度）。⑤ 剧情范围内双击立即取消特效并保持位置——`story-transcript` 加 `onDoubleClick={revealAll}`，`revealAll` 一次性显示全部剩余内容，用 `skipNextScroll` ref 跳过 reveal 触发的自动滚动，防止阅读位置跳动。
 
 ### 新增
 
@@ -38,6 +39,8 @@
 - 分支剧情系统类型检查修复：`types.ts` 对 `src/content/contracts` 的相对导入路径由错误两级（`../../src/content/contracts`，指向不存在的 `app/src/content/contracts`）改正为三级（`../../../src/content/contracts`）；并补齐 `types.ts` 对 `Predicate/Effect/StoryBlock` 的「本地导入 + 再导出」与 `engine.ts` 对 `BranchState` 等类型再导出，使 `engine.ts`/`scripts/verify-branching.ts` 的类型引用可在 `tsc` 下解析；`tsconfig.json` 开启 `allowImportingTsExtensions`（已 `noEmit`，仅影响类型检查）以放行验证脚本的 `.ts` 扩展名导入。修复后 `tsc --noEmit` 全量错误回落至基线 19（分支系统零新增错误），`scripts/verify-branching.ts` 五组校验仍全绿。
 
 ### 文档
+
+- 第一卷全面校对修正（内容包 4.3.0→4.3.1，结合说明书 V1.4）：① 12 处 ASCII 单引号改中文引号（消除中英文标点混用）；② N014 材料显形提示英文内部 ID「IT-V01-MAT-EMBERLEAF」改中文「扶桑烬」（去除用户可见英文）；③ N355「剑婆」错别字改「缄婆」；④ N344 两处季璃对话标签误标「季狸」改「季璃」——经核查季璃为独立支线角色（弟弟季槐被推入盐井，正文出现 17 次），与北方使者季狸（NPC-JILI）同音不同人，原 speaker 误用 NPC-JILI；⑤ 新增季璃角色卡 NPC-JILI2；⑥ 角色数 11→12。母文件版（内容包+正文+目录说明）与扩写版分别备份于 `备份/2026-08-15_v4.3.1/`。
 
 - `黑雨_文学扩写版.md` 同步至 v4.3.0：幕结构由旧六幕制（尸体与证词/桑林与盐井/无日之夜/让谁先知道）重排为 v4.3.0 五幕制（雨至/三影/倒河/无日之夜/赤日之兆），场景归属按内容包 chapter 校正（场景二「第一夜的议事」归入第一幕 A1-MID、场景三「北滩有尸」归入第二幕 A2-SHORE 等）；8 处失效接入节点更新为当前有效 id（第一二幕改用 `A1-*`/`A2-*` 分支节点，第三四五幕保留 `V01-C01-N*` 并标注幕归属）；场景五补 v4.3.0 新增昼盐命令签发者伏笔（N315 撕角文书呼应）；卷首标注版本同步说明。8,755 汉字（原 8,475 增加约 280 字）。
 
