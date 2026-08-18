@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>山海异闻录·线索网络 / 人物关系网（交互版）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280;
+    --line:#e3e6ec; --accent:#2b6cb0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+       background:var(--bg);color:var(--ink);}
+  header{padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+  header h1{margin:0;font-size:18px;font-weight:700}
+  header p{margin:4px 0 0;font-size:12.5px;color:var(--muted)}
+  .wrap{display:flex;gap:14px;padding:14px 20px;align-items:flex-start}
+  .controls{display:flex;flex-direction:column;gap:10px;min-width:230px;
+            background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .tabs{display:flex;gap:6px}
+  .tabs button{flex:1;padding:8px 6px;border:1px solid var(--line);background:#fff;
+               border-radius:8px;cursor:pointer;font-size:13px;color:var(--ink)}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .ctl-row{display:flex;flex-direction:column;gap:5px;font-size:12.5px}
+  .ctl-row label{font-weight:600;color:var(--muted)}
+  select,input[type=checkbox]{font-size:13px}
+  select{padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:#fff}
+  .btn{margin-top:2px;padding:7px 8px;border:1px solid var(--line);background:#fff;
+       border-radius:8px;cursor:pointer;font-size:12.5px}
+  .btn:hover{background:#eef2f7}
+  .stage{flex:1;display:flex;gap:14px;min-width:0}
+  .graphbox{position:relative;flex:1;background:var(--panel);border:1px solid var(--line);
+            border-radius:10px;overflow:hidden;min-height:640px}
+  svg{width:100%;height:100%;display:block;cursor:grab}
+  svg.dragging{cursor:grabbing}
+  .info{width:300px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:14px;font-size:13px;align-self:stretch}
+  .info h3{margin:0 0 8px;font-size:15px}
+  .info .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11.5px;
+             color:#fff;margin-bottom:8px}
+  .info .kv{margin:6px 0;line-height:1.5}
+  .info .kv b{color:var(--muted);font-weight:600}
+  .info .empty{color:var(--muted)}
+  .legend{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.92);
+          border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:11.5px;
+          line-height:1.7;max-width:260px}
+  .legend .row{display:flex;align-items:center;gap:7px}
+  .legend .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .legend .bar{width:18px;height:4px;border-radius:2px;flex:none}
+  .hint{position:absolute;right:12px;top:12px;font-size:11.5px;color:var(--muted);
+        background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:7px;padding:5px 9px}
+  text.node-label{font-size:11px;fill:var(--ink);pointer-events:none;
+       paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+  .node circle{cursor:pointer}
+  .node:hover circle{stroke:#111;stroke-width:2.5px}
+</style>
+</head>
+<body>
+<header>
+  <h1>《山海异闻录：天地未定》— 线索网络 &amp; 人物关系网（交互版）</h1>
+  <p>对应 docs/narrative-structure-v1.md（v1.1 范式）。节点-边力导向图，离线可用，可拖拽 / 悬停高亮 / 点击查看详情。</p>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="tabs">
+      <button id="tab-clue" class="active">线索网络（§2）</button>
+      <button id="tab-rel">人物关系网（§3）</button>
+    </div>
+    <div class="ctl-row" id="clue-ctl">
+      <label>线索链筛选</label>
+      <select id="chain-sel">
+        <option value="ALL">全部（L1–L8 + 汇流）</option>
+        <option value="L1">L1 黑雨吃名字（样板线）</option>
+        <option value="L2">L2 昼盐真相</option>
+        <option value="L3">L3 三影尸体归属</option>
+        <option value="L4">L4 赤金箭来源</option>
+        <option value="L5">L5 十日征兆</option>
+        <option value="L6">L6 阿禾命名簿</option>
+        <option value="L7">L7 季缨守井</option>
+        <option value="L8">L8 北方交易</option>
+      </select>
+      <button class="btn" id="reheat-clue">重新布局</button>
+    </div>
+    <div class="ctl-row" id="rel-ctl" style="display:none">
+      <label><input type="checkbox" id="toggle-hide" checked> 显示「隐瞒↔追查」边</label>
+      <button class="btn" id="reheat-rel">重新布局</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="graphbox">
+      <svg id="graph" viewBox="0 0 1000 640" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="hint">拖拽节点可调整 · 悬停高亮相邻 · 点击看详情</div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <aside class="info" id="info">
+      <h3>详情</h3>
+      <div class="empty">点击任意节点查看其类型、所属线索链 / 阵营与关键 flag。</div>
+    </aside>
+  </div>
+</div>
+
+<script>
+"use strict";
+const SVG_NS="http://www.w3.org/2000/svg";
+const svg=document.getElementById("graph");
+const info=document.getElementById("info");
+const legend=document.getElementById("legend");
+
+/* ============ 数据：线索网络（§2）============ */
+const CLUE_GROUPS={
+  R:{name:"传闻 R",color:"#9b59b6"},
+  A:{name:"探查 A",color:"#2980b9"},
+  E:{name:"证据 E",color:"#e67e22"},
+  C:{name:"认知汇流 C",color:"#27ae60"},
+  D:{name:"抉择 D",color:"#c0392b"},
+  F:{name:"后果 F",color:"#34495e"},
+  HUB:{name:"汇流/跨卷",color:"#f1c40f"}
+};
+const clueNodes=[
+  // L1 样板线「黑雨吃名字」
+  {id:"L1-R01",chain:"L1",type:"R",label:"黑雨会吃掉名字",meta:"村民口述 · A1-MID 村中夜议"},
+  {id:"L1-A01",chain:"L1",type:"A",label:"夜探盐井/下井",meta:"sediment 探查行动"},
+  {id:"L1-E01",chain:"L1",type:"E",label:"三影尸体确证",meta:"A2-SHORE · clue.corpse_is_road"},
+  {id:"L1-A02",chain:"L1",type:"A",label:"与缄婆交谈",meta:"N116 缄婆把钥匙放回每个人手里"},
+  {id:"L1-R02",chain:"L1",type:"R",label:"昼盐=切碎的白昼",meta:"N112 盐层有人含了二十年（另一版本）"},
+  {id:"L1-C01",chain:"L1",type:"C",label:"开始怀疑真相",meta:"N017 井底白昼 / N018 第一句谎话"},
+  {id:"L1-D01",chain:"L1",type:"D",label:"告诉阿禾",meta:"NPC-AHE 命名簿"},
+  {id:"L1-D02",chain:"L1",type:"D",label:"隐瞒",meta:"玩家认知状态固化"},
+  {id:"L1-D03",chain:"L1",type:"D",label:"质问砚伯",meta:"NPC-YANBO · 删改昼盐产量之秘"},
+  {id:"L1-F01",chain:"L1",type:"F",label:"阿禾变化",meta:"END-AHE-NAMEKEEPER"},
+  {id:"L1-F02",chain:"L1",type:"F",label:"玩家认知固化",meta:"状态变量"},
+  {id:"L1-F03",chain:"L1",type:"F",label:"砚伯变化",meta:"END-YANBO-HONEST_STONE / CLEAN_CHRONICLE"},
+  {id:"L1-F04",chain:"L1",type:"F",label:"跨卷·第三卷",meta:"名字/责任名录后续回响"},
+  // L2 昼盐真相
+  {id:"L2-R",chain:"L2",type:"R",label:"井底伏笔",meta:"A1-WELL"},
+  {id:"L2-A",chain:"L2",type:"A",label:"N016 旧盐井",meta:"开 Q-MAIN-004"},
+  {id:"L2-E",chain:"L2",type:"E",label:"昼盐开采确证",meta:"first_well_command_revealed, well_child_labor_proven · N112/N116"},
+  {id:"L2-C",chain:"L2",type:"C",label:"北方责任",meta:"N022"},
+  {id:"L2-D",chain:"L2",type:"D",label:"公开旧账/封井",meta:""},
+  {id:"L2-F",chain:"L2",type:"F",label:"跨卷责任名录",meta:"yanbo_jianpo_named_responsibility → V02"},
+  // L3 三影尸体归属
+  {id:"L3-R",chain:"L3",type:"R",label:"北滩有尸",meta:"A2-SHORE"},
+  {id:"L3-A",chain:"L3",type:"A",label:"尸体管辖权争夺",meta:""},
+  {id:"L3-E",chain:"L3",type:"E",label:"尸体=道路确证",meta:"clue.corpse_is_road"},
+  {id:"L3-C",chain:"L3",type:"C",label:"羿从西边来",meta:"N021"},
+  {id:"L3-D",chain:"L3",type:"D",label:"交北方/放归/东行/不塑",meta:""},
+  {id:"L3-F",chain:"L3",type:"F",label:"corpse.fate → V02",meta:"三影者身份线输入"},
+  // L4 赤金箭来源
+  {id:"L4-R",chain:"L4",type:"R",label:"胸插赤金箭",meta:""},
+  {id:"L4-A",chain:"L4",type:"A",label:"扶桑烬显影",meta:""},
+  {id:"L4-E",chain:"L4",type:"E",label:"arrow_made_for_sun",meta:"arrow_name_yi"},
+  {id:"L4-C",chain:"L4",type:"C",label:"黑雨停了",meta:"N023"},
+  {id:"L4-D",chain:"L4",type:"D",label:"交羿/保留/共享问责",meta:""},
+  {id:"L4-F",chain:"L4",type:"F",label:"unique.red_arrow.owner → V02",meta:"第二卷核心分支输入"},
+  // L5 十日征兆
+  {id:"L5-R",chain:"L5",type:"R",label:"第二个月亮",meta:""},
+  {id:"L5-A",chain:"L5",type:"A",label:"井底白天",meta:"N017"},
+  {id:"L5-E",chain:"L5",type:"E",label:"shadow_memory_ten",meta:"fusang_ash_verified"},
+  {id:"L5-C",chain:"L5",type:"C",label:"杳湾余响",meta:"N028"},
+  {id:"L5-D",chain:"L5",type:"D",label:"记录/隐瞒预警",meta:""},
+  {id:"L5-F",chain:"L5",type:"F",label:"faction.fusang.warning_received → V02",meta:"扶桑预警程度"},
+  // L6 阿禾命名簿
+  {id:"L6-R",chain:"L6",type:"R",label:"名字会长根",meta:"N042"},
+  {id:"L6-A",chain:"L6",type:"A",label:"东桑命名",meta:"N041"},
+  {id:"L6-E",chain:"L6",type:"E",label:"grove_erased_names",meta:"grove_roots_link_village"},
+  {id:"L6-C",chain:"L6",type:"C",label:"第七日之前",meta:"N053"},
+  {id:"L6-D",chain:"L6",type:"D",label:"命名/编号",meta:""},
+  {id:"L6-F",chain:"L6",type:"F",label:"END-AHE-NAMEKEEPER",meta:"命名簿结局"},
+  // L7 季缨守井
+  {id:"L7-R",chain:"L7",type:"R",label:"红丝守井",meta:""},
+  {id:"L7-A",chain:"L7",type:"A",label:"旧盐井回访",meta:""},
+  {id:"L7-E",chain:"L7",type:"E",label:"channel_names_copied",meta:"river_route_to_well"},
+  {id:"L7-C",chain:"L7",type:"C",label:"门槛",meta:"N335"},
+  {id:"L7-D",chain:"L7",type:"D",label:"记名/涂名",meta:""},
+  {id:"L7-F",chain:"L7",type:"F",label:"END-JILI2-BROTHER_REMEMBERED",meta:"记弟结局"},
+  // L8 北方交易
+  {id:"L8-R",chain:"L8",type:"R",label:"真印可信度",meta:"N058"},
+  {id:"L8-A",chain:"L8",type:"A",label:"季狸交涉",meta:""},
+  {id:"L8-E",chain:"L8",type:"E",label:"north_trade_used_unborn_seal",meta:"feather_points_to_command"},
+  {id:"L8-C",chain:"L8",type:"C",label:"黑雨停了",meta:"N023"},
+  {id:"L8-D",chain:"L8",type:"D",label:"交易/拒交易",meta:""},
+  {id:"L8-F",chain:"L8",type:"F",label:"ending.north_debt_marked → V02",meta:"北方债务线输入"},
+  // 汇流 / 跨卷 HUB
+  {id:"HUB-N023",chain:"HUB",type:"HUB",label:"N023 黑雨停了(fork)",meta:"6 选项不可逆命运分叉"},
+  {id:"HUB-N028",chain:"HUB",type:"HUB",label:"N028 杳湾余响(reflow)",meta:"汇总 35 条 echoBindings 余响"},
+  {id:"HUB-V02",chain:"HUB",type:"HUB",label:"第二卷《十日》10条 V02",meta:"consumer=V02 跨卷硬输入"},
+  {id:"HUB-V03",chain:"HUB",type:"HUB",label:"第三卷《逐鹿》",meta:"名字/责任名录后续回响"}
+];
+const clueLinksRaw=[
+  ["L1-R01","L1-A01"],["L1-R01","L1-A02"],["L1-A01","L1-E01"],["L1-A02","L1-R02"],
+  ["L1-E01","L1-C01"],["L1-R02","L1-C01"],
+  ["L1-C01","L1-D01"],["L1-C01","L1-D02"],["L1-C01","L1-D03"],
+  ["L1-D01","L1-F01"],["L1-D02","L1-F02"],["L1-D03","L1-F03"],
+  ["L1-F01","L1-F04"],["L1-F03","L1-F04"],
+  ["L2-R","L2-A"],["L2-A","L2-E"],["L2-E","L2-C"],["L2-C","L2-D"],["L2-D","L2-F"],
+  ["L3-R","L3-A"],["L3-A","L3-E"],["L3-E","L3-C"],["L3-C","L3-D"],["L3-D","L3-F"],
+  ["L4-R","L4-A"],["L4-A","L4-E"],["L4-E","L4-C"],["L4-C","L4-D"],["L4-D","L4-F"],
+  ["L5-R","L5-A"],["L5-A","L5-E"],["L5-E","L5-C"],["L5-C","L5-D"],["L5-D","L5-F"],
+  ["L6-R","L6-A"],["L6-A","L6-E"],["L6-E","L6-C"],["L6-C","L6-D"],["L6-D","L6-F"],
+  ["L7-R","L7-A"],["L7-A","L7-E"],["L7-E","L7-C"],["L7-C","L7-D"],["L7-D","L7-F"],
+  ["L8-R","L8-A"],["L8-A","L8-E"],["L8-E","L8-C"],["L8-C","L8-D"],["L8-D","L8-F"],
+  // 汇流：各链 F → N023；L1-F04 → 卷三
+  ["L1-F01","HUB-N023"],["L1-F02","HUB-N023"],["L1-F03","HUB-N023"],["L1-F04","HUB-V03"],
+  ["L2-F","HUB-N023"],["L3-F","HUB-N023"],["L4-F","HUB-N023"],["L5-F","HUB-N023"],
+  ["L6-F","HUB-N023"],["L7-F","HUB-N023"],["L8-F","HUB-N023"],
+  ["HUB-N023","HUB-N028"],["HUB-N028","HUB-V02"]
+];
+
+/* ============ 数据：人物关系网（§3）============ */
+const FACTION={
+  YAOWAN:{name:"杳湾村",color:"#27ae60"},
+  NORTH:{name:"北方联盟",color:"#e67e22"},
+  JIULI:{name:"九黎流散",color:"#8e44ad"},
+  YI:{name:"羿阵营",color:"#2980b9"},
+  FUSANG:{name:"扶桑",color:"#16a085"},
+  EXTERNAL:{name:"外部",color:"#7f8c8d"}
+};
+// 行序：AHE,YANBO,JIANPO,SUSHA,QINGYA,WEIQING,YANTONG,LIWEI,JILI,YI,THREE,JILI2
+// 列序：L1,L2,L3,L4,L5,L6,L7,L8 ；●=3 ◐=2 ○=1 空=0
+const REL_MATRIX={
+  AHE:[3,2,2,1,1,3,0,0],
+  YANBO:[2,3,0,0,0,2,0,2],
+  JIANPO:[2,3,0,0,0,0,3,2],
+  SUSHA:[1,2,3,0,0,0,0,0],
+  QINGYA:[0,3,0,0,0,2,0,0],
+  WEIQING:[2,0,3,0,0,0,0,0],
+  YANTONG:[2,3,2,0,0,0,0,0],
+  LIWEI:[0,2,2,0,0,0,0,3],
+  JILI:[0,2,3,0,0,0,0,3],
+  YI:[0,0,3,3,3,0,0,0],
+  THREE:[2,0,3,3,3,0,0,0],
+  JILI2:[0,2,0,0,0,0,3,0]
+};
+const relNodes=[
+  {id:"AHE",chain:"",type:"",label:"阿禾",faction:"YAOWAN",meta:"12岁牧羊女 · 为弱小者命名、抵制「必要」牺牲"},
+  {id:"YANBO",chain:"",type:"",label:"砚伯",faction:"YAOWAN",meta:"记历分粮 · 删改三次昼盐产量、父参与梦税"},
+  {id:"JIANPO",chain:"",type:"",label:"缄婆",faction:"YAOWAN",meta:"旧盐井守井人 · 昼盐开采亲历者 · 曾向北方隐瞒井枯"},
+  {id:"SUSHA",chain:"",type:"",label:"宿沙",faction:"YAOWAN",meta:"渡工 · 长子死于沉船"},
+  {id:"QINGYA",chain:"",type:"",label:"青芽",faction:"YAOWAN",meta:"粮仓 · 共掌昼盐账"},
+  {id:"WEIQING",chain:"",type:"",label:"隗青",faction:"YAOWAN",meta:"守夜人"},
+  {id:"YANTONG",chain:"",type:"",label:"砚童",faction:"YAOWAN",meta:"被黑羽借梦供养尸体 · 梦中供尸体、扶桑第十子空缺"},
+  {id:"LIWEI",chain:"",type:"",label:"黎苇",faction:"JIULI",meta:"九黎流民 · 寻求栖身 · 恐惧被交换"},
+  {id:"JILI",chain:"",type:"",label:"季狸",faction:"NORTH",meta:"北方使者 · 持真印 · 真印来源/本人或已死另一路线"},
+  {id:"YI",chain:"",type:"",label:"羿",faction:"YI",meta:"射师（未射日）· 循赤金箭未来痕迹"},
+  {id:"THREE",chain:"",type:"",label:"三影者",faction:"FUSANG",meta:"尸体/道路 · 由逃离扶桑的白昼+未来赤金箭+被刮去的日名构成"},
+  {id:"JILI2",chain:"",type:"",label:"季缨",faction:"YAOWAN",meta:"村民 · 弟季槐被推入旧盐井失踪 · 守井等弟"},
+  {id:"PLAYER",chain:"",type:"",label:"玩家",faction:"EXTERNAL",meta:"进入杳湾的普通人 · 追查砚伯/缄婆隐瞒"},
+  {id:"HEIYU",chain:"",type:"",label:"黑羽(控制方)",faction:"EXTERNAL",meta:"控制砚童梦境、供养尸体的一方"}
+];
+// 共享线索边（由矩阵计算）：两角色在 8 链上共现（●或◐）强度之和
+const relLinksRaw=[]; // 普通共享线索边
+const relHideRaw=[     // 隐瞒↔追查边（红，虚线）
+  {s:"YANBO",t:"JILI2",label:"砚伯删改 · 季缨追查"},
+  {s:"YANBO",t:"PLAYER",label:"砚伯删改 · 玩家追查"},
+  {s:"JIANPO",t:"PLAYER",label:"缄婆隐瞒井枯 · 玩家追查"},
+  {s:"JIANPO",t:"AHE",label:"缄婆隐瞒井枯 · 阿禾"},
+  {s:"JILI",t:"YI",label:"季狸真印来源 · 羿追查"},
+  {s:"JILI",t:"YANBO",label:"北方隐瞒命令签发者 · 杳湾村（砚伯）"},
+  {s:"YANTONG",t:"HEIYU",label:"砚童被控 · 黑羽控制"}
+];
+(function buildRelLinks(){
+  const ids=Object.keys(REL_MATRIX);
+  for(let i=0;i<ids.length;i++){
+    for(let j=i+1;j<ids.length;j++){
+      const a=REL_MATRIX[ids[i]],b=REL_MATRIX[ids[j]];
+      let co=0;
+      for(let k=0;k<8;k++){ if(a[k]>0&&b[k]>0) co+=Math.min(a[k],b[k]); }
+      if(co>0) relLinksRaw.push({s:ids[i],t:ids[j],w:co});
+    }
+  }
+})();
+
+/* ============ 力导向引擎 ============ */
+let nodes=[],links=[],currentMode="clue";
+let alpha=1, rafId=null, dragNode=null;
+const W=1000,H=640;
+
+function resolveLinks(raw){
+  const map={}; nodes.forEach(n=>map[n.id]=n);
+  return raw.filter(l=>map[l.s]&&map[l.t]).map(l=>({source:map[l.s],target:map[l.t],w:l.w||1,hide:l.hide}));
+}
+function buildClueData(chainFilter){
+  let raw=clueNodes;
+  if(chainFilter!=="ALL") raw=clueNodes.filter(n=>n.chain===chainFilter||n.chain==="HUB");
+  nodes=raw.map((n,i)=>({...n,_x:W/2+(Math.random()-0.5)*400,_y:H/2+(Math.random()-0.5)*300}));
+  // 重新映射 HUB 连接：仅保留两端都存在的边
+  let lk=clueLinksRaw.map(([s,t])=>({s,t}));
+  if(chainFilter!=="ALL"){
+    const vis=new Set(nodes.map(n=>n.id));
+    lk=lk.filter(([s,t])=>vis.has(s)&&vis.has(t));
+  }
+  links=resolveLinks(lk);
+}
+function buildRelData(showHide){
+  nodes=relNodes.map((n,i)=>({...n,_x:W/2+(Math.random()-0.5)*400,_y:H/2+(Math.random()-0.5)*300}));
+  const normal=relLinksRaw.map(l=>({s:l.s,t:l.t,w:l.w}));
+  const hide=showHide?relHideRaw.map(l=>({s:l.s,t:l.t,w:2,hide:true,label:l.label})):[];
+  links=resolveLinks(normal.concat(hide));
+}
+function tick(){
+  const k=2200, ks=0.03, restN=64, restHub=120, grav=0.012, damp=0.82;
+  for(let i=0;i<nodes.length;i++){
+    const a=nodes[i];
+    if(a===dragNode) continue;
+    for(let j=i+1;j<nodes.length;j++){
+      const b=nodes[j];
+      let dx=a._x-b._x, dy=a._y-b._y;
+      let d2=dx*dx+dy*dy; if(d2<0.01)d2=0.01;
+      const d=Math.sqrt(d2);
+      const f=k/d2*alpha;
+      const ux=dx/d, uy=dy/d;
+      if(a!==dragNode){a._x+=f*ux; a._y+=f*uy;}
+      if(b!==dragNode){b._x-=f*ux; b._y-=f*uy;}
+    }
+  }
+  for(const l of links){
+    const s=l.source,t=l.target;
+    let dx=t._x-s._x, dy=t._y-s._y;
+    let d=Math.sqrt(dx*dx+dy*dy)||0.01;
+    const rest=(s.type==="HUB"||t.type==="HUB")?restHub:restN;
+    const f=ks*(d-rest)*alpha;
+    const ux=dx/d, uy=dy/d;
+    if(s!==dragNode){s._x+=f*ux; s._y+=f*uy;}
+    if(t!==dragNode){t._x-=f*ux; t._y-=f*uy;}
+  }
+  for(const n of nodes){
+    if(n===dragNode) continue;
+    n._x+=(W/2-n._x)*grav;
+    n._y+=(H/2-n._y)*grav;
+    n._x=Math.max(40,Math.min(W-40,n._x));
+    n._y=Math.max(36,Math.min(H-36,n._y));
+  }
+  if(dragNode){ dragNode._x=dragNode._x; dragNode._y=dragNode._y; }
+  render();
+  alpha*=0.985;
+  if(alpha>0.03){ rafId=requestAnimationFrame(tick); }
+  else { rafId=null; }
+}
+function reheat(){ alpha=1; if(rafId) cancelAnimationFrame(rafId); rafId=requestAnimationFrame(tick); }
+
+/* ============ 渲染 ============ */
+let linkEls=[],nodeEls=[];
+function render(){
+  // 更新边
+  links.forEach((l,i)=>{
+    const el=linkEls[i];
+    if(!el) return;
+    const x1=l.source._x,y1=l.source._y,x2=l.target._x,y2=l.target._y;
+    el.setAttribute("x1",x1);el.setAttribute("y1",y1);
+    el.setAttribute("x2",x2);el.setAttribute("y2",y2);
+  });
+  // 更新节点
+  nodes.forEach((n,i)=>{
+    const g=nodeEls[i]; if(!g) return;
+    g.setAttribute("transform",`translate(${n._x},${n._y})`);
+  });
+}
+function colorOf(n){ return currentMode==="clue"?CLUE_GROUPS[n.type].color:FACTION[n.faction].color; }
+function radiusOf(n){
+  if(currentMode==="clue") return n.type==="HUB"?16:(n.type==="R"||n.type==="F")?11:10;
+  return n.faction==="EXTERNAL"?12:14;
+}
+function buildSVG(){
+  svg.innerHTML="";
+  linkEls=[];nodeEls=[];
+  const linkLayer=document.createElementNS(SVG_NS,"g");
+  const nodeLayer=document.createElementNS(SVG_NS,"g");
+  svg.appendChild(linkLayer);svg.appendChild(nodeLayer);
+  links.forEach(l=>{
+    const line=document.createElementNS(SVG_NS,"line");
+    const isHide=l.hide;
+    line.setAttribute("stroke",isHide?"#c0392b":"#b9c0cc");
+    line.setAttribute("stroke-width",isHide?2:(0.8+(l.w||1)*0.5));
+    if(isHide) line.setAttribute("stroke-dasharray","5 4");
+    line.setAttribute("opacity",isHide?0.9:0.55);
+    line._link=l;
+    linkLayer.appendChild(line);
+    linkEls.push(line);
+  });
+  nodes.forEach(n=>{
+    const g=document.createElementNS(SVG_NS,"g");
+    g.setAttribute("class","node");
+    const c=document.createElementNS(SVG_NS,"circle");
+    c.setAttribute("r",radiusOf(n));
+    c.setAttribute("fill",colorOf(n));
+    c.setAttribute("stroke",n.type==="HUB"?"#b7950b":"#ffffff");
+    c.setAttribute("stroke-width",n.type==="HUB"?3:2);
+    const t=document.createElementNS(SVG_NS,"text");
+    t.setAttribute("class","node-label");
+    t.setAttribute("text-anchor","middle");
+    t.setAttribute("dy",radiusOf(n)+13);
+    t.textContent=n.label;
+    g.appendChild(c);g.appendChild(t);
+    g._node=n;
+    nodeLayer.appendChild(g);
+    nodeEls.push(g);
+    // 交互
+    g.addEventListener("mouseenter",()=>highlight(n));
+    g.addEventListener("mouseleave",()=>clearHighlight());
+    g.addEventListener("click",()=>showInfo(n));
+    g.addEventListener("mousedown",(e)=>startDrag(e,n));
+  });
+  render();
+}
+function neighbors(n){
+  const set=new Set([n.id]);
+  links.forEach(l=>{
+    if(l.source===n) set.add(l.target.id);
+    if(l.target===n) set.add(l.source.id);
+  });
+  return set;
+}
+function highlight(n){
+  const nb=neighbors(n);
+  nodeEls.forEach(g=>{ g.style.opacity = nb.has(g._node.id)?1:0.18; });
+  linkEls.forEach(el=>{
+    const l=el._link;
+    const on=(l.source===n||l.target===n);
+    el.style.opacity = on?1:0.08;
+  });
+}
+function clearHighlight(){
+  nodeEls.forEach(g=>g.style.opacity=1);
+  linkEls.forEach(el=>{ el.style.opacity = el._link.hide?0.9:0.55; });
+}
+function showInfo(n){
+  let html=`<h3>${n.label}</h3>`;
+  if(currentMode==="clue"){
+    html+=`<span class="tag" style="background:${CLUE_GROUPS[n.type].color}">${CLUE_GROUPS[n.type].name}</span>`;
+    const chainName={"L1":"L1 黑雨吃名字（样板线）","L2":"L2 昼盐真相","L3":"L3 三影尸体归属",
+      "L4":"L4 赤金箭来源","L5":"L5 十日征兆","L6":"L6 阿禾命名簿","L7":"L7 季缨守井",
+      "L8":"L8 北方交易","HUB":"汇流 / 跨卷"}[n.chain]||n.chain;
+    html+=`<div class="kv"><b>所属链：</b>${chainName}</div>`;
+    if(n.meta) html+=`<div class="kv"><b>关键 flag / 节点：</b>${n.meta}</div>`;
+  }else{
+    html+=`<span class="tag" style="background:${FACTION[n.faction].color}">${FACTION[n.faction].name}</span>`;
+    if(n.meta) html+=`<div class="kv"><b>设定：</b>${n.meta}</div>`;
+    const row=REL_MATRIX[n.id];
+    if(row){
+      const chs=["L1吃名字","L2昼盐","L3尸体","L4赤金箭","L5十日","L6命名簿","L7守井","L8北方"];
+      const marks=row.map((v,i)=>v===3?"●"+chs[i]:v===2?"◐"+chs[i]:v===1?"○"+chs[i]:null).filter(Boolean);
+      html+=`<div class="kv"><b>线索参与：</b>${marks.join("　")||"（外部节点，仅经隐瞒-追查边接入）"}</div>`;
+    }
+  }
+  info.innerHTML=html;
+}
+
+/* ============ 图例 ============ */
+function buildLegend(){
+  if(currentMode==="clue"){
+    let h="<div style='font-weight:700;margin-bottom:4px'>节点类型（R/A/E/C/D/F）</div>";
+    for(const k of ["R","A","E","C","D","F","HUB"]){
+      h+=`<div class="row"><span class="dot" style="background:${CLUE_GROUPS[k].color}"></span>${CLUE_GROUPS[k].name}</div>`;
+    }
+    h+=`<div style="margin-top:6px;color:#6b7280">边：线索流向（R→A→E→C→D→F→汇流）</div>`;
+    legend.innerHTML=h;
+  }else{
+    let h="<div style='font-weight:700;margin-bottom:4px'>阵营（节点颜色）</div>";
+    for(const k in FACTION) h+=`<div class="row"><span class="dot" style="background:${FACTION[k].color}"></span>${FACTION[k].name}</div>`;
+    h+=`<div class="row" style="margin-top:6px"><span class="bar" style="background:#b9c0cc"></span>共享线索（粗细=共现强度）</div>`;
+    h+=`<div class="row"><span class="bar" style="background:#c0392b"></span>隐瞒↔追查（虚线红）</div>`;
+    legend.innerHTML=h;
+  }
+}
+
+/* ============ 交互：拖拽 ============ */
+function svgPoint(evt){
+  const pt=svg.createSVGPoint();
+  pt.x=evt.clientX; pt.y=evt.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+function startDrag(evt,n){
+  evt.preventDefault();
+  dragNode=n; svg.classList.add("dragging");
+  const move=(e)=>{
+    const p=svgPoint(e);
+    n._x=p.x; n._y=p.y; n._fx=p.x; n._fy=p.y;
+    render();
+  };
+  const up=()=>{
+    dragNode=null; svg.classList.remove("dragging");
+    window.removeEventListener("mousemove",move);
+    window.removeEventListener("mouseup",up);
+  };
+  window.addEventListener("mousemove",move);
+  window.addEventListener("mouseup",up);
+}
+
+/* ============ 模式切换 ============ */
+function switchMode(mode){
+  currentMode=mode;
+  document.getElementById("tab-clue").classList.toggle("active",mode==="clue");
+  document.getElementById("tab-rel").classList.toggle("active",mode==="rel");
+  document.getElementById("clue-ctl").style.display = mode==="clue"?"flex":"none";
+  document.getElementById("rel-ctl").style.display = mode==="rel"?"flex":"none";
+  info.innerHTML=`<h3>详情</h3><div class="empty">点击任意节点查看其类型、所属线索链 / 阵营与关键 flag。</div>`;
+  if(mode==="clue") buildClueData(document.getElementById("chain-sel").value);
+  else buildRelData(document.getElementById("toggle-hide").checked);
+  buildSVG(); buildLegend(); reheat();
+}
+
+document.getElementById("tab-clue").onclick=()=>switchMode("clue");
+document.getElementById("tab-rel").onclick=()=>switchMode("rel");
+document.getElementById("chain-sel").onchange=(e)=>{ buildClueData(e.target.value); buildSVG(); reheat(); };
+document.getElementById("toggle-hide").onchange=(e)=>{ buildRelData(e.target.checked); buildSVG(); buildLegend(); reheat(); };
+document.getElementById("reheat-clue").onclick=reheat;
+document.getElementById("reheat-rel").onclick=reheat;
+
+// 初始
+switchMode("clue");
+</script>
+</body>
+</html>
