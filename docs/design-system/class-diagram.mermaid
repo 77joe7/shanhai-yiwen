@@ -1,0 +1,226 @@
+classDiagram
+    %% ===== 令牌与基座 =====
+    class TokenSpec {
+        +string id
+        +TokenGroup group
+        +string label
+        +string varName
+        +string value
+        +string highContrast
+        +string specRef
+    }
+    class DesignTokens {
+        +TokenSpec[] ALL_TOKENS
+        +TokenSpec[] COLORS
+        +TokenSpec[] FONTS
+        +TokenSpec[] SPACES
+        +TokenSpec[] SHAPES
+        +TokenSpec[] TEXTURES
+        +applyTokens(root, state) void
+    }
+    class DesignSystemState {
+        +boolean highContrast
+        +boolean reducedMotion
+        +"full"|"simple" texture
+        +boolean typewriter
+        +boolean semanticText
+        +Breakpoint breakpoint
+        +number frameWidth
+        +string search
+    }
+    class DesignSystemContextValue {
+        +set(patch) void
+        +copyToken(varName) Promise~void~
+    }
+    class DesignSystemRoot {
+        +DesignSystemContextValue ctx
+        +HTMLElement rootRef
+        +applyTokens() void
+    }
+    class DsPlatform {
+        <<interface>>
+        +clipboard.write(text) Promise~void~
+        +safeArea.getInsets() Insets
+    }
+    class BrowserDsPlatform {
+        +clipboard.write(text) Promise~void~
+        +safeArea.getInsets() Insets
+    }
+
+    DesignSystemContextValue --|> DesignSystemState
+    DesignSystemRoot ..> DesignTokens : applyTokens
+    DesignSystemRoot ..> DesignSystemContextValue : provides
+    DesignSystemRoot ..> DsPlatform : uses
+    DsPlatform <|.. BrowserDsPlatform
+    DesignTokens o-- TokenSpec
+
+    %% ===== 12 组件 Props =====
+    class AppTopBarProps {
+        +string title
+        +TopBarAction leftAction
+        +TopBarAction rightAction
+        +boolean sticky
+        +boolean safeArea
+        +"default"|"back"|"menu" variant
+        +boolean loading
+        +boolean disabled
+    }
+    class BrushDividerProps {
+        +icon
+        +string label
+    }
+    class NarrativeBlockProps {
+        +NarrativeKind kind
+        +string timeLabel
+        +string locationLabel
+        +string text
+        +boolean isLatest
+        +boolean typewriter
+        +onRevealAll() void
+    }
+    class ArchiveEvidenceCardProps {
+        +string icon
+        +string title
+        +string category
+        +string description
+        +number knowledgeLevel
+        +EvidenceStatus status
+        +onClick() void
+    }
+    class SquareTagProps {
+        +string label
+        +TagTone tone
+        +string icon
+        +boolean interactive
+        +boolean selected
+        +onClick() void
+    }
+    class StatusMeterProps {
+        +string label
+        +number value
+        +number max
+        +MeterTone tone
+        +boolean warning
+        +WarningState warningState
+    }
+    class ThreatPanelProps {
+        +string name
+        +string type
+        +string intentText
+        +number stability
+        +number life
+        +DangerLevel dangerLevel
+        +string knownWeakness
+    }
+    class ActionButtonProps {
+        +string icon
+        +string label
+        +string shortcut
+        +boolean enabled
+        +string reason
+        +DangerLevelBtn dangerLevel
+        +boolean selected
+        +onClick() void
+    }
+    class MapMarkerProps {
+        +MarkerKind kind
+        +string name
+        +MarkerStatus status
+        +boolean isCurrent
+        +boolean isReachable
+        +string lockedHint
+        +onClick() void
+    }
+    class LocationCardProps {
+        +string name
+        +string description
+        +string[] tags
+        +ActionButtonProps[] availableActions
+        +string weather
+        +string time
+        +string danger
+    }
+    class CharacterQuestDrawerProps {
+        +ReactNode playerSummary
+        +ReactNode quickLinks
+        +ReactNode inventoryPreview
+        +QuestItem[] activeQuests
+        +"open"|"closed" openState
+        +onClose() void
+    }
+    class BackToLatestButtonProps {
+        +boolean visibleWhenAwayFromLatest
+        +number unreadCount
+        +onClick() void
+    }
+
+    %% 状态联合类型
+    class NarrativeKind
+    class EvidenceStatus
+    class TagTone
+    class MeterTone
+    class WarningState
+    class DangerLevel
+    class DangerLevelBtn
+    class MarkerStatus
+    class MarkerKind
+    class Breakpoint
+    class QuestItem
+
+    NarrativeBlockProps --> NarrativeKind
+    ArchiveEvidenceCardProps --> EvidenceStatus
+    SquareTagProps --> TagTone
+    StatusMeterProps --> MeterTone
+    StatusMeterProps --> WarningState
+    ThreatPanelProps --> DangerLevel
+    ActionButtonProps --> DangerLevelBtn
+    MapMarkerProps --> MarkerStatus
+    MapMarkerProps --> MarkerKind
+    CharacterQuestDrawerProps --> QuestItem
+    DesignSystemState --> Breakpoint
+
+    %% 组件均消费 DesignSystemContext（状态驱动）
+    AppTopBarProps ..> DesignSystemContextValue : consumes
+    NarrativeBlockProps ..> DesignSystemContextValue : consumes(typewriter)
+    ActionButtonProps ..> DesignSystemContextValue : consumes
+    SquareTagProps ..> DesignSystemContextValue : consumes(semanticText)
+
+    %% ===== Demo 编排 =====
+    class DemoApp {
+        +render() void
+    }
+    class Sections {
+        +TokenSwatches
+        +TypeRuler
+        +SpacingRuler
+        +ComponentGallery
+        +Playground
+        +A11yShowcase
+        +BreakpointSimulator
+    }
+    class Controls {
+        +highContrastToggle
+        +reducedMotionToggle
+        +breakpointControl
+        +stateSwitcher
+        +copyControl
+        +typewriterToggle
+        +semanticTextToggle(P1)
+        +searchFilter(P1)
+    }
+    class UseDemoState {
+        +DesignSystemState state
+        +set(patch) void
+    }
+    class Contrast {
+        +relativeLuminance(hex) number
+        +ratio(fg, bg) number
+    }
+
+    DemoApp --> Sections
+    DemoApp --> Controls
+    DemoApp --> UseDemoState
+    Sections ..> DesignSystemContextValue : reads
+    Controls ..> DesignSystemContextValue : writes
+    UseDemoState ..> DesignSystemState
+    Sections ..> Contrast : ratio
