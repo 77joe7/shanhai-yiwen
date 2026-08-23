@@ -7,7 +7,8 @@
 // 覆盖（对齐任务 #3 验证清单）：
 //  A. 运行时：全部令牌规范溯源、派生色「派生」标记、色彩令牌完整性、对比度双模式达标/补偿、
 //           对照表条目一致、formatRatio 格式化。
-//  B. 静态：CSS 无硬编码色值/旧变量名/含高对比选择器；components 恰 13 tsx 且 barrel 导出 13 组件；
+//  B. 静态：CSS 无硬编码色值/旧变量名/未定义令牌/无无效透明度属性；页面规范 10 维齐备；
+//           components 恰 13 tsx 且 barrel 导出 13 组件；
 //           demo 目录齐备且 DemoApp 具名导出匹配 page.tsx；含 hooks/事件文件首行 "use client"；
 //           contrast.ts 无 DOM 访问且导出核心函数；tokens.ts/dsPlatform.ts 模块顶层无裸全局绑定。
 
@@ -55,6 +56,20 @@ test("全部令牌均有规范出处 specRef", () => {
     0,
     `缺失 specRef 的令牌：${missing.map((t) => t.varName).join(", ")}`,
   );
+});
+
+test("令牌 id 与 CSS 变量名唯一且命名合法", () => {
+  const ids = new Set();
+  const vars = new Set();
+  for (const token of ALL_TOKENS) {
+    assert.match(token.id, /^[a-z0-9][a-z0-9-]*$/, `非法令牌 id：${token.id}`);
+    assert.match(token.varName, /^--ds-[a-z0-9][a-z0-9-]*$/, `非法 CSS 变量名：${token.varName}`);
+    assert.ok(!ids.has(token.id), `重复令牌 id：${token.id}`);
+    assert.ok(!vars.has(token.varName), `重复 CSS 变量名：${token.varName}`);
+    ids.add(token.id);
+    vars.add(token.varName);
+  }
+  assert.equal(Object.keys(TOKEN_BY_VAR).length, ALL_TOKENS.length, "TOKEN_BY_VAR 与令牌真源数量不一致");
 });
 
 test("派生色令牌 specRef 含「派生」标记", () => {
@@ -141,12 +156,51 @@ test("design-system.css 无硬编码色值、不含旧变量名、含高对比�
   assert.ok(!/#[0-9a-fA-F]{3,8}\b/.test(css), "CSS 存在硬编码十六进制色值");
   assert.ok(!/\brgba?\s*\(/.test(css), "CSS 存在硬编码 rgb()/rgba()");
   assert.ok(!/\bhsl\s*\(/.test(css), "CSS 存在硬编码 hsl()");
+  assert.ok(!/\bborder-(?:top|right|bottom|left)-opacity\s*:/.test(css), "CSS 存在无效 border-*-opacity 属性");
   for (const legacy of ["--ink", "--paper", "--cinnabar", "--gold", "--moss", "--line"]) {
     assert.ok(!css.includes(legacy), `CSS 仍引用旧变量 ${legacy}`);
   }
   assert.ok(/\[data-contrast="high"\]/.test(css), 'CSS 缺少 [data-contrast="high"] 高对比选择器');
   for (const c of COLOR_TOKENS) {
     assert.ok(c.highContrast, `色彩令牌 ${c.varName} 缺少 highContrast 取值`);
+  }
+});
+
+test("源码引用的 --ds-* 变量均存在于令牌真源", () => {
+  const walk = (dir) => {
+    const out = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, entry.name);
+      if (entry.isDirectory()) out.push(...walk(p));
+      else if (/\.(css|ts|tsx)$/.test(entry.name)) out.push(p);
+    }
+    return out;
+  };
+  const known = new Set(ALL_TOKENS.map((token) => token.varName));
+  const unknown = new Set();
+  for (const file of walk(DS)) {
+    const src = readFileSync(file, "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/.*$/gm, "");
+    for (const match of src.matchAll(/--ds-[a-z0-9]+(?:-[a-z0-9]+)+(?![a-z0-9*-])/gi)) {
+      if (!known.has(match[0])) unknown.add(`${match[0]} @ ${file}`);
+    }
+  }
+  assert.deepEqual([...unknown], [], `发现未定义设计令牌：\n${[...unknown].join("\n")}`);
+});
+
+test("页面视觉规范覆盖 10 个强制维度", () => {
+  const spec = readDs("pages/spec.tsx");
+  const pageDefs = readDs("pages/index.tsx");
+  const definitions = pageDefs.slice(pageDefs.indexOf("export const PAGE_DEFINITIONS"));
+  const dimensions = [
+    "layout", "color", "typography", "components", "spacing",
+    "interaction", "accessibility", "motion", "imagery", "breakpoints",
+  ];
+  for (const key of dimensions) {
+    assert.match(spec, new RegExp(`\\b${key}:\\s*string;`), `PageSpec 缺少维度 ${key}`);
+    const count = [...definitions.matchAll(new RegExp(`\\b${key}:`, "g"))].length;
+    assert.equal(count, 6, `6 个页面定义应各包含 ${key}，实际出现 ${count} 次`);
   }
 });
 

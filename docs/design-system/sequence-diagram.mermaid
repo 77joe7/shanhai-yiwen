@@ -3,28 +3,28 @@ sequenceDiagram
     actor User
     participant Page as page.tsx (/design-system)
     participant Root as DesignSystemRoot
-    participant Tok as tokens.ts (applyTokens)
+    participant Tok as tokens.ts (buildTokenStyle)
     participant Ctx as DesignSystemContext
     participant Plat as DsPlatform (clipboard)
     participant Demo as DemoApp/Sections
-    participant Comp as 12 Components
+    participant Comp as 12 Core + IllustrationFrame
 
     Note over Page,Root: === 加载链路 ===
     User->>Page: 访问 /design-system
     Page->>Root: 渲染 <div class="shj-ds">
     Root->>Ctx: 初始化 DesignSystemState(默认)
-    Root->>Tok: applyTokens(rootEl, base)
-    Tok-->>Root: 注入 --ds-* 变量(data-contrast=normal)
+    Root->>Tok: buildTokenStyle(base)
+    Tok-->>Root: 返回含 --ds-* 的 React style 对象
     Root->>Demo: 挂载 DemoApp（消费 Ctx）
-    Demo->>Comp: 渲染 7 展示区 + 12 组件（读 var(--ds-*)）
+    Demo->>Comp: 渲染 9 展示区 + 13 组件（读 var(--ds-*)）
     Comp-->>User: 暗色湿墨石渲染（不受 globals.css 影响）
 
     Note over User,Comp: === 切换高对比（视觉，内容不重渲染）===
     User->>Demo: 点「高对比开关」
     Demo->>Ctx: set({ highContrast: true })
     Ctx->>Root: 通知 state 变化
-    Root->>Tok: applyTokens(rootEl, {highContrast:true})
-    Tok-->>Root: 覆盖 --ds-c-on-surface 等 + data-contrast="high"
+    Root->>Tok: buildTokenStyle({highContrast:true})
+    Tok-->>Root: 返回高对比 style 对象 + data-contrast="high"
     Root-->>Comp: CSS 变量即时更新（组件自动重算样式）
     Comp-->>User: 提对比/降纹理（WCAG AA）
 
@@ -43,7 +43,8 @@ sequenceDiagram
     Note over User,Comp: === 复制令牌值 ===
     User->>Demo: 点色块「复制 --ds-c-gold」
     Demo->>Plat: clipboard.write("--ds-c-gold: #F5D294")
-    Plat-->>User: 写入剪贴板 + 反馈「已复制」
+    Plat-->>Demo: 返回成功/失败
+    Demo-->>User: 反馈「已复制」或「请手动复制」
     Note right of Plat: 经适配层，微信侧换 wx.setClipboardData
 
     Note over User,Comp: === 组件状态切换（内容重渲染）===

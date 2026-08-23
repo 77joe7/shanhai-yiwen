@@ -537,7 +537,7 @@
 .shj-ds .ds-evidence-head {
   display: flex;
   align-items: baseline;
-  gap: var(--ds-stack-sm);
+  gap: var(--ds-s-stack-sm);
   justify-content: space-between;
 }
 
@@ -2067,7 +2067,7 @@
   gap: var(--ds-s-unit);
 }
 .shj-ds .ds-spec-key {
-  color: var(--ds-c-tertiary-container);
+  color: var(--ds-c-gold);
 }
 .shj-ds .ds-spec-val {
   color: var(--ds-c-on-surface-variant);
@@ -2396,13 +2396,12 @@
 }
 .shj-ds .ds-combat-log-scroll::-webkit-scrollbar-thumb {
   background-color: var(--ds-c-outline-variant);
-  border-radius: 3px;
+  border-radius: var(--ds-sh-radius);
 }
 .shj-ds .ds-combat-log-entry {
   margin: 0;
   padding: var(--ds-s-unit) 0;
-  border-bottom: 1px solid var(--ds-c-outline-variant);
-  border-bottom-opacity: 0.3;
+  border-bottom: var(--ds-sh-border-width) solid var(--ds-c-outline-variant);
 }
 .shj-ds .ds-combat-log-entry:last-child {
   border-bottom: none;
@@ -2450,4 +2449,3 @@
   flex-wrap: wrap;
   gap: var(--ds-s-stack-sm);
 }
-

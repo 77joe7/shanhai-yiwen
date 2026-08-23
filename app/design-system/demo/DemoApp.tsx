@@ -42,9 +42,10 @@ export function DemoApp() {
         <span className="ds-demo-eyebrow ds-type-label">山海异闻录 · 天地未定</span>
         <h1 className="ds-type-display">设计系统 living demo</h1>
         <p className="ds-demo-lede ds-type-body">
-          本页是《山海异闻录》UI 界面说明书 V1.3 的可运行实现：{ALL_TOKENS.length} 条设计令牌、
-          13 个正式组件、9 个展示区。所有取值皆由 <code>tokens.ts</code> 单一来源在服务端直出
-          为 <code>--ds-*</code>，故首屏不会先按站点浅色变量渲染再闪变。
+          本页以 UI 界面说明书 V1.3 为视觉基线、以产品说明书 V1.4 为当前边界：
+          {ALL_TOKENS.length} 条设计令牌、12 个核心组件 + 1 个受控媒体组件、9 个展示区。
+          所有取值皆由 <code>tokens.ts</code> 单一来源在预渲染阶段直出为 <code>--ds-*</code>，
+          首屏不会先按站点变量渲染再闪变。
         </p>
         <p className="ds-demo-lede ds-type-body-sm">
           当前状态：{highContrast ? "高对比" : "标准对比"} · {reducedMotion ? "减弱动效" : "常规动效"} ·
@@ -68,7 +69,8 @@ export function DemoApp() {
       <footer className="ds-note ds-type-body-sm">
         本页样式全部封闭在 <code>.shj-ds</code> 作用域内，未改动 <code>app/globals.css</code>；
         所有浏览器能力（剪贴板、安全区）经 <code>dsPlatform.ts</code> 适配层访问，模块顶层不触碰
-        <code> navigator / window / document</code>，可在 Cloudflare Workers 上安全 SSR。
+        <code> navigator / window / document</code>，可安全用于当前 EdgeOne 静态导出，也保留 SSR
+        与后续微信小游戏适配边界。
       </footer>
 
       {copyFeedback !== null ? (

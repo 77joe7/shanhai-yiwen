@@ -4,8 +4,8 @@
  * 硬约束：
  * 1. 令牌与组件不得直接调用 `navigator` / `window` / `document` / `localStorage` / 微信 API，
  *    一律经本适配层访问。
- * 2. **SSR 安全**：本模块运行在 Cloudflare Workers 的服务端渲染阶段时，`navigator` /
- *    `window` / `document` 都不存在，因此禁止在模块顶层求值任何浏览器全局；
+ * 2. **静态导出 / SSR 安全**：本模块在构建期预渲染、服务端渲染或无 DOM 环境运行时，
+ *    `navigator` / `window` / `document` 都不存在，因此禁止在模块顶层求值任何浏览器全局；
  *    所有能力探测都在方法内部惰性执行，失败即降级返回 `false`，由 UI 提示手动复制。
  * 3. 微信小游戏迁移只需新增 `WechatDsPlatform` 实现同一接口
  *    （clipboard → `wx.setClipboardData`，safeArea → `SafeAreaPort`），组件零改动。

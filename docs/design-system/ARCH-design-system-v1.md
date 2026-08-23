@@ -1,9 +1,9 @@
 # 设计系统 v1 · 架构设计文档（ARCH）
 
 > 项目：《山海异闻录：天地未定》第一卷《黑雨》
-> 文档性质：架构设计（令牌真源 + 作用域隔离 + 12 组件契约 + living demo 落地）
-> 作者：高见远（架构师）｜日期：2025-08-19
-> 依据：`docs/design-system/PRD-design-system-v1.md`、`docs/ui-design/山海异闻录_UI界面说明书_Stitch参考包基线_V1.3.txt`（三/十一/十二/十三章）、`tmp/stitch-ref/DESIGN.md`、`AGENTS.md` 及 `docs/development/*`
+> 文档性质：架构设计（令牌真源 + 作用域隔离 + 12 核心组件 + 1 媒体组件 + living demo）
+> 作者：高见远（架构师）｜初稿：2026-08-19｜复核：2026-08-23
+> 依据：`docs/design-system/PRD-design-system-v1.md`、产品说明书 V1.4、UI 界面说明书 V1.3（三/十一/十二/十三章）、`tmp/stitch-ref/DESIGN.md`、`AGENTS.md` 及 `docs/development/*`
 
 ---
 
@@ -20,7 +20,7 @@
 | **globals.css 集成（问题 2）** | v1 不碰 `globals.css`；287 处硬编码改造单列评审，迁移路径见 §10。 |
 | **浅色纸卷（问题 3）** | v1 不做；令牌架构以 `{ base, highContrast }` + 根 `data-theme` 预留扩展位，未来加 `light` 仅新增一组值、组件零改动。 |
 | **字体（问题 4）** | **系统优先回退栈**为令牌真值；webfont 仅作**非阻塞渐进增强**（`font-display: swap`，可选 CDN/自托管），离线 PWA 与微信靠回退栈；微信迁移经 `AssetPort` 打包。v1 不自托管多 MB CJK 字体。 |
-| **依赖** | **零新增依赖**（react/react-dom、tailwindcss 已在位；不引入 MUI）。全 Cloudflare Workers 兼容（仅用 Web 标准 API）。 |
+| **依赖与发布** | **零新增依赖**（react/react-dom、tailwindcss 已在位；不引入 MUI）。当前输出 EdgeOne 静态站点；同时保持构建期预渲染、SSR 与 Web 标准 API 兼容。 |
 
 ---
 
@@ -29,8 +29,8 @@
 ### 1.1 令牌单一真源与派生形态
 
 - **真源 = TS 常量**。`app/design-system/tokens.ts` 导出 `ALL_TOKENS: TokenSpec[]` 与按分组索引的对象。每个 `TokenSpec` 含 `{ id, group, label, varName, value, highContrast?, specRef }`，`specRef` 标注规范出处（如 `说明书三.1 / DESIGN.md:colors.background`），满足"每个令牌可溯源"。
-- **CSS 变量 = 运行时派生**。根组件 `DesignSystemRoot` 在挂载/状态变化时调用 `applyTokens(rootEl, state)`，遍历 `ALL_TOKENS` 把 `varName→value`（高对比态取 `highContrast` 覆盖）逐条 `rootEl.style.setProperty(...)`。变量仅存在于 `.shj-ds` 子树，**不泄漏、不污染全局**，且 TS 单一真源无漂移。
-- **为何不用构建期生成脚本**：方案零新增文件、零额外 npm script、无 `globals.css` 改动；变量随 React 状态同步切换，最契合约束 A/C 与 Cloudflare Workers（无 Node-only 构建步骤依赖）。若未来需 Tailwind 工具类，再追加 `@theme` 生成脚本（见 §10 迁移路径）。
+- **CSS 变量 = 渲染期派生**。根组件调用 `buildTokenStyle(state)`，把 `ALL_TOKENS` 编译为 React `style` 对象并直接挂到 `.shj-ds` 根元素。构建期预渲染/SSR 首屏已经带有全部变量；高对比切换只重算同一对象，不使用 `useEffect`、DOM ref 或 `style.setProperty()`。
+- **为何不用额外生成脚本**：方案零新增构建步骤、无 `globals.css` 改动；变量随 React 状态声明式更新，适合静态预渲染、SSR 与后续平台迁移。若未来需 Tailwind 工具类，再单独评审作用域安全的映射方案（见 §10）。
 
 ### 1.2 样式隔离方案（约束 A 正面回答）
 
@@ -41,7 +41,7 @@
    ```css
    .shj-ds, .shj-ds *, .shj-ds *::before, .shj-ds *::after { box-sizing: border-box; margin: 0; }
    .shj-ds { color: var(--ds-c-on-surface); background: var(--ds-c-bg);
-             font-family: var(--ds-font-serif); -webkit-text-size-adjust: 100%; }
+             font-family: var(--ds-f-serif); -webkit-text-size-adjust: 100%; }
    .shj-ds button:focus-visible, .shj-ds input:focus-visible {
      outline: 2px solid var(--ds-c-cinnabar); outline-offset: 3px; }   /* 覆盖 globals 的 --cinnabar */
    ```
@@ -53,7 +53,7 @@
 
 ### 1.3 状态管理（React 19）
 
-- `DesignSystemProvider`（Context）持有 `DesignSystemState`：`{ highContrast, reducedMotion, texture, typewriter, semanticText, breakpoint, frameWidth, search }` 与 `set(patch)` / `copyToken(varName)`。
+- `DesignSystemRoot` 内的 Context 持有 `DesignSystemState`：`{ highContrast, reducedMotion, texture, typewriter, semanticText, breakpoint, frameWidth, search }` 与 `set(patch)` / `copyToken(varName,text)` / `tokenValue(varName)`。
 - **视觉开关走 data-* + CSS 变量**：`highContrast`→`data-contrast="high"` 并注入 highContrast 子集变量；`reducedMotion`→`data-motion="reduced"`（CSS 把过渡/动画置 0）；`texture`→`data-texture="simple"`（噪点透明度归 0）。切换时**只改根属性与变量，组件内容不重渲染**，性能与现有 `GameShell` 一致。
 - **内容态走 React**：组件状态切换（如 ArchiveEvidenceCard 的 7 状态）、断点 frame 宽度、逐字开关联动 NarrativeBlock 等由 demo 本地 state / Context 驱动重渲染。
 
@@ -62,8 +62,9 @@
 `app/design-system/dsPlatform.ts` 定义 `DsPlatform` 接口（裁剪自 `app/game/platform.ts` 的 `PlatformAdapter`）：
 ```ts
 interface DsPlatform {
-  clipboard: { write(text: string): Promise<void> };       // 复制令牌值
+  clipboard: { write(text: string): Promise<boolean> };    // 复制令牌值并报告成功/失败
   safeArea: { getInsets(): { top: number; right: number; bottom: number; left: number } }; // 安全区（demo 用 CSS env 读取）
+  keyboard: { onEscape(handler: () => void): () => void }; // 浮层 Esc 订阅与退订
 }
 ```
 - `BrowserDsPlatform`：clipboard 用 `navigator.clipboard.writeText`（带 `document.execCommand` 兜底），safeArea 用 `getComputedStyle` 读 `env(safe-area-inset-*)`。
@@ -72,7 +73,7 @@ interface DsPlatform {
 
 ### 1.5 字体加载（问题 4）
 
-- **令牌真值 = 回退栈**：`--ds-font-serif`、`--ds-font-read`、`--ds-font-label` 均为 `"Noto Serif SC","Source Han Serif SC","Songti SC",... serif` 形式，目标中文设备普遍具备系统衬线，离线/PWA/微信均不破版。
+- **令牌真值 = 回退栈**：`--ds-f-serif`、`--ds-f-read`、`--ds-f-label` 均为 `"Noto Serif SC","Source Han Serif SC","Songti SC",... serif` 形式，离线/PWA/微信无在线字体时仍可读。
 - **渐进增强**：`design-system.css` 内可选 `@font-face`（Noto Serif SC / Literata / Source Serif 4）指向 CDN，`font-display: swap`，失败时自动回退，**不阻塞首屏**。
 - **不 v1 自托管**：CJK webfont 多 MB，违反离线 PWA 与包体预算；微信迁移由 `AssetPort` 打包字体资源（见 `WECHAT_MINIGAME_READINESS.md` §4）。
 - 窄屏正文逻辑下限 16px：字阶 `body-narrative` 18px，辅助 14px 在窄屏经 `clamp()` 不低于 16px（见 `tokens.ts` 的 `bodyMin` 规则与 CSS `clamp`）。
@@ -84,8 +85,8 @@ interface DsPlatform {
 **令牌与基座（T01）**
 - `app/design-system/page.tsx` — vinext 路由入口 `/design-system`；渲染 `DesignSystemRoot`（客户端组件），含可选非阻塞 webfont `<link>`。
 - `app/design-system/DesignSystemRoot.tsx` — 设计系统根：提供 `DesignSystemContext`、运行时注入 `--ds-*` 变量、`data-*` 属性、`.shj-ds` 作用域根与视口 frame、装载 `DsPlatform`。
-- `app/design-system/tokens.ts` — **单一真源**：TS 常量令牌（颜色/字体/字阶/间距/形状/纹理动效）+ 规范出处 + highContrast 覆盖集 + `applyTokens()`。
-- `app/design-system/design-system.css` — 作用域样式：`.shj-ds` 局部 reset；全部引用 `var(--ds-*)`；12 组件样式；刷痕分隔线/噪点层/焦点环/高对比与减弱动效降级；无新增硬编码色值。
+- `app/design-system/tokens.ts` — **单一真源**：TS 常量令牌（颜色/字体/字阶/间距/形状/纹理动效）+ 规范出处 + highContrast 覆盖集 + `buildTokenStyle()` / `resolveTokenValue()`。
+- `app/design-system/design-system.css` — 作用域样式：`.shj-ds` 局部 reset；全部引用 `var(--ds-*)`；13 组件样式；刷痕分隔线/噪点层/焦点环/高对比与减弱动效降级；无硬编码色值。
 - `app/design-system/dsPlatform.ts` — 平台适配边界：`DsPlatform` 接口 + `BrowserDsPlatform`（剪贴板/安全区），为微信迁移预留。
 
 **基础组件（T02）**
@@ -103,11 +104,13 @@ interface DsPlatform {
 - `app/design-system/components/ThreatPanel.tsx` — 威胁面板（6 状态 + 意图/稳定/已知弱点）。
 - `app/design-system/components/CharacterQuestDrawer.tsx` — 角色任务抽屉（左滑/遮罩/Esc/焦点回归）。
 - `app/design-system/components/BackToLatestButton.tsx` — 回到最新按钮（离尾可见 + 未读计数）。
-- `app/design-system/components/index.ts` — 统一导出 12 组件与 Props 类型。
+- `app/design-system/components/IllustrationFrame.tsx` — 受控媒体承载（地图/人物/物品/场景，含加载与缺失降级）。
+- `app/design-system/components/index.ts` — 统一导出 12 个说明书核心组件 + 1 个媒体组件及 Props 类型。
 
 **Living Demo（T04）**
-- `app/design-system/demo/DemoApp.tsx` — demo 编排：装配 7 展示区 + 8 控件 + 接 `DesignSystemContext`。
-- `app/design-system/demo/sections.tsx` — 7 展示区（TokenSwatches / TypeRuler / SpacingRuler / ComponentGallery / Playground / A11yShowcase / BreakpointSimulator）。
+- `app/design-system/demo/DemoApp.tsx` — demo 编排：装配 9 展示区 + 控制台 + `DesignSystemContext`。
+- `app/design-system/demo/sections.tsx` — 8 展示区（TokenSwatches / TypeRuler / SpacingRuler / ComponentGallery / IllustrationShowcase / Playground / A11yShowcase / BreakpointSimulator）。
+- `app/design-system/demo/pageShowcase.tsx`、`app/design-system/pages/*` — 第 9 展示区：6 个页面范例及 10 维页面视觉规范。
 - `app/design-system/demo/controls.tsx` — 8 交互控件（高对比/减弱动效/断点/组件状态切换/复制/逐字/语义色文字[P1]/搜索筛选[P1]）。
 - `app/design-system/demo/useDemoState.ts` — demo 本地状态机（开关、断点、选中组件状态、搜索词）。
 - `app/design-system/demo/contrast.ts` — 相对亮度/对比度计算（画板展示对比度比值，校验 WCAG AA）。
@@ -175,20 +178,22 @@ const COLORS: TokenSpec[] = [
 type Breakpoint = "mobile" | "tablet" | "desktop" | "free";
 interface DesignSystemState {
   highContrast: boolean; reducedMotion: boolean; texture: "full" | "simple";
-  typewriter: boolean; semanticText: boolean;        // semanticText 为 P1 演示，默认 false
+  typewriter: boolean; semanticText: boolean;        // semanticText 为 P1 演示，默认 true
   breakpoint: Breakpoint; frameWidth: number; search: string; // search 为 P1
 }
 interface DesignSystemContextValue extends DesignSystemState {
   set(patch: Partial<DesignSystemState>): void;
-  copyToken(varName: string): Promise<void>;        // 经 dsPlatform.clipboard
+  copyToken(varName: string, text: string): Promise<boolean>; // 经 dsPlatform.clipboard
+  tokenValue(varName: string): string;
 }
 interface DsPlatform {
-  clipboard: { write(text: string): Promise<void> };
+  clipboard: { write(text: string): Promise<boolean> };
   safeArea: { getInsets(): { top: number; right: number; bottom: number; left: number } };
+  keyboard: { onEscape(handler: () => void): () => void };
 }
 ```
 
-### 3.3 12 组件 Props 签名（依据说明书十一）
+### 3.3 12 个核心组件 Props 签名 + IllustrationFrame 扩展（依据说明书十一与媒体承载缺项）
 
 ```ts
 // 1. AppTopBar
@@ -213,7 +218,9 @@ interface ArchiveEvidenceCardProps {
   knowledgeLevel?: number; status: EvidenceStatus; onClick?: () => void;
 }
 // 5. SquareTag
-type TagTone = "neutral" | "gold" | "cinnabar" | "life" | "stamina" | "resolve" | "nature";
+type TagTone = "neutral" | "gold" | "cinnabar" | "life" | "stamina" | "resolve" | "nature"
+  | `rarity-${"common"|"uncommon"|"rare"|"epic"|"legendary"}`
+  | `rel-${"kin"|"ally"|"friendly"|"neutral"|"wary"|"hostile"}`;
 interface SquareTagProps {
   label: string; tone?: TagTone; icon?: string; interactive?: boolean; selected?: boolean; onClick?: () => void;
 }
@@ -251,11 +258,18 @@ interface LocationCardProps {
 interface QuestItem { id: string; name: string; summary?: string; done?: boolean; }
 interface CharacterQuestDrawerProps {
   playerSummary?: React.ReactNode; quickLinks?: React.ReactNode; inventoryPreview?: React.ReactNode;
+  relationsPreview?: React.ReactNode;
   activeQuests?: QuestItem[]; openState: "open" | "closed"; onClose?: () => void;
 }
 // 12. BackToLatestButton
 interface BackToLatestButtonProps {
   visibleWhenAwayFromLatest: boolean; unreadCount?: number; onClick: () => void;
+}
+// 13. IllustrationFrame（受控媒体扩展，不改变说明书十一的 12 核心组件计数）
+type IllustrationKind = "map" | "character" | "item" | "scene" | "generic";
+interface IllustrationFrameProps {
+  kind?: IllustrationKind; src?: string; alt: string; caption?: string; aspectRatio?: string;
+  loading?: boolean; failed?: boolean; badgeLabel?: string; onClick?: () => void; className?: string;
 }
 ```
 
@@ -265,7 +279,7 @@ interface BackToLatestButtonProps {
 
 ## 4. 程序调用流程（Mermaid sequenceDiagram 见 `sequence-diagram.mermaid`）
 
-关键链路：**加载 → 注入基准变量 → 渲染**；**切换高对比**（data-* + 变量，内容不重渲染）；**复制令牌**（经 `DsPlatform.clipboard`）；**断点模拟**（frame 宽度 state）；**组件状态切换**（Gallery 本地 state）。
+关键链路：**加载 → 预渲染带令牌的 style 对象 → 渲染**；**切换高对比**（data-* + 变量）；**复制令牌**（经 `DsPlatform.clipboard`）；**断点模拟**（frame 宽度 state）；**组件状态切换**（Gallery 本地 state）。
 
 ---
 
@@ -276,7 +290,7 @@ interface BackToLatestButtonProps {
 | **T01** | 设计系统基座：令牌真源 + 作用域样式 + 平台适配 + 根/上下文 | `tokens.ts`、`design-system.css`、`DesignSystemRoot.tsx`、`dsPlatform.ts`、`page.tsx` | — | P0 |
 | **T02** | 基础组件组：AppTopBar / BrushDivider / NarrativeBlock / ArchiveEvidenceCard / SquareTag / StatusMeter | 上述 6 个 `.tsx` + `components/index.ts` | T01 | P0 |
 | **T03** | 复合与交互组件组：ActionButton / MapMarker / LocationCard / ThreatPanel / CharacterQuestDrawer / BackToLatestButton | 上述 6 个 `.tsx` + `components/index.ts` | T01 | P0 |
-| **T04** | Living Demo：7 展示区 + 8 控件 + 状态机接线 | `demo/DemoApp.tsx`、`demo/sections.tsx`、`demo/controls.tsx`、`demo/useDemoState.ts`、`demo/contrast.ts` | T01,T02,T03 | P0 |
+| **T04** | Living Demo：9 展示区 + 控制台 + 状态机接线 | `demo/*`、`pages/*` | T01,T02,T03 | P0 |
 | **T05** | 验证与一致性：构建冒烟 + 令牌一致性自检 + a11y 基线 | `tests/design-system.test.mjs` | T01–T04 | P0 |
 
 > 依赖图：T01 为根；T02、T03 并行（仅依赖 T01）；T04 依赖 T01+T02+T03；T05 最后。符合"尽量独立或仅依赖 T01"。
@@ -288,9 +302,9 @@ interface BackToLatestButtonProps {
 **零新增依赖。** 理由：
 - `react@19.2.6` / `react-dom@19.2.6` 已在 `dependencies`；`tailwindcss@4.2.1` + `@tailwindcss/postcss` 已在 `devDependencies`，仅用于 `globals.css` 既有能力，本系统不新增 Tailwind 配置。
 - **不引入 MUI**（PRD 硬约束）。
-- 剪贴板用浏览器原生 `navigator.clipboard`（Web 标准，Cloudflare Workers 客户端运行时可用）；安全区用 CSS `env()` + `getComputedStyle`，无库。
+- 剪贴板用浏览器原生 `navigator.clipboard` 并带失败回退；安全区用 CSS `env()` + `getComputedStyle`；Esc 订阅也收敛于适配层。
 - 对比度计算为纯函数（自写 `contrast.ts`），不引 `wcag-contrast` 等。
-- 全部代码仅用 Web 标准 API，无 Node-only 依赖，Cloudflare Workers 部署兼容。
+- 全部客户端能力仅用 Web 标准 API，无 Node-only 运行时依赖，兼容当前静态导出并保留 SSR 兜底。
 
 ---
 
@@ -307,10 +321,10 @@ interface BackToLatestButtonProps {
 
 ---
 
-## 8. 待明确事项（假设与需确认）
+## 8. 已明确事项与保留边界
 
 1. **派生语义色取值**：`定力=#6E8298`、`自然=#6F8A78` 为设计系统按"低饱和冷月蓝/苔绿"派生的低饱和值（说明书三.1 只给语义名未给精确 hex）。**须主理人/PM 确认**；当前强制"必须附文字"，不唯色。如后续规范给出精确值，改 `tokens.ts` 一处即可。
-2. **demo 是否进入首页导航**：v1 为独立路由 `/design-system`，建议首页暂不强行接入，待集成阶段（任务 #3 范围）决定入口。
+2. **demo 是否进入首页导航**：v1 保持独立路由 `/design-system`，不强行混入玩家主流程；入口调整另走产品评审。
 3. **断点模拟为 frame 容器**：用容器内 `width` 模拟 360–720 / 721–1050 / >1050，**不改变 window**；与真机 safe-area 不同，真机验证单列评审（符合 `WEB_MOBILE_STANDARD.md` 真机优先）。
 4. **webfont 启用**：默认系统回退；若主理人要求精确字体观感，再于 `design-system.css` 启用 `@font-face` CDN（非阻塞）。当前未默认开启，避免离线 PWA 依赖网络。
 

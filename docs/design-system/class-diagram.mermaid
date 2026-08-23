@@ -16,7 +16,8 @@ classDiagram
         +TokenSpec[] SPACES
         +TokenSpec[] SHAPES
         +TokenSpec[] TEXTURES
-        +applyTokens(root, state) void
+        +buildTokenStyle(state) CSSProperties
+        +resolveTokenValue(varName, state) string
     }
     class DesignSystemState {
         +boolean highContrast
@@ -30,31 +31,34 @@ classDiagram
     }
     class DesignSystemContextValue {
         +set(patch) void
-        +copyToken(varName) Promise~void~
+        +copyToken(varName, text) Promise~boolean~
+        +tokenValue(varName) string
     }
     class DesignSystemRoot {
         +DesignSystemContextValue ctx
-        +HTMLElement rootRef
-        +applyTokens() void
+        +CSSProperties styleVars
+        +buildTokenStyle() CSSProperties
     }
     class DsPlatform {
         <<interface>>
-        +clipboard.write(text) Promise~void~
+        +clipboard.write(text) Promise~boolean~
         +safeArea.getInsets() Insets
+        +keyboard.onEscape(handler) Unsubscribe
     }
     class BrowserDsPlatform {
-        +clipboard.write(text) Promise~void~
+        +clipboard.write(text) Promise~boolean~
         +safeArea.getInsets() Insets
+        +keyboard.onEscape(handler) Unsubscribe
     }
 
     DesignSystemContextValue --|> DesignSystemState
-    DesignSystemRoot ..> DesignTokens : applyTokens
+    DesignSystemRoot ..> DesignTokens : buildTokenStyle
     DesignSystemRoot ..> DesignSystemContextValue : provides
     DesignSystemRoot ..> DsPlatform : uses
     DsPlatform <|.. BrowserDsPlatform
     DesignTokens o-- TokenSpec
 
-    %% ===== 12 组件 Props =====
+    %% ===== 12 个核心组件 + 1 个媒体组件 Props =====
     class AppTopBarProps {
         +string title
         +TopBarAction leftAction
@@ -153,6 +157,16 @@ classDiagram
         +number unreadCount
         +onClick() void
     }
+    class IllustrationFrameProps {
+        +IllustrationKind kind
+        +string src
+        +string alt
+        +string caption
+        +string aspectRatio
+        +boolean loading
+        +boolean failed
+        +onClick() void
+    }
 
     %% 状态联合类型
     class NarrativeKind
@@ -166,6 +180,7 @@ classDiagram
     class MarkerKind
     class Breakpoint
     class QuestItem
+    class IllustrationKind
 
     NarrativeBlockProps --> NarrativeKind
     ArchiveEvidenceCardProps --> EvidenceStatus
@@ -177,6 +192,7 @@ classDiagram
     MapMarkerProps --> MarkerStatus
     MapMarkerProps --> MarkerKind
     CharacterQuestDrawerProps --> QuestItem
+    IllustrationFrameProps --> IllustrationKind
     DesignSystemState --> Breakpoint
 
     %% 组件均消费 DesignSystemContext（状态驱动）
@@ -197,6 +213,8 @@ classDiagram
         +Playground
         +A11yShowcase
         +BreakpointSimulator
+        +IllustrationShowcase
+        +PageShowcase
     }
     class Controls {
         +highContrastToggle

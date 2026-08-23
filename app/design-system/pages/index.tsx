@@ -5,12 +5,12 @@
  *
  * 全部由既有 13 个设计系统组件组合而成，不引入新组件、不写死色值：
  * - 主菜单 / 地图探索 / 角色任务 / 图鉴物证 / 战斗威胁 / 设置
- * 每页附 `PageSpec` 结构化视觉规范（6 维度），由 `PageShowcase` 渲染规范卡。
+ * 每页附 `PageSpec` 结构化视觉规范（10 维度），由 `PageShowcase` 渲染规范卡。
  * 设置页直接读写 `useDesignSystem()` 全局状态，是设计系统能力的真实演练。
  *
- * 插画范例（Logo / 舆图 / 人物）以 SVG data URI 承载，取色均来自设计系统令牌
- * （湿墨 #17130F、旧丝 #EAE1DA、焦金 #F5D294、朱砂 #93000A、冷月蓝 #6E8298），
- * 经 `IllustrationFrame` 统一承载，满足「风格锚定 + 不硬编码路径」。
+ * 插画范例（Logo / 舆图 / 人物）以 SVG data URI 承载，颜色在渲染时通过
+ * `tokenValue()` 注入，故高对比模式与令牌修订会同步生效；经 `IllustrationFrame`
+ * 统一承载，满足「风格锚定 + 不硬编码真实资源路径」。
  */
 
 import type { ComponentType, ReactNode } from "react";
@@ -25,7 +25,7 @@ import { IllustrationFrame } from "../components/IllustrationFrame";
 import { MapMarker, type MarkerKind, type MarkerStatus } from "../components/MapMarker";
 import { LocationCard } from "../components/LocationCard";
 import { ArchiveEvidenceCard, type EvidenceStatus } from "../components/ArchiveEvidenceCard";
-import { ThreatPanel, type DangerLevel } from "../components/ThreatPanel";
+import { ThreatPanel } from "../components/ThreatPanel";
 import {
   CharacterQuestDrawer,
   type QuestItem,
@@ -40,51 +40,60 @@ function svgToDataUri(svg: string): string {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
-const LOGO_SVG = svgToDataUri(
+type TokenValueReader = (varName: string) => string;
+
+function buildLogoSvg(tokenValue: TokenValueReader): string {
+  return svgToDataUri(
   `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'>` +
     `<defs><linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'>` +
-    `<stop offset='0' stop-color='#17130F'/><stop offset='1' stop-color='#312A22'/>` +
+    `<stop offset='0' stop-color='${tokenValue("--ds-c-bg")}'/><stop offset='1' stop-color='${tokenValue("--ds-c-surface-high")}'/>` +
     `</linearGradient></defs>` +
     `<rect width='320' height='180' fill='url(#sky)'/>` +
-    `<circle cx='160' cy='122' r='46' fill='#93000A'/>` +
-    `<path d='M0 150 L60 110 L110 140 L170 95 L230 135 L290 100 L320 130 L320 180 L0 180 Z' fill='#0D0A07'/>` +
-    `<path d='M0 165 L80 135 L150 160 L220 130 L320 158 L320 180 L0 180 Z' fill='#0A0806'/>` +
-    `<line x1='0' y1='122' x2='320' y2='122' stroke='#F5D294' stroke-opacity='0.5' stroke-width='1'/>` +
-    `<text x='160' y='34' fill='#EAE1DA' font-size='15' text-anchor='middle' font-family='serif'>天地未定</text>` +
+    `<circle cx='160' cy='122' r='46' fill='${tokenValue("--ds-c-error-container")}'/>` +
+    `<path d='M0 150 L60 110 L110 140 L170 95 L230 135 L290 100 L320 130 L320 180 L0 180 Z' fill='${tokenValue("--ds-c-surface-lowest")}'/>` +
+    `<path d='M0 165 L80 135 L150 160 L220 130 L320 158 L320 180 L0 180 Z' fill='${tokenValue("--ds-c-bg")}'/>` +
+    `<line x1='0' y1='122' x2='320' y2='122' stroke='${tokenValue("--ds-c-gold")}' stroke-opacity='0.5' stroke-width='1'/>` +
+    `<text x='160' y='34' fill='${tokenValue("--ds-c-on-surface")}' font-size='15' text-anchor='middle' font-family='serif'>天地未定</text>` +
     `</svg>`,
-);
+  );
+}
 
-const MAP_SVG = svgToDataUri(
+function buildMapSvg(tokenValue: TokenValueReader): string {
+  return svgToDataUri(
   `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240'>` +
-    `<rect width='320' height='240' fill='#1F1B17'/>` +
-    `<g stroke='#F5D294' stroke-opacity='0.16' stroke-width='1'>` +
+    `<rect width='320' height='240' fill='${tokenValue("--ds-c-surface-low")}'/>` +
+    `<g stroke='${tokenValue("--ds-c-gold")}' stroke-opacity='0.16' stroke-width='1'>` +
     `<line x1='0' y1='60' x2='320' y2='60'/><line x1='0' y1='120' x2='320' y2='120'/><line x1='0' y1='180' x2='320' y2='180'/>` +
     `<line x1='80' y1='0' x2='80' y2='240'/><line x1='160' y1='0' x2='160' y2='240'/><line x1='240' y1='0' x2='240' y2='240'/>` +
     `</g>` +
-    `<path d='M16 188 q28 -18 56 0 t56 0 t56 0 t56 0' stroke='#6E8298' stroke-width='3' fill='none'/>` +
-    `<text x='58' y='92' fill='#F5D294' font-size='22' font-family='serif'>山</text>` +
-    `<text x='196' y='74' fill='#EAE1DA' font-size='20' font-family='serif'>邑</text>` +
-    `<text x='244' y='172' fill='#93000A' font-size='20' font-family='serif'>凶</text>` +
-    `<text x='120' y='150' fill='#6F8A78' font-size='16' font-family='serif'>祠</text>` +
+    `<path d='M16 188 q28 -18 56 0 t56 0 t56 0 t56 0' stroke='${tokenValue("--ds-c-resolve")}' stroke-width='3' fill='none'/>` +
+    `<text x='58' y='92' fill='${tokenValue("--ds-c-gold")}' font-size='22' font-family='serif'>山</text>` +
+    `<text x='196' y='74' fill='${tokenValue("--ds-c-on-surface")}' font-size='20' font-family='serif'>邑</text>` +
+    `<text x='244' y='172' fill='${tokenValue("--ds-c-error")}' font-size='20' font-family='serif'>凶</text>` +
+    `<text x='120' y='150' fill='${tokenValue("--ds-c-nature")}' font-size='16' font-family='serif'>祠</text>` +
     `</svg>`,
-);
+  );
+}
 
-const CHARACTER_SVG = svgToDataUri(
+function buildCharacterSvg(tokenValue: TokenValueReader): string {
+  return svgToDataUri(
   `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 320'>` +
-    `<rect width='240' height='320' fill='#17130F'/>` +
-    `<circle cx='120' cy='62' r='28' fill='#EAE1DA'/>` +
-    `<path d='M120 92 C 92 92 82 132 82 202 L72 320 L168 320 L158 202 C158 132 148 92 120 92 Z' fill='#E6D5B8'/>` +
-    `<path d='M82 202 L158 202' stroke='#F5D294' stroke-width='6'/>` +
-    `<rect x='150' y='214' width='10' height='44' fill='#F5D294'/>` +
-    `<path d='M104 150 q16 14 32 0' stroke='#17130F' stroke-width='3' fill='none'/>` +
+    `<rect width='240' height='320' fill='${tokenValue("--ds-c-bg")}'/>` +
+    `<circle cx='120' cy='62' r='28' fill='${tokenValue("--ds-c-on-surface")}'/>` +
+    `<path d='M120 92 C 92 92 82 132 82 202 L72 320 L168 320 L158 202 C158 132 148 92 120 92 Z' fill='${tokenValue("--ds-c-primary-container")}'/>` +
+    `<path d='M82 202 L158 202' stroke='${tokenValue("--ds-c-gold")}' stroke-width='6'/>` +
+    `<rect x='150' y='214' width='10' height='44' fill='${tokenValue("--ds-c-gold")}'/>` +
+    `<path d='M104 150 q16 14 32 0' stroke='${tokenValue("--ds-c-bg")}' stroke-width='3' fill='none'/>` +
     `</svg>`,
-);
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* 页面 1 · 主菜单 / 开始                                                */
 /* ------------------------------------------------------------------ */
 
 function MainMenuScreen(): ReactNode {
+  const { tokenValue } = useDesignSystem();
   return (
     <div className="ds-screen ds-mainmenu">
       <AppTopBar
@@ -96,7 +105,7 @@ function MainMenuScreen(): ReactNode {
         <IllustrationFrame
           kind="scene"
           aspectRatio="16 / 9"
-          src={LOGO_SVG}
+          src={buildLogoSvg(tokenValue)}
           alt="《山海异闻录》主视觉：朱砂残日悬于湿墨山脊之上"
           caption="第一卷 · 天地未定"
         />
@@ -120,6 +129,7 @@ function MainMenuScreen(): ReactNode {
 /* ------------------------------------------------------------------ */
 
 function MapExploreScreen(): ReactNode {
+  const { tokenValue } = useDesignSystem();
   const pins: {
     kind: MarkerKind;
     name: string;
@@ -145,7 +155,7 @@ function MapExploreScreen(): ReactNode {
           <IllustrationFrame
             kind="map"
             aspectRatio="4 / 3"
-            src={MAP_SVG}
+            src={buildMapSvg(tokenValue)}
             alt="山海舆图：山岭、聚落、水域与凶险之地的分布示意"
             caption="山海舆图 · 卷一"
           />
@@ -199,6 +209,7 @@ function MapExploreScreen(): ReactNode {
 /* ------------------------------------------------------------------ */
 
 function CharacterQuestScreen(): ReactNode {
+  const { tokenValue } = useDesignSystem();
   const quests: QuestItem[] = [
     { id: "q1", name: "寻回残简", summary: "青丘邑书库底层", done: false },
     { id: "q2", name: "问狐火之由", summary: "与族长搭话", done: false },
@@ -229,7 +240,7 @@ function CharacterQuestScreen(): ReactNode {
         <IllustrationFrame
           kind="character"
           aspectRatio="3 / 4"
-          src={CHARACTER_SVG}
+          src={buildCharacterSvg(tokenValue)}
           alt="主角：着湿墨长袍，腰悬残简"
           caption="无名 · 行旅"
         />
@@ -498,8 +509,8 @@ const INITIAL_BATTLE_LOG: BattleLogEntry[] = [
 /** 战报颜色按种类。 */
 const LOG_KIND_TONE: Record<BattleLogEntry["kind"], string> = {
   action: "var(--ds-c-on-surface)",
-  damage: "var(--ds-c-secondary-container)", /* 朱砂 */
-  status: "var(--ds-c-tertiary-container)", /* 焦金 */
+  damage: "var(--ds-c-error)", /* 危险文本：在暗底上满足正文对比度 */
+  status: "var(--ds-c-gold)", /* 焦金 */
   system: "var(--ds-c-outline)",
 };
 
@@ -689,7 +700,7 @@ export interface PageDef {
   tagline: string;
   /** 屏幕组件。 */
   Screen: ComponentType;
-  /** 视觉规范（6 维度）。 */
+  /** 视觉规范（10 维度）。 */
   spec: PageSpec;
 }
 
@@ -703,13 +714,21 @@ export const PAGE_DEFINITIONS: PageDef[] = [
       layout:
         "顶部 AppTopBar（标题 + 设置入口）吸顶；主体垂直居中，依次为场景插画（16:9 IllustrationFrame）→ 行动按钮组（开始/继续/设置）→ 状态标签行。整体单栏、留白充足。",
       color:
-        "背景取 --ds-c-background(#17130F)；插画衬底 --ds-c-surface-low；主行动文字 --ds-c-primary(#FFF2DE)；标签金 --ds-c-tertiary-container(#F5D294)；同步态取自然苔绿 --ds-c-（派生 #6F8A78）。",
+        "背景取 --ds-c-bg；插画衬底 --ds-c-surface-low；主行动文字取 --ds-c-primary；标签金取 --ds-c-gold；同步态取派生语义色 --ds-c-nature。禁止在页面规范中复制 HEX，评审以令牌真源为准。",
       typography:
         "页标题 ds-type-display(36/700/1.2/0.1em)；栏标题 ds-type-headline-mobile(20/600)；按钮标签 ds-type-label(12/700/0.2em)；说明 ds-type-body-sm(14/400/1.6)。",
       components:
         "AppTopBar（默认+设置按钮）、IllustrationFrame（scene）、ActionButton（直角、图标上文字下）、SquareTag（方括号、不唯色）。禁用态须附可读原因。",
       spacing:
-        "主体间距 --ds-s-stack-lg(24)；按钮组 --ds-s-stack-sm(12)；标签行 --ds-s-stack-sm；统一 4 倍数阶（4/8/12/16/20/24）。",
+        "主体间距 --ds-s-stack-lg(24)；按钮组与标签行使用 --ds-s-stack-sm(8)；页面内边距取 --ds-s-margin-edge(20)。只使用 4/8/12/16/20/24 间距阶。",
+      interaction:
+        "开始/继续/设置均支持指针、触控与键盘；禁用行动显示原因；当前选择用 aria-pressed 与填充翻转共同表达。设置入口不依赖悬停，首次有效触控后再启用需要手势解锁的媒体能力。",
+      accessibility:
+        "操作位至少 --ds-sh-touch-min(44×44)，相邻至少 --ds-s-stack-sm(8)；Tab 顺序与视觉顺序一致；焦点环使用 --ds-sh-focus-width/offset；同步、禁用和错误状态必须有文字，不能唯色。",
+      motion:
+        "页面进入只允许 --ds-mo-dur-base 的克制淡入；减弱动效时立即呈现最终状态，不播放视差、脉冲或装饰性过渡；状态变化不得因动画延迟可操作时间。",
+      imagery:
+        "主场景使用 IllustrationFrame(scene)，保持 16:9、明确替代文本和加载失败占位；品牌字标不得烘焙关键操作文字；噪点只作低透明装饰且 pointer-events:none。",
       breakpoints:
         "手机(360–720)单栏居中；平板(721–1050)插画与按钮组并排留白；桌面(>1050)最大宽 480 居中卡片 + 两侧负空间。断点模拟器可实时重排。",
     },
@@ -723,13 +742,21 @@ export const PAGE_DEFINITIONS: PageDef[] = [
       layout:
         "顶部返回栏；主体分左「舆图画布（4:3 IllustrationFrame + 绝对定位 MapMarker 叠层）」与右「地点列（LocationCard 列表）」。左侧地图承载全部标记，右侧列出已探地点与可行动作。",
       color:
-        "舆图衬底 --ds-c-surface-low；网格线取 --ds-c-tertiary-container(#F5D294) 低透明度；当前地点标签 --ds-c-primary；危险地点朱砂 --ds-c-secondary-container(#920703)+「危」字；状态不唯色。",
+        "舆图衬底取 --ds-c-surface-low；网格线取 --ds-tx-grid-line；当前地点标签取 --ds-c-primary；危险地点用 --ds-c-cinnabar 描边并附「危」字。所有状态均以颜色 + 文字/符号 + 结构表达。",
       typography:
         "栏标题 ds-type-headline-mobile；地点名 ds-type-headline-mobile；描述 ds-type-body-sm；标记名与状态 ds-type-label；时间/天气 SquareTag 内联。",
       components:
         "AppTopBar（返回）、IllustrationFrame（map）、MapMarker（6 态：当前/已达/线索/危险/锁定/未显形，由中文+符号+边框结构表达）、LocationCard（圆角 --ds-sh-radius + outline-variant 描边）、ActionButton（地点行动）。",
       spacing:
         "地图与列表间距 --ds-s-stack-md(16)；卡内 --ds-s-stack-md；标记叠层用百分比定位，不依赖固定像素；统一 4 倍数阶。",
+      interaction:
+        "标记支持点击、Enter/Space 与触控；悬停只能补充信息，不能承载唯一信息。选择标记后同步更新地点卡；锁定项播报 lockedHint；地图拖动与页面滚动手势须分区。",
+      accessibility:
+        "每个标记必须有地点名、类型、状态和可达性的可访问名称；目标尺寸至少 44×44；当前位置、危险、锁定和线索不得唯色；地图之外保留等价地点列表与行动入口。",
+      motion:
+        "当前位置可使用轻微脉冲，时长取动效令牌；减弱动效或系统 prefers-reduced-motion 时关闭脉冲和缩放，仅保留静态边框、符号与文字。",
+      imagery:
+        "舆图图像使用 IllustrationFrame(map)，网格与标记为独立结构层；资源缺失时仍显示地点列表；正式资源须登记来源、版本、尺寸和低内存降级，不把文字烘焙进地图。",
       breakpoints:
         "手机单栏堆叠（地图在上、列表在下）；平板起舆图与列表并排（1.4:1）；桌面三栏 + 留白。容器查询 @container dsframe 驱动。",
     },
@@ -743,13 +770,21 @@ export const PAGE_DEFINITIONS: PageDef[] = [
       layout:
         "顶部菜单栏；主体左侧人物立绘（3:4 IllustrationFrame），右侧三档状态条（生命/精力/定力）；CharacterQuestDrawer 默认展开，含角色摘要、进行中任务、行囊速览。",
       color:
-        "立绘衬底 --ds-c-surface-low；状态条固色填充取语义令牌（life/stamina/resolve 派生色）；告急/危急除色外有「告急/危急」文字 + 轨道加粗；抽屉分隔刷痕取 --ds-c-tertiary-container。人物关系启用独立 6 阶色板——血亲(焦金)/盟友(苔绿)/友善(冷月蓝)/中立(残墨灰)/戒备(赭橙)/敌对(朱砂)——各阶色互不相同且必附关系文字，绝不唯色。",
+        "立绘衬底取 --ds-c-surface-low；状态条取 --ds-c-life/--ds-c-stamina/--ds-c-resolve；告急/危急叠加文字与轨道加粗；抽屉分隔取 --ds-sh-brush。关系等级采用互异语义色并始终附关系文字。",
       typography:
         "抽屉标题 ds-type-headline-mobile；状态名 ds-type-label + 数值同体；任务名 ds-type-body-sm；摘要 ds-type-body-sm。",
       components:
         "AppTopBar（菜单）、IllustrationFrame（character）、StatusMeter（细方轨、数字可见、警告三要素）、CharacterQuestDrawer（左滑入、遮罩关、Esc 关、焦点回归）、SquareTag（在办/已结）。",
       spacing:
         "立绘与状态条间距 --ds-s-stack-md；状态条间距 --ds-s-stack-sm；抽屉内每个 BrushDivider 分区 + --ds-s-stack-md 段距。",
+      interaction:
+        "抽屉支持触发器打开、遮罩/关闭按钮/Esc 关闭；打开后焦点进入抽屉，关闭后由调用方恢复到触发器。任务和快捷入口保持明确按压态，不使用横滑作为唯一操作。",
+      accessibility:
+        "状态条提供名称、当前值、最大值和告警文本；抽屉具有可访问名称并在打开时管理焦点；关系等级附文字；触控目标、焦点环和对比度遵循全局基线。",
+      motion:
+        "常规模式抽屉使用 --ds-mo-dur-base 平移；减弱动效时无过渡直接开合。前后台切换时立即停止过渡，恢复后保持开合与阅读位置一致。",
+      imagery:
+        "人物立绘使用 IllustrationFrame(character)，必须有角色名替代文本、加载失败占位和裁切焦点约定；装饰纹理不能覆盖状态文字或降低对比度。",
       breakpoints:
         "手机单栏（立绘在上、状态与抽屉在下）；平板立绘与状态并排、抽屉转左窄栏；桌面三栏。抽屉遮罩与安全区在真机叠加。",
     },
@@ -770,6 +805,14 @@ export const PAGE_DEFINITIONS: PageDef[] = [
         "AppTopBar、BrushDivider（分类）、ArchiveEvidenceCard（7 态：未知/传闻/实证/洞彻/锁定/已获得/已失去，由中文+符号+边框结构表达，不唯色）、SquareTag。",
       spacing:
         "网格卡间距 --ds-s-stack-md；卡内标题—描述—底栏用 --ds-s-stack-sm；网格列数随容器宽度变化。",
+      interaction:
+        "缩略图为单一可聚焦选择控件，点击/Enter/Space 展开对应详情；选中态通过 aria-pressed、边框和标题同步表达；锁定条目不可伪装为可操作项。",
+      accessibility:
+        "缩略图名称、类别、稀有度与持有状态可读；认知层级同时显示数字/文本；稀有度与状态不唯色；详情展开后标题层级连续，触控目标至少 44×44。",
+      motion:
+        "详情切换只允许短时透明度过渡；减弱动效时直接替换。网格重排不得产生影响阅读定位的大幅动画，加载骨架不得无限闪烁。",
+      imagery:
+        "条目图像经 IllustrationFrame(item) 或受控缩略图槽渲染；未知/缺图使用一致占位符；图标不得替代名称，资源须有授权和稳定 ID。",
       breakpoints:
         "手机 1–2 列；平板 3 列；桌面 4 列。@container dsframe 驱动重排，卡片方角与圆角均取 --ds-sh-radius。",
     },
@@ -783,13 +826,21 @@ export const PAGE_DEFINITIONS: PageDef[] = [
       layout:
         "顶部返回栏（撤退）；主体上 ThreatPanel（敌方意图 + 生息/稳定状态条 + 已知弱点），中我方状态条（生命/精力），下行动按钮组（斩首/结界/撤退）。",
       color:
-        "威胁名取 --ds-c-on-surface；危险等级朱砂 --ds-c-secondary-container +「危/急」符号 + 边框加粗；状态条 warning/critical 自动叠文字与结构变化；行动危险级（斩首）须有「危」标记。",
+        "威胁名取 --ds-c-on-surface；危险等级以 --ds-c-cinnabar 描边并附「危/急」符号；伤害战报使用可读的 --ds-c-error，状态战报取 --ds-c-gold；状态条告警叠加文字与结构变化。",
       typography:
         "威胁名 ds-type-headline-mobile；意图 ds-type-body-sm；状态条标签/数值 ds-type-label；按钮标签 ds-type-label。",
       components:
         "AppTopBar（返回）、ThreatPanel（6 态：未知/已观察/可交涉/危险/濒危/已解决）、StatusMeter（life/resolve 派生色）、ActionButton（含 dangerLevel 高危标记）。",
       spacing:
         "面板与状态区间距 --ds-s-stack-md；状态条 --ds-s-stack-sm；行动组 --ds-s-stack-sm；危险信息额外 --ds-s-stack-sm 强调。",
+      interaction:
+        "行动按钮支持键盘与触控，执行后向 role=log 追加结果；高风险行动二次确认策略由产品流程决定但必须显示「危」标记；重复点击须防止重复结算。",
+      accessibility:
+        "战报使用 role=log 且保持可读顺序；伤害/状态不唯色；资源条提供数值；行动按钮最小 44×44、禁用时给原因；不可用动作仍可被理解但不触发。",
+      motion:
+        "常规模式只对新增战报和定位使用短过渡；减弱动效时全文立即出现、滚动使用 instant；前后台切换时停止战斗文字动画并保持最新日志位置。",
+      imagery:
+        "威胁图像若接入须使用受控资源槽并提供名称替代文本；伤害、状态和意图不能只画在图片中；朱砂仅作局部警示，不铺满大面积背景。",
       breakpoints:
         "手机单栏堆叠；平板 ThreatPanel 与状态并排；桌面 ThreatPanel + 我方状态 + 行动三栏。容器查询驱动。",
     },
@@ -803,13 +854,21 @@ export const PAGE_DEFINITIONS: PageDef[] = [
       layout:
         "顶部返回栏；主体为设置行列表（每行：名称 + 说明 + 开关按钮），下方刷痕分隔「显示框架」+ 断点预设标签 + 当前宽度档位。所有开关实时改写全局设计系统状态。",
       color:
-        "行底色 --ds-c-surface-low；开关「开」态翻转旧丝填充（ActionButton selected）；断点预设选中取 --ds-c-tertiary-container；其余沿用 on-surface 文本色。",
+        "行底色取 --ds-c-surface-low；开关「开」态翻转 --ds-c-primary-container 填充；断点预设选中取 --ds-c-gold；正文取 --ds-c-on-surface，说明取 --ds-c-on-surface-variant。",
       typography:
         "设置名 ds-type-body-sm；说明 ds-type-label；分组标题 ds-type-label；数值档位 ds-type-label。",
       components:
         "AppTopBar（返回）、ActionButton（作开关，selected 翻转填充）、BrushDivider（分组）、SquareTag（断点预设，选中态）。本页直接驱动 useDesignSystem() 全局态。",
       spacing:
         "设置行间距 --ds-s-stack-sm；分组前后 --ds-s-stack-md；断点标签间距 --ds-s-stack-sm；统一 4 倍数阶。",
+      interaction:
+        "开关使用 button/aria-pressed 语义并即时反馈；整行不伪装为按钮；范围控件具有名称、当前值与步进。恢复默认属于高影响操作时需确认并说明影响范围。",
+      accessibility:
+        "每项由名称、说明、控件和当前状态组成；焦点顺序按页面顺序；高对比与减弱动效开关本身不依赖其效果才能辨识；错误提示可恢复且不唯色。",
+      motion:
+        "设置切换即时生效；减弱动效开关开启后同一帧停用非必要动画。断点模拟重排不做长动画，避免方向感与阅读定位被扰乱。",
+      imagery:
+        "设置页不使用无信息价值的大图；图标仅辅助名称，使用与文本相同的语义色和可访问名称；纹理简化选项可关闭噪点且不改变信息结构。",
       breakpoints:
         "手机单栏；平板/桌面加宽留白。断点预设按钮本身即改变 PageShowcase 的 frame 宽度，故切换时本页随之外框重排，形成闭环演示。",
     },

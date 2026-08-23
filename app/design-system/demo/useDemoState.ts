@@ -10,7 +10,7 @@
  * 这样拆分的好处：状态机切换不会引起令牌对象重算，也不会让全局 Provider 因一次点击整树重渲染。
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { EvidenceStatus } from "../components";
 import type { DangerLevel, MarkerStatus, NarrativeKind } from "../components";
 
@@ -98,13 +98,8 @@ export interface DemoActions {
   pushLog: (message: string) => void;
 }
 
-/** hook 返回值：状态 + 行为 + 抽屉触发元素 ref。 */
-export interface DemoStore extends DemoState, DemoActions {
-  /**
-   * 抽屉触发按钮 ref。抽屉关闭后需把焦点还给触发者（WCAG 2.4.3）。
-   */
-  drawerTriggerRef: React.RefObject<HTMLButtonElement | null>;
-}
+/** hook 返回值：只包含可渲染状态与行为；具体组件 DOM ref 由使用方局部持有。 */
+export type DemoStore = DemoState & DemoActions;
 
 /** 行为日志上限。 */
 const LOG_MAX = 8;
@@ -140,7 +135,6 @@ function nextInCycle<T>(cycle: T[], current: T): T {
  */
 export function useDemoState(): DemoStore {
   const [state, setState] = useState<DemoState>(INITIAL_STATE);
-  const drawerTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const pushLog = useCallback((message: string) => {
     setState((previous) => ({
@@ -161,9 +155,8 @@ export function useDemoState(): DemoStore {
     setState((previous) => ({
       ...previous,
       drawerOpen: false,
-      log: ["关闭抽屉，焦点已还给触发按钮", ...previous.log].slice(0, LOG_MAX),
+      log: ["关闭角色与任务抽屉", ...previous.log].slice(0, LOG_MAX),
     }));
-    drawerTriggerRef.current?.focus();
   }, []);
 
   const cycleEvidence = useCallback(() => {
@@ -268,7 +261,6 @@ export function useDemoState(): DemoStore {
   return useMemo<DemoStore>(
     () => ({
       ...state,
-      drawerTriggerRef,
       openDrawer,
       closeDrawer,
       cycleEvidence,

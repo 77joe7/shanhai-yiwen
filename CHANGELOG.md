@@ -31,6 +31,8 @@
 
 ### 修复
 
+- 复核并修正设计系统规范：清除证据卡、规范卡与战报中的 4 处未定义 `--ds-*` 引用及无效 `border-bottom-opacity`；伤害战报改用满足正文对比度的错误文本令牌，示例插画改为跟随当前/高对比令牌动态换色。
+- 将 6 个页面范例的视觉规范由 6 维补齐为 10 维（新增交互、无障碍、动效、图像图标），同步 PRD/ARCH/类图/时序图与 EdgeOne 静态导出现状；新增设计系统文档入口、2026-08-23 审计报告及令牌引用/页面规范完整性自动测试。
 - 修复 iOS Safari 添加到主屏幕（PWA standalone）顶部剧情内容透出与状态栏重叠：viewport meta 追加 `viewport-fit=cover`，并补 `apple-mobile-web-app-capable=yes` / `mobile-web-app-capable=yes` / `apple-mobile-web-app-status-bar-style=black-translucent` / `apple-touch-icon` / `theme-color=#17130f` 等 PWA meta，使 `env(safe-area-inset-top)` 在 standalone 模式下正确返回状态栏高度（约 59px），topbar 的 `height:calc(64px + env(...))` + `padding-top:env(...)` 覆盖状态栏区域；`html, body` 背景改为 `#17130f`（与 topbar 同色）兜底遮盖。新增 `scripts/inject-pwa-meta.mjs` 构建后注入脚本（Next.js `Viewport` 静态导出丢失 `viewportFit` 字段，用 post-build 兜底）；`package.json` 的 `build` 脚本改为 `vinext build && node scripts/inject-pwa-meta.mjs`，`layout.tsx` 用 `metadata.other` 输出 apple meta（确保未来构建即包含）。`layout.tsx` 的 `viewport.themeColor` 同步 `#17130f`，icons 增加 apple 图标。
 
 - 顶部与底部安全区改为不透明、中间缓冲区加高、移除山海志/行囊退出按钮：`.mythic-shell .topbar` 背景由 `rgba(23,19,15,.98)` 改为纯色 `#17130f`（base `.topbar` 同步 `#141a15`），手机灵动岛/刘海区域（`env(safe-area-inset-top)` 覆盖区）滚动时不再透出剧情内容；底部 `.story-safe-area` 背景由 `rgba(...,.92)` 改为纯色 `#1f1b17`（暗色主题 `#17130f`），完全遮盖下方内容；`.story-buffer` 空白缓冲区高度由 28px 增至 140px（移动端 22px→110px，即 5 倍）；`reader-heading` 的「退出到主页」按钮仅当面板不是山海志（codex）/行囊（inventory）时渲染，取消这两处的退出按钮及其功能。

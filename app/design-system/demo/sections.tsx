@@ -17,7 +17,7 @@
  * `./useDemoState` 的 `DemoStore`、`./controls` 的 `DemoControls`、`./../components` 桶导出。
  */
 
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useRef, type ReactNode } from "react";
 import { useDesignSystem, DsViewportFrame } from "../DesignSystemRoot";
 import {
   ALL_TOKENS,
@@ -220,6 +220,11 @@ export function SpacingRuler() {
 /** 4. 组件陈列：12 组件逐一陈列，状态实时联动 demo 局部状态。 */
 export function ComponentGallery({ demo }: { demo: DemoStore }) {
   const ds = useDesignSystem();
+  const drawerTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const closeDrawer = () => {
+    demo.closeDrawer();
+    drawerTriggerRef.current?.focus();
+  };
   const evidenceStatus: EvidenceStatus = demo.evidenceStatus;
   const markerStatus: MarkerStatus = demo.markerStatus;
   const threatLevel: DangerLevel = demo.threatLevel;
@@ -513,7 +518,7 @@ export function ComponentGallery({ demo }: { demo: DemoStore }) {
           <div className="ds-gallery-stage">
             <button
               type="button"
-              ref={demo.drawerTriggerRef}
+              ref={drawerTriggerRef}
               className="ds-action ds-transition"
               onClick={demo.openDrawer}
             >
@@ -521,7 +526,7 @@ export function ComponentGallery({ demo }: { demo: DemoStore }) {
             </button>
             <CharacterQuestDrawer
               openState={demo.drawerOpen ? "open" : "closed"}
-              onClose={demo.closeDrawer}
+              onClose={closeDrawer}
               playerSummary={
                 <p className="ds-type-body-sm">你是一名走方郎中，背篓里装着半卷残破的《山海图》。</p>
               }
@@ -597,7 +602,6 @@ export function Playground({ demo }: { demo: DemoStore }) {
 
 /** 6. 可访问性验收：触控/语义区域/WCAG 双模式对比度实测/不唯色反例。 */
 export function A11yShowcase() {
-  const ds = useDesignSystem();
   const contrastResults = useMemo<ContrastResult[]>(
     () => evaluateAllContrast((varName, highContrast) => resolveTokenValue(varName, { highContrast })),
     [],
@@ -746,6 +750,8 @@ export function BreakpointSimulator({ demo }: { demo: DemoStore }) {
 
 /** 8. 插画与装饰承载：地图/人物/物品范例 + 加载/缺失占位 + 风格锚定对照 + 装饰固定范围。 */
 export function IllustrationShowcase() {
+  const { tokenValue } = useDesignSystem();
+  const samples = buildSampleIllustrations(tokenValue);
   return (
     <Section
       titleId="ds-illu-title"
@@ -757,21 +763,21 @@ export function IllustrationShowcase() {
           kind="map"
           alt="赤崖舆图：标注山道、祠庙与一处异动标记"
           caption="舆图 · 4:3"
-          src={SAMPLE_MAP}
+          src={samples.map}
           aspectRatio="4 / 3"
         />
         <IllustrationFrame
           kind="character"
           alt="走方郎中角色立绘：背负药篓"
           caption="人物立绘 · 3:4"
-          src={SAMPLE_CHAR}
+          src={samples.character}
           aspectRatio="3 / 4"
         />
         <IllustrationFrame
           kind="item"
           alt="无名香灰物证：一撮残香"
           caption="物品 · 1:1"
-          src={SAMPLE_ITEM}
+          src={samples.item}
           aspectRatio="1 / 1"
         />
       </div>
@@ -811,16 +817,18 @@ export function IllustrationShowcase() {
   );
 }
 
-/* 范例插画（仅 demo 示意，取色与令牌一致：bg #17130F / surface #39342F #2E2925 #1F1B17 /
- * gold #F5D294 / cinnabar #920703 / on-surface #EAE1DA）。设计系统本身不内置任何美术资源。 */
-const SAMPLE_MAP = `data:image/svg+xml;utf8,${encodeURIComponent(
-  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='#17130F'/><g fill='none' stroke='#F5D294' stroke-opacity='0.25'><path d='M0 75 H400 M0 150 H400 M0 225 H400 M100 0 V300 M200 0 V300 M300 0 V300'/></g><path d='M40 250 L120 150 L200 250 Z' fill='#39342F'/><path d='M180 250 L260 120 L340 250 Z' fill='#2E2925'/><circle cx='260' cy='120' r='8' fill='#920703'/><circle cx='120' cy='150' r='5' fill='#F5D294'/></svg>",
-)}`;
-
-const SAMPLE_CHAR = `data:image/svg+xml;utf8,${encodeURIComponent(
-  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'><rect width='300' height='400' fill='#17130F'/><g fill='#EAE1DA' fill-opacity='0.85'><circle cx='150' cy='110' r='46'/><path d='M70 400 C70 250 110 180 150 180 C190 180 230 250 230 400 Z'/></g><path d='M150 64 L150 156' stroke='#F5D294' stroke-width='3'/></svg>",
-)}`;
-
-const SAMPLE_ITEM = `data:image/svg+xml;utf8,${encodeURIComponent(
-  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='#1F1B17'/><path d='M90 110 Q150 60 210 110 L210 200 Q150 240 90 200 Z' fill='#F5D294' fill-opacity='0.9'/><path d='M150 110 L150 200' stroke='#17130F' stroke-width='3'/><circle cx='150' cy='150' r='10' fill='#920703'/></svg>",
-)}`;
+/** 范例插画由当前令牌值生成；高对比切换后同步换色，不形成第二套隐性调色板。 */
+function buildSampleIllustrations(tokenValue: (varName: string) => string) {
+  const uri = (svg: string) => `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  return {
+    map: uri(
+      `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='${tokenValue("--ds-c-bg")}'/><g fill='none' stroke='${tokenValue("--ds-c-gold")}' stroke-opacity='0.25'><path d='M0 75 H400 M0 150 H400 M0 225 H400 M100 0 V300 M200 0 V300 M300 0 V300'/></g><path d='M40 250 L120 150 L200 250 Z' fill='${tokenValue("--ds-c-surface-highest")}'/><path d='M180 250 L260 120 L340 250 Z' fill='${tokenValue("--ds-c-surface-high")}'/><circle cx='260' cy='120' r='8' fill='${tokenValue("--ds-c-cinnabar")}'/><circle cx='120' cy='150' r='5' fill='${tokenValue("--ds-c-gold")}'/></svg>`,
+    ),
+    character: uri(
+      `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'><rect width='300' height='400' fill='${tokenValue("--ds-c-bg")}'/><g fill='${tokenValue("--ds-c-on-surface")}' fill-opacity='0.85'><circle cx='150' cy='110' r='46'/><path d='M70 400 C70 250 110 180 150 180 C190 180 230 250 230 400 Z'/></g><path d='M150 64 L150 156' stroke='${tokenValue("--ds-c-gold")}' stroke-width='3'/></svg>`,
+    ),
+    item: uri(
+      `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='${tokenValue("--ds-c-surface-low")}'/><path d='M90 110 Q150 60 210 110 L210 200 Q150 240 90 200 Z' fill='${tokenValue("--ds-c-gold")}' fill-opacity='0.9'/><path d='M150 110 L150 200' stroke='${tokenValue("--ds-c-bg")}' stroke-width='3'/><circle cx='150' cy='150' r='10' fill='${tokenValue("--ds-c-cinnabar")}'/></svg>`,
+    ),
+  };
+}

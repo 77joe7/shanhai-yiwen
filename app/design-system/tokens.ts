@@ -9,7 +9,8 @@
  *    也无需任何命令式 DOM 操作（不违反平台抽象边界）。
  *
  * 依据：`docs/ui-design/山海异闻录_UI界面说明书_Stitch参考包基线_V1.3.txt` 三/十一/十二/十三章
- *      + `tmp/stitch-ref/DESIGN.md`
+ *      + `tmp/stitch-ref/DESIGN.md`。当前产品边界以 V1.4 说明书为准；UI 令牌在新的受控
+ *      UI 规范发布前继续以 V1.3 视觉基线为真源，二者不得混写。
  */
 
 import type { CSSProperties } from "react";

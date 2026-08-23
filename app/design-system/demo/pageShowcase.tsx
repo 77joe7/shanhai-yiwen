@@ -6,7 +6,7 @@
  * 用既有 13 组件组合出的 6 个核心游戏页：主菜单 / 地图探索 / 角色任务 /
  * 图鉴物证 / 战斗威胁 / 设置。标签页切换；当前页以 `DsViewportFrame` 承载，
  * 宽度取自全局 `frameWidth`，故「断点模拟器」与「设置页」能实时重排本区。
- * 每页下方附 `SpecCard` 视觉规范卡（6 维度）。
+ * 每页下方附 `SpecCard` 视觉规范卡（10 维度）。
  */
 
 import { useState } from "react";
@@ -36,7 +36,8 @@ export function PageShowcase(): React.ReactNode {
         <h2 className="ds-type-display">页面范例 · 设计系统落地</h2>
         <p className="ds-section-note ds-type-body-sm">
           用既有 13 个组件组合出的 6 个核心游戏页；切换断点或设置页可实时重排本区。
-          每页附完整视觉设计规范（布局 / 配色 / 字体 / 组件 / 间距 / 断点）。
+          每页附完整视觉设计规范（布局 / 配色 / 字体 / 组件 / 间距 / 交互 / 无障碍 / 动效 /
+          图像图标 / 断点）。
         </p>
       </header>
 
