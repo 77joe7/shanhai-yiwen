@@ -1,9 +1,9 @@
-export type PanelId = "story" | "map" | "codex" | "inventory" | "people" | "more";
+export type PanelId = "story" | "map" | "codex" | "inventory" | "fate";
 export type OverlayId = "character" | "create" | "settings" | "saves" | "help" | null;
 
 export type OriginId = string;
-export type NatureId = "cautious" | "curious" | "kind" | "resolute";
-export type FlawId = "water" | "night" | "injury" | "speech";
+export type NatureId = "cautious" | "curious" | "kind" | "resolute" | "suspicious" | "stubborn";
+export type FlawId = "water" | "night" | "injury" | "speech" | "frail" | "beast_bait";
 
 export interface CharacterDraft {
   name: string;
@@ -32,6 +32,7 @@ export interface Settings {
   highContrast: boolean;
   reducedMotion: boolean;
   textReveal: boolean;
+  textSpeed: number;
   simplifiedTexture: boolean;
   ambientVolume: number;
   autoSave: boolean;

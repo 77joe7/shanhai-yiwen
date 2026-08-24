@@ -22,6 +22,7 @@ export const blackRainContent = {
   flaws: originsDocument.flaws ?? [],
   quests: questsDocument.quests,
   worldDefaults: worldStateDocument.defaults,
+  echoBindings: worldStateDocument.echoBindings,
 } as const;
 
 export const statLabels: Record<string, string> = {
@@ -48,7 +49,7 @@ export const originById = new Map(blackRainContent.origins.map((origin) => [orig
 export const itemById = new Map(blackRainContent.items.map((item) => [item.id, item]));
 export const characterById = new Map(blackRainContent.characters.map((character) => [character.id, character]));
 
-/** 剧情文本实体名集合，供渲染层高亮使用（人物 / 道具·材料 / 地点）。 */
+/** 剧情文本实体名集合，供渲染层高亮使用（人物 / 道具·材料 / 地点 / 线索 / 异象）。 */
 export const entityNames = {
   person: new Set<string>(
     blackRainContent.characters.map((c) => c.name).filter((name) => name.length > 0),
@@ -69,5 +70,17 @@ export const entityNames = {
         .map((entry) => entry.title),
       "杳湾",
     ].filter((name) => name.length > 0),
+  ),
+  clue: new Set<string>(
+    blackRainContent.items
+      .filter((item) => item.category === "clue")
+      .flatMap((item) => [item.name, ...(item.recognitionStages?.map((stage) => stage.displayName) ?? [])])
+      .filter((name) => name.length > 0),
+  ),
+  anomaly: new Set<string>(
+    blackRainContent.codex
+      .filter((entry) => entry.category === "event")
+      .map((entry) => entry.title)
+      .filter((name) => name.length > 0),
   ),
 };

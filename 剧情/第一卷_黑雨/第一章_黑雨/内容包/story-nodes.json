@@ -401,7 +401,7 @@
       "choices": [
         {
           "id": "V01-C01-N046-A",
-          "label": "取名‘迟日’，让它留在村中学习成为人",
+          "label": "取名‘迟日’，让它留在村中学习成为人（不可逆）",
           "irreversible": true,
           "effects": [
             {
@@ -452,7 +452,7 @@
         },
         {
           "id": "V01-C01-N046-C",
-          "label": "烧毁梦壳，让扶桑收到警讯",
+          "label": "烧毁梦壳，让扶桑收到警讯（不可逆）",
           "irreversible": true,
           "effects": [
             {
@@ -2086,7 +2086,7 @@
       "choices": [
         {
           "id": "V01-C01-N018-A",
-          "label": "让含晦吐出所有被洗去的话",
+          "label": "让含晦吐出所有被洗去的话（不可逆）",
           "irreversible": true,
           "effects": [
             {
@@ -3379,7 +3379,7 @@
       "choices": [
         {
           "id": "V01-C01-N023-A",
-          "label": "拔出赤金箭，交给羿",
+          "label": "拔出赤金箭，交给羿（不可逆）",
           "irreversible": true,
           "effects": [
             {
@@ -3403,7 +3403,7 @@
         },
         {
           "id": "V01-C01-N023-B",
-          "label": "让尸体带箭继续向东",
+          "label": "让尸体带箭继续向东（不可逆）",
           "irreversible": true,
           "enabledWhen": [
             {
@@ -3437,7 +3437,7 @@
         },
         {
           "id": "V01-C01-N023-C",
-          "label": "折断箭杆，把箭镞留给人间",
+          "label": "折断箭杆，把箭镞留给人间（不可逆）",
           "irreversible": true,
           "enabledWhen": [
             {
@@ -3474,7 +3474,7 @@
         },
         {
           "id": "V01-C01-N023-D",
-          "label": "允许季狸接管尸体，兑现撤村交易",
+          "label": "允许季狸接管尸体，兑现撤村交易（不可逆）",
           "irreversible": true,
           "visibleWhen": [
             {
@@ -3505,7 +3505,7 @@
         },
         {
           "id": "V01-C01-N023-E",
-          "label": "封井永守：把井、盐与真相都留在杳湾自己手里",
+          "label": "封井永守：把井、盐与真相都留在杳湾自己手里（不可逆）",
           "irreversible": true,
           "visibleWhen": [
             {
@@ -3546,7 +3546,7 @@
         },
         {
           "id": "V01-C01-N023-F",
-          "label": "谁也不交：让三影者自己决定箭与去留",
+          "label": "谁也不交：让三影者自己决定箭与去留（不可逆）",
           "irreversible": true,
           "visibleWhen": [
             {

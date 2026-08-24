@@ -21,7 +21,8 @@
     "writingResearch": "../资料/文本结构研究与应用.md",
     "tenHourBlueprint": "../资料/10小时章节扩展蓝图.md",
     "expansionExecutionPlan": "../资料/第一卷_黑雨_扩写执行计划_v1.3.md",
-    "integrationGuide": "../资料/接入说明.md"
+    "integrationGuide": "../资料/接入说明.md",
+    "latestScript": "../剧本_V6/第一卷_黑雨_剧本_引擎版.json"
   },
   "counts": {
     "storyNodes": 374,

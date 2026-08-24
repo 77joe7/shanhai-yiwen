@@ -4,6 +4,19 @@ import type { GameState, StoryHistoryEntry } from "./types";
 type Predicate = { type: string; [key: string]: unknown };
 type Effect = { type: string; [key: string]: unknown };
 
+// 选项分级（§2.3②）：按节点 branchClass 校验选项数上限，缺省视为 sediment（≤3）。
+export type BranchClass = "sediment" | "reflow" | "fork";
+export const branchClassLimit: Record<BranchClass, number> = { sediment: 3, reflow: 4, fork: 6 };
+export function branchClassOf(node: { branchClass?: string }): BranchClass {
+  const cls = node.branchClass;
+  return cls === "reflow" || cls === "fork" ? cls : "sediment";
+}
+export function validateBranchClass(node: { branchClass?: string; choices?: unknown[] }): string | null {
+  const cls = branchClassOf(node);
+  const count = node.choices?.length ?? 0;
+  return count > branchClassLimit[cls] ? `选项数 ${count} 超过 ${cls} 级上限 ${branchClassLimit[cls]}` : null;
+}
+
 const statKeyByContentStat: Record<string, keyof GameState["stats"]> = {
   body: "体魄",
   agility: "身法",
