@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createInitialState, flaws, hydrateBlackRainState, natures, origins } from "./gameData";
 import { blackRainContent, entityNames, genericItems, itemById } from "./blackRainContent";
 import { choiceIntent, chooseStory, currentStoryNode, displayCharacterName, enterCurrentNode, interpolate, visibleBlocks, visibleChoices } from "./storyRuntime";
-import { deleteCharacter, exportSave, getActiveId, importSave, listCharacters, loadCharacter, loadCharacterSlot, loadGame, readSettings, saveCharacter, saveCharacterSlot, setActiveId, writeSettings } from "./storage";
+import { choiceTrace, settledEchoes } from "./storyEchoes";
+import { buildTokenStyle, FONT_TOKENS } from "../design-system/tokens";
+import { clearCache, exportSave, getActiveId, importSave, listCharacters, loadCharacter, loadCharacterSlot, loadGame, readSettings, saveCharacter, saveCharacterSlot, setActiveId, writeSettings } from "./storage";
 import { browserPlatform } from "./platform";
 import type { CharacterDraft, CharacterSummary, GameState, OverlayId, PanelId, Settings } from "./types";
 
-const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, textReveal: true, simplifiedTexture: false, ambientVolume: 35, autoSave: true, haptics: true };
+const defaultSettings: Settings = { fontScale: 1, lineHeight: 1.85, highContrast: false, reducedMotion: false, textReveal: true, textSpeed: 1, simplifiedTexture: false, ambientVolume: 35, autoSave: true, haptics: true };
 const defaultPlayerDraft: CharacterDraft = { name: "无名之人", origin: "hunter", nature: "cautious", flaw: "water" };
+const sealFont = FONT_TOKENS.find((token) => token.id === "font-seal")?.value ?? "serif";
 
 type DetailCard = {
   eyebrow: string;
@@ -22,12 +25,11 @@ type DetailCard = {
 };
 
 const navItems: { id: PanelId; label: string; icon: string }[] = [
-  { id: "story", label: "卷册", icon: "册" },
-  { id: "map", label: "舆图", icon: "图" },
-  { id: "codex", label: "山海志", icon: "志" },
+  { id: "codex", label: "志异", icon: "志" },
+  { id: "fate", label: "命录", icon: "命" },
+  { id: "story", label: "行游", icon: "游" },
   { id: "inventory", label: "行囊", icon: "囊" },
-  { id: "people", label: "人物", icon: "人" },
-  { id: "more", label: "更多", icon: "··" },
+  { id: "map", label: "舆图", icon: "图" },
 ];
 
 function originName(id: string) { return origins.find((x) => x.id === id)?.name ?? id; }
@@ -39,13 +41,17 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** 高亮类型 → 样式类名 与 目标功能页。 */
+const hlClass: Record<string, string> = { person: "hl-person", item: "hl-item", place: "hl-place", clue: "hl-clue", anomaly: "hl-anomaly" };
+const hlPanel: Record<string, PanelId> = { person: "fate", place: "codex", anomaly: "codex", item: "inventory", clue: "inventory" };
+
 /**
- * 将剧情文本中的人物 / 道具·材料 / 地点包成带颜色类名的 span 节点。
+ * 将剧情文本中的人物 / 道具·材料 / 地点 / 线索 / 异象包成带颜色类名、可点击跳转的 span 节点。
  * 名称按长度降序排列以避免短名在长名内被误匹配；无命中或空文本时原样返回。
  */
-function highlightText(text: string): React.ReactNode {
+function highlightText(text: string, onNavigate?: (panel: PanelId) => void): React.ReactNode {
   if (!text) return text;
-  const uniqueNames = [...new Set([...entityNames.person, ...entityNames.item, ...entityNames.place])]
+  const uniqueNames = [...new Set([...entityNames.person, ...entityNames.item, ...entityNames.place, ...entityNames.clue, ...entityNames.anomaly])]
     .filter((name) => name.length > 0)
     .sort((a, b) => b.length - a.length);
   if (uniqueNames.length === 0) return text;
@@ -56,10 +62,10 @@ function highlightText(text: string): React.ReactNode {
 
   return parts.map((part, index) => {
     if (index % 2 === 0) return part;
-    if (entityNames.person.has(part)) return <span key={index} className="hl-person">{part}</span>;
-    if (entityNames.item.has(part)) return <span key={index} className="hl-item">{part}</span>;
-    if (entityNames.place.has(part)) return <span key={index} className="hl-place">{part}</span>;
-    return part;
+    const type = entityNames.person.has(part) ? "person" : entityNames.item.has(part) ? "item" : entityNames.place.has(part) ? "place" : entityNames.clue.has(part) ? "clue" : entityNames.anomaly.has(part) ? "anomaly" : null;
+    if (!type) return part;
+    const target = onNavigate ? hlPanel[type] : undefined;
+    return <span key={index} className={hlClass[type]} onClick={target ? () => onNavigate?.(target) : undefined}>{part}</span>;
   });
 }
 
@@ -87,12 +93,10 @@ export function GameShell() {
   const [settings, setSettings] = useState(defaultSettings);
   const [command, setCommand] = useState("");
   const [notice, setNotice] = useState("第一卷《黑雨》内容包已载入");
-  const [landingSeen, setLandingSeen] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    return window.localStorage.getItem("shanhai.landingSeen") === "true";
-  });
   const importRef = useRef<HTMLInputElement>(null);
   const panelScrollPositions = useRef<Partial<Record<PanelId, number>>>({});
+  const undoStack = useRef<GameState[]>([]);
+  const [undoCount, setUndoCount] = useState(0);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -153,6 +157,9 @@ export function GameShell() {
 
   function advanceStory(choiceId: string) {
     if (!state) return;
+    undoStack.current.push(state);
+    if (undoStack.current.length > 2) undoStack.current.shift();
+    setUndoCount(undoStack.current.length);
     const result = chooseStory(hydrateBlackRainState(state), choiceId);
     const node = currentStoryNode(result.state);
     const nextNotice = result.notes.length ? result.notes.join(" · ") : `抵达：${node.title}`;
@@ -162,6 +169,16 @@ export function GameShell() {
     refreshCharacters();
     if (settings.haptics) void browserPlatform.feedback.vibrate("light");
     setNotice(nextNotice);
+  }
+
+  function undoStory() {
+    if (!state || undoStack.current.length === 0) return;
+    const prev = undoStack.current.pop()!;
+    setUndoCount(undoStack.current.length);
+    setState(prev);
+    if (settings.autoSave && activeId) saveCharacter(activeId, prev);
+    refreshCharacters();
+    setNotice("已撤回上一步，回到上一选择点");
   }
 
   function createNewCharacter(draft: CharacterDraft) {
@@ -191,18 +208,6 @@ export function GameShell() {
     } else {
       setNotice("该角色存档不存在或已损坏。");
     }
-  }
-
-  function removeCharacter(id: string) {
-    if (!window.confirm("确认删除该角色及其本地进度？此操作不可撤销。")) return;
-    deleteCharacter(id);
-    refreshCharacters();
-    if (activeId === id) {
-      setActiveId(null);
-      setActiveIdState(null);
-      setState(null);
-    }
-    setNotice("角色已删除");
   }
 
   function backToHome() {
@@ -252,16 +257,14 @@ export function GameShell() {
   }
 
   return (
-    <main className="game-shell mythic-shell">
+    <main className="game-shell mythic-shell" data-panel={panel} style={{ ...buildTokenStyle({ highContrast: settings.highContrast }), "--shj-f-seal": sealFont } as CSSProperties}>
       <header className="topbar">
         <button className="menu-trigger" aria-label="打开角色档案" onClick={() => setOverlay("character")} disabled={!state}>☷</button>
         <button className="brand" aria-label="返回卷册" onClick={() => state && selectPanel("story")}>
           <span className="brand-seal">异</span><span><strong>山海异闻录</strong><small>天地未定</small></span>
         </button>
-        <div className="chapter-marker"><span>卷一</span><strong>黑雨初落</strong><em>内容 v{blackRainContent.manifest.contentVersion}</em></div>
+        <div className="chapter-marker"><span>卷一</span><strong>黑雨初落</strong><em>内容版本 {blackRainContent.manifest.contentVersion}</em></div>
         <div className="top-actions">
-          <button onClick={() => setOverlay("help")} aria-label="帮助">?</button>
-          <button onClick={() => setOverlay("saves")} aria-label="存档" disabled={!state}>存</button>
           <button onClick={() => setOverlay("settings")} aria-label="设置">设</button>
         </div>
       </header>
@@ -284,34 +287,33 @@ export function GameShell() {
           <section className="desktop-grid">
             <CharacterRail state={state} onCreate={() => setOverlay("create")} onOpenDetails={() => setOverlay("character")} />
             <section className="reader" aria-live="polite">
-              <div className="reader-heading">
+              {panel === "story" && <div className="reader-heading">
                 <span className="eyebrow">第一卷《黑雨》 · {state.currentNodeId}</span>
-                <h1>{!state.created ? "立身入世" : panel === "story" ? currentStoryNode(state).title : navItems.find((x) => x.id === panel)?.label}{state.created && <StatusBadge state={state} />}</h1>
+                <h1>{!state.created ? "立身入世" : currentStoryNode(state).title}{state.created && <StatusBadge state={state} />}</h1>
                 <div className="brush-rule"><i /></div>
                 {state.created && <button type="button" className="reader-exit" onClick={exitToMain} aria-label="退出到主页">退出</button>}
-              </div>
-              {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel key={activeId} panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} typewriter={settings.textReveal} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />}
+              </div>}
+              {!state.created ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} /> : <Panel key={activeId} panel={panel} state={state} mutate={mutate} advanceStory={advanceStory} onUndo={undoStory} canUndo={undoCount > 0} typewriter={settings.textReveal} textSpeed={settings.textSpeed} reducedMotion={settings.reducedMotion} selectPanel={selectPanel} openOverlay={setOverlay} openDetail={setDetail} />}
             </section>
             <SideRail panel={panel} setPanel={selectPanel} state={state} />
           </section>
 
-          {state.created && <StorySafeArea state={state} notice={notice} />}
+          {state.created && panel === "story" && <StorySafeArea state={state} notice={notice} />}
 
           <nav className="mobile-nav" aria-label="主要功能">
-            {navItems.filter((item) => item.id !== "people").map((item) => <button key={item.id} className={panel === item.id ? "active" : ""} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
+            {navItems.map((item) => <button key={item.id} className={`${panel === item.id ? "active" : ""}${item.id === "story" ? " is-main" : ""}`} onClick={() => selectPanel(item.id)}><b>{item.icon}</b><span>{item.label}</span></button>)}
           </nav>
         </>
-      ) : !state && !landingSeen ? (
-        <StartPage onEnter={() => { setLandingSeen(true); try { window.localStorage.setItem("shanhai.landingSeen", "true"); } catch {} }} />
       ) : (
-        <section className="home-screen">
-          {characters.length === 0
-            ? <StartPanel openCreate={() => setOverlay("create")} openSettings={() => setOverlay("settings")} openSaves={() => setOverlay("saves")} />
-            : <CharacterSelect characters={characters} activeId={activeId} onEnter={enterCharacter} onRemove={removeCharacter} onCreate={() => setOverlay("create")} />}
-        </section>
+        <HomePage
+          characters={characters}
+          activeId={activeId}
+          onEnter={enterCharacter}
+          onCreate={() => setOverlay("create")}
+        />
       )}
 
-      {overlay && <Modal type={overlay} close={() => setOverlay(null)} state={state} activeId={activeId} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} exitToMain={exitToMain} createNewCharacter={createNewCharacter} />}
+      {overlay && <Modal type={overlay} close={() => setOverlay(null)} switchOverlay={setOverlay} state={state} activeId={activeId} setState={setState} settings={settings} setSettings={setSettings} downloadSave={downloadSave} importRef={importRef} setNotice={setNotice} exitToMain={exitToMain} createNewCharacter={createNewCharacter} />}
       {detail && <DetailCardModal card={detail} close={() => setDetail(null)} />}
       <input ref={importRef} hidden type="file" accept="application/json,.json" onChange={(e) => receiveImport(e.target.files?.[0])} />
     </main>
@@ -357,26 +359,33 @@ function SideRail({ panel, setPanel, state }: { panel: PanelId; setPanel: (p: Pa
   </aside>;
 }
 
-function Panel({ panel, state, mutate, advanceStory, typewriter, reducedMotion, selectPanel, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
-  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} typewriter={typewriter} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} />;
+function Panel({ panel, state, mutate, advanceStory, onUndo, canUndo, typewriter, textSpeed, reducedMotion, selectPanel, openOverlay, openDetail }: { panel: PanelId; state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; advanceStory: (choiceId: string) => void; onUndo: () => void; canUndo: boolean; typewriter: boolean; textSpeed: number; reducedMotion: boolean; selectPanel: (panel: PanelId) => void; openOverlay: (o: OverlayId) => void; openDetail: (card: DetailCard) => void }) {
+  if (panel === "story") return <StoryPanel state={state} advanceStory={advanceStory} onUndo={onUndo} canUndo={canUndo} onNavigate={selectPanel} typewriter={typewriter} textSpeed={textSpeed} reducedMotion={reducedMotion} openCreate={() => openOverlay("create")} openCharacter={() => openOverlay("character")} />;
   if (panel === "map") return <MapPanel state={state} />;
   if (panel === "codex") return <CodexPanel state={state} openDetail={openDetail} />;
   if (panel === "inventory") return <InventoryPanel state={state} openDetail={openDetail} />;
-  if (panel === "people") return <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} />;
-  return <MorePanel state={state} openOverlay={openOverlay} openPeople={() => selectPanel("people")} />;
+  return <FatePanel state={state} mutate={mutate} openDetail={openDetail} />;
 }
 
-function StartPage({ onEnter }: { onEnter: () => void }) {
-  return <section className="start-page" aria-label="山海异闻录开始页面">
-    <div className="start-page-inner">
-      <div className="start-page-mark"><i /></div>
-      <h1 className="start-page-title">山海異聞錄</h1>
-      <p className="start-page-subtitle">天地未定 · THE UNWRITTEN SHANHAI</p>
-      <p className="start-page-tagline">赤水有尸，天上少了一轮太阳。<br/>杳湾的雨落下以前，每个人都还忙着占满一生的小事。</p>
-      <button type="button" className="start-page-enter" onClick={onEnter}>入 山 海</button>
-      <p className="start-page-foot">第一卷《黑雨》内容包已载入 · v3.0.0</p>
-    </div>
-  </section>;
+function HomePage({ characters, activeId, onEnter, onCreate }: { characters: CharacterSummary[]; activeId: string | null; onEnter: (id: string) => void; onCreate: () => void }) {
+  const resumable = characters.find((character) => character.id === activeId) ?? characters[0];
+  const primaryLabel = resumable ? `续写：${resumable.name}` : "新建行者";
+
+  return <>
+    <section className="start-page" aria-label="山海异闻录游戏主页">
+      <div className="start-page-inner">
+        <div className="start-page-mark"><i /></div>
+        <h1 className="start-page-title">山海異聞錄</h1>
+        <p className="start-page-subtitle">天地未定 · THE UNWRITTEN SHANHAI</p>
+        <p className="start-page-tagline">赤水有尸，天上少了一轮太阳。<br />杳湾的雨落下以前，每个人都还忙着占满一生的小事。</p>
+        <div className="start-page-actions" aria-label="进入游戏">
+          <button type="button" className="start-page-enter" onClick={() => resumable ? onEnter(resumable.id) : onCreate()}>{primaryLabel}</button>
+          {resumable && <button type="button" className="start-page-secondary" onClick={onCreate}>新建行者</button>}
+        </div>
+        <p className="start-page-foot">第一卷《黑雨》内容包已载入 · 版本 {blackRainContent.manifest.contentVersion}</p>
+      </div>
+    </section>
+  </>;
 }
 
 function StatusBadge({ state }: { state: GameState }) {
@@ -390,7 +399,7 @@ function StatusBadge({ state }: { state: GameState }) {
 function StartPanel({ openCreate, openSettings, openSaves }: { openCreate: () => void; openSettings: () => void; openSaves: () => void }) {
   return <section className="start-panel" aria-label="开始进入界面">
     <div className="start-hero">
-      <span className="eyebrow">NEW GAME · 黑雨将落</span>
+      <span className="eyebrow">新局 · 黑雨将落</span>
       <h2>先立下一个普通人的名字</h2>
       <p>你不是预设的天命之子——先定出身、天性与缺陷，再入这未定的天地。</p>
       <div className="start-actions">
@@ -403,56 +412,38 @@ function StartPanel({ openCreate, openSettings, openSaves }: { openCreate: () =>
   </section>;
 }
 
-function CharacterSelect({ characters, activeId, onEnter, onRemove, onCreate }: { characters: CharacterSummary[]; activeId: string | null; onEnter: (id: string) => void; onRemove: (id: string) => void; onCreate: () => void }) {
-  return <section className="character-select" aria-label="角色选择">
-    <div className="select-hero">
-      <span className="eyebrow">CONTINUE · 已立身者</span>
-      <h2>选择一位行者，继续这未定的天地</h2>
-      <p>每位角色的出身、选择与代价各自独立保存。{activeId && "上次离开时，你尚在天地之间。"}</p>
-    </div>
-    <div className="character-cards">
-      {characters.map((character) => (
-        <article className={`character-card ${activeId === character.id ? "is-active" : ""}`} key={character.id}>
-          <div className="card-avatar"><span>{character.name.slice(0, 1)}</span></div>
-          <div className="card-body">
-            <h3>{character.name}</h3>
-            <p className="card-origin">{originName(character.origin)} · {natureName(character.nature)} · {flawName(character.flaw)}</p>
-            <p className="card-location">{character.location} · 第{character.day}日 · {character.period}</p>
-            {character.stats && <div className="card-stats">{Object.entries(character.stats).map(([key, value]) => <span className="card-stat" key={key}><b>{key}</b><i><em style={{ width: `${Math.min(100, (value / 10) * 100)}%` }} /></i><strong>{value}</strong></span>)}</div>}
-            <p className="card-time">最近保存：{new Date(character.updatedAt).toLocaleString("zh-CN")}</p>
-          </div>
-          <div className="card-actions">
-            <button className="ink-button" onClick={() => onEnter(character.id)}>进入</button>
-            <button className="card-remove" onClick={() => onRemove(character.id)}>删除</button>
-          </div>
-        </article>
-      ))}
-    </div>
-    <button className="ink-button create-new" onClick={onCreate}>+ 创建新角色</button>
-  </section>;
+/** 拆分系统提示的标题与正文：以首个中文/半角冒号分隔，缺省标题「异兆记录」。 */
+function systemTitle(text: string): { title: string; body: string } {
+  const m = text.match(/^([^：:]{1,12})[：:]\s*/);
+  if (m) return { title: m[1], body: text.slice(m[0].length) };
+  return { title: "异兆记录", body: text };
 }
 
-function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate }: { state: GameState; advanceStory: (choiceId: string) => void; typewriter: boolean; reducedMotion: boolean; openCreate: () => void }) {
+function StoryPanel({ state, advanceStory, onUndo, canUndo, onNavigate, typewriter, textSpeed, reducedMotion, openCreate, openCharacter }: { state: GameState; advanceStory: (choiceId: string) => void; onUndo: () => void; canUndo: boolean; onNavigate: (panel: PanelId) => void; typewriter: boolean; textSpeed: number; reducedMotion: boolean; openCreate: () => void; openCharacter: () => void }) {
   const node = currentStoryNode(state);
   const blocks = visibleBlocks(state);
   const choices = visibleChoices(state).map((choice) => state.created ? choice : { ...choice, enabled: false, disabledHint: "请先建立角色，再以出身进入故事。" });
   const latestNodeRef = useRef<HTMLDivElement>(null);
   const transcriptEndRef = useRef<HTMLDivElement>(null);
-  const previousNodeId = useRef(node.id);
+  const previousNodeId = useRef<string>("");
   const fallbackHistory = blocks.map((block, index) => ({ id: `${node.id}:fallback:${index}`, nodeId: node.id, kind: block.type === "dialogue" ? "npc-dialogue" as const : block.type === "system" ? "system" as const : "narration" as const, text: interpolate(state, block.text), speaker: block.speaker }));
   const savedHistory = state.storyHistory ?? [];
   const history = savedHistory.some((entry) => entry.nodeId === node.id) ? savedHistory : [...savedHistory, ...fallbackHistory];
   const latestStart = history.findIndex((entry) => entry.nodeId === node.id);
   const currentEntries = history.slice(latestStart);
-  const [reveal, setReveal] = useState(() => ({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 }));
+  const [reveal, setReveal] = useState(() => ({ nodeId: node.id, entryIndex: 0, characters: 0 }));
   const [awayFromLatest, setAwayFromLatest] = useState(false);
+  const skipNextScroll = useRef(false);
   const revealNodeMatches = reveal.nodeId === node.id;
   const revealIndex = revealNodeMatches ? reveal.entryIndex : 0;
   const revealCharacters = revealNodeMatches ? reveal.characters : 0;
   const shouldType = typewriter && !reducedMotion;
   const displayIndex = shouldType ? revealIndex : currentEntries.length;
   const displayCharacters = shouldType ? revealCharacters : 0;
-  const isTyping = shouldType && revealIndex < currentEntries.length;
+  const currentEntry = currentEntries[revealIndex];
+  const isRevealing = shouldType && revealIndex < currentEntries.length;
+  const isTypingCurrentEntry = isRevealing && currentEntry ? revealCharacters < currentEntry.text.length : false;
+  const isWaitingForClick = isRevealing && currentEntry ? revealCharacters >= currentEntry.text.length : false;
 
   function scrollToFraction(target: HTMLElement | null, fraction: number, behavior: "auto" | "smooth") {
     if (!target) return;
@@ -460,15 +451,36 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
     window.scrollTo({ top: Math.max(0, window.scrollY + rect.top - window.innerHeight * fraction), behavior });
   }
 
-  function scrollToLatest(position: "start" | "end" = "end") {
-    const target = position === "start" ? latestNodeRef.current : transcriptEndRef.current;
-    window.requestAnimationFrame(() => {
-      if (position === "start") target?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
-      else scrollToFraction(target, 2 / 3, reducedMotion ? "auto" : "smooth");
-    });
+  // 双击取消特效：一次性显示完所有剩余内容，并保持当前阅读位置（跳过随后触发的自动滚动）。
+  function revealAll() {
+    if (!isRevealing) return;
+    skipNextScroll.current = true;
+    setReveal({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 });
   }
 
-  function revealAll() { setReveal({ nodeId: node.id, entryIndex: currentEntries.length, characters: 0 }); }
+  function advanceStoryText(event?: React.MouseEvent | React.KeyboardEvent) {
+    if (!shouldType) return;
+    if (event && "key" in event) {
+      if (event.key !== " " && event.key !== "Enter") return;
+      event.preventDefault();
+    }
+    const entry = currentEntries[revealIndex];
+    if (!entry) return;
+    if (revealCharacters < entry.text.length) {
+      setReveal((current) => ({ ...current, characters: entry.text.length }));
+    } else if (revealIndex < currentEntries.length - 1) {
+      setReveal((current) => ({ ...current, entryIndex: current.entryIndex + 1, characters: 0 }));
+    } else {
+      setReveal((current) => ({ ...current, entryIndex: currentEntries.length, characters: 0 }));
+    }
+  }
+
+  function handleTranscriptClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (event.detail > 1) return; // 双击的第二下点击由 onDoubleClick 统一处理为显示全文
+    const target = event.target as HTMLElement;
+    if (target.closest("button, a, .hl-person, .hl-item, .hl-place, .hl-clue, .hl-anomaly")) return;
+    advanceStoryText(event);
+  }
 
   useEffect(() => {
     if (previousNodeId.current === node.id) return;
@@ -486,46 +498,165 @@ function StoryPanel({ state, advanceStory, typewriter, reducedMotion, openCreate
   }, [node.id]);
 
   useEffect(() => {
-    if (!isTyping) return;
+    if (!isTypingCurrentEntry) return;
     const entry = currentEntries[revealIndex];
     const nextCharacter = revealCharacters + 1;
     const completed = nextCharacter > entry.text.length;
     const finalCharacter = entry.text.at(-1) ?? "";
-    const delay = completed ? 280 : /[。！？；：]/.test(entry.text[revealCharacters] ?? finalCharacter) ? 280 : 30;
+    const speed = Number.isFinite(textSpeed) ? Math.max(0.5, Math.min(3, textSpeed)) : 1;
+    const baseDelay = completed || /[。！？；：]/.test(entry.text[revealCharacters] ?? finalCharacter) ? 280 : 30;
+    const delay = Math.max(8, Math.round(baseDelay / speed));
     const timer = window.setTimeout(() => setReveal((current) => completed
-      ? { ...current, entryIndex: current.entryIndex + 1, characters: 0 }
+      ? { ...current, characters: current.characters }
       : { ...current, characters: nextCharacter }), delay);
     return () => window.clearTimeout(timer);
-  }, [currentEntries, isTyping, reducedMotion, revealCharacters, revealIndex]);
+  }, [currentEntries, isTypingCurrentEntry, revealCharacters, revealIndex, textSpeed]);
 
-  // 逐字展开 / 换节点时自动跟随：把最新内容定位到视口约 2/3 高度处，底部留白不贴边；玩家主动上翻时不打断。
+  // 逐字展开 / 换节点时自动跟随：有特效时把最新内容底部定位到视口约 2/3 高度处；取消特效（无逐字）时改为把最新内容顶部定位到上部约 1/3 处，避免需手动向上翻阅。玩家主动上翻时不打断。
   // 逐字过程用瞬时滚动（behavior:"auto"），避免每 30ms 一次 smooth 动画叠加造成滚动幅度小、顿挫。
   useEffect(() => {
     if (awayFromLatest) return;
-    window.requestAnimationFrame(() => scrollToFraction(transcriptEndRef.current, 2 / 3, "auto"));
-  }, [revealCharacters, revealIndex, node.id, awayFromLatest]);
+    if (skipNextScroll.current) { skipNextScroll.current = false; return; }
+    const target = shouldType ? transcriptEndRef.current : latestNodeRef.current;
+    const fraction = shouldType ? 2 / 3 : 1 / 3;
+    window.requestAnimationFrame(() => scrollToFraction(target, fraction, "auto"));
+  }, [revealCharacters, revealIndex, node.id, awayFromLatest, shouldType]);
+
+  const showChoices = !isRevealing;
 
   return <article className="story-panel story-runtime">
-    <header className="story-kicker"><span>{node.chapter.replace("ACT", "第")}</span><small>{node.presentation === "prologue" ? "卷首" : "剧情节点"}</small></header>
+    <header className="story-kicker"><span>{chapterLabel(node.chapter)}</span><small>{node.presentation === "prologue" ? "卷首" : "剧情节点"}</small></header>
     {!state.created && <div className="story-create"><b>以你的出身进入杳湾</b><button className="ink-button" onClick={openCreate}>建立角色</button></div>}
-    <div className="story-blocks story-transcript">{history.map((entry, index) => {
-      const currentIndex = index - latestStart;
-      const isCurrentEntry = currentIndex === displayIndex;
-      if (currentIndex > displayIndex) return null;
-      const text = isCurrentEntry ? entry.text.slice(0, displayCharacters) : entry.text;
-      return <div className="story-message-wrap" key={entry.id}>{index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}{entry.kind === "npc-dialogue" ? <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}><cite>{displayCharacterName(entry.speaker ?? "")}</cite><p>{typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</p></blockquote> : entry.kind === "system" ? <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}>异兆记录 · {typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</aside> : entry.kind === "narration" ? <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</p> : <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{typewriterText(highlightText(text), highlightText(entry.text), isCurrentEntry && isTyping)}</p></article>}</div>;
-    })}</div>
-    <div className="story-reading-controls" aria-live="polite"><span>{isTyping ? "剧情正在展开" : "本段已展开"}</span>{isTyping && <button onClick={revealAll} aria-label="显示当前剧情全文">显示全文</button>}{awayFromLatest && <button onClick={() => scrollToLatest()} aria-label="回到最新剧情与当前操作">回到最新</button>}</div>
-    {isTyping ? <div className="story-choices-pending" aria-hidden="true">……</div> : <div className="choices story-choices">{choices.map((choice, index) => { const intent = choiceIntent(choice.label); const available = choice.enabled && !isTyping; const variant = choice.sourceTag ? "special-choice" : ""; return <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} disabled={!available} onClick={() => advanceStory(choice.id)}><span>{String(index + 1).padStart(2, "0")}</span><div><b>{choice.label}</b><small>{choice.sourceTag ? `来源：${choice.sourceTag}` : available ? `待决定 · ${intent === "speech" ? "说话" : "行动"}` : isTyping ? "剧情展开中" : choice.disabledHint ?? "条件尚未满足"}</small></div><i>{available ? "→" : "—"}</i></button>; })}</div>}
+    {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- 剧情区采用点击/空格推进式文本揭示，键盘支持已由 onKeyDown 提供 */}
+    <div className="story-blocks story-transcript" onDoubleClick={revealAll} onClick={handleTranscriptClick} onKeyDown={advanceStoryText} role="region" aria-label="剧情文本，点击或按空格继续" tabIndex={0}>
+      {history.map((entry, index) => {
+        const currentIndex = index - latestStart;
+        const isCurrentEntry = currentIndex === displayIndex;
+        if (currentIndex > displayIndex) return null;
+        const text = isCurrentEntry ? entry.text.slice(0, displayCharacters) : entry.text;
+        return <div className="story-message-wrap" key={entry.id}>
+          {index === latestStart && <div className="story-node-marker" ref={latestNodeRef}><span>最新剧情</span></div>}
+          {entry.kind === "npc-dialogue" ? (
+            <div className="story-message-row npc-row">
+              <div className="story-avatar" aria-hidden="true">{displayCharacterName(entry.speaker ?? "").slice(0, 1)}</div>
+              <blockquote className={`story-message npc-dialogue ${isCurrentEntry ? "is-typing" : ""}`}>
+                <cite>{displayCharacterName(entry.speaker ?? "")}</cite>
+                <p>{typewriterText(highlightText(text, onNavigate), highlightText(entry.text, onNavigate), isCurrentEntry && isTypingCurrentEntry)}</p>
+              </blockquote>
+            </div>
+          ) : entry.kind === "system" ? (
+            (() => { const st = systemTitle(entry.text); const bodyVisible = isCurrentEntry ? st.body.slice(0, Math.max(0, displayCharacters - (entry.text.length - st.body.length))) : st.body; return <aside className={`story-message story-system ${isCurrentEntry ? "is-typing" : ""}`}><b className="story-system-title"><i className="system-icon" aria-hidden="true">兆</i>{st.title}</b><p className="story-system-body">{typewriterText(highlightText(bodyVisible, onNavigate), highlightText(st.body, onNavigate), isCurrentEntry && isTypingCurrentEntry)}</p></aside>; })()
+          ) : entry.kind === "narration" ? (
+            <p className={`story-message narration ${isCurrentEntry ? "is-typing" : ""}`}>{typewriterText(highlightText(text, onNavigate), highlightText(entry.text, onNavigate), isCurrentEntry && isTypingCurrentEntry)}</p>
+          ) : (
+            <article className={`story-message player-message ${entry.kind} ${isCurrentEntry ? "is-typing" : ""}`}><small>你 · {entry.kind === "player-speech" ? "说话" : "行动"}</small><p>{typewriterText(highlightText(text, onNavigate), highlightText(entry.text, onNavigate), isCurrentEntry && isTypingCurrentEntry)}</p></article>
+          )}
+        </div>;
+      })}
+      {isWaitingForClick && <div className="story-continue-hint" aria-hidden="true"><span className="continue-dot" /><span>点击屏幕继续</span></div>}
+    </div>
+    {canUndo && showChoices && <div className="story-undo"><button onClick={onUndo} aria-label="撤回上一步选择">↩ 撤回上一步</button></div>}
+    {showChoices ? (
+      <>
+        {choices.length > 0 && <div className="story-choice-banner" aria-hidden="true"><span>你的选择将改变命运的走向</span></div>}
+        <div className="choices story-choices">
+          {choices.map((choice, index) => {
+            const intent = choiceIntent(choice.label);
+            const available = choice.enabled && !isRevealing;
+            const variant = choice.sourceTag ? "special-choice" : "";
+            const typeLabel = choice.sourceTag ? `来源：${choice.sourceTag}` : intent === "speech" ? "说话" : "行动";
+            const traces = choiceTrace((choice as { effects?: { type?: string; key?: unknown }[] }).effects);
+            return (
+              <button key={choice.id} className={`${intent}-choice ${variant} ${!available ? "locked" : ""}`} style={{ "--i": index } as CSSProperties} disabled={!available} onClick={() => advanceStory(choice.id)}>
+                <span className="choice-index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="choice-body">
+                  <em className="choice-type">{available ? typeLabel : choice.disabledHint ?? "条件尚未满足"}</em>
+                  <b className="choice-label">{choice.label}</b>
+                  {available && traces.length > 0 && <small className="choice-trace">将留下：{traces.join(" · ")}</small>}
+                </span>
+                <i>{available ? "→" : "—"}</i>
+              </button>
+            );
+          })}
+        </div>
+      </>
+    ) : (
+      <div className="story-choices-pending" aria-hidden="true">……</div>
+    )}
+    {state.created && <div className="story-transcript-controls"><button type="button" onClick={openCharacter} aria-label="查看人物">查看人物</button><button type="button" onClick={() => latestNodeRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" })} aria-label="回到最新剧情">回到最新</button></div>}
+    <div className="story-buffer" aria-hidden="true" />
     <div ref={transcriptEndRef} />
   </article>;
 }
 
+// 剧情节点 presentation → 中文场景标签，用作信息栏「所在」的子地点补充（大地点·场景）。
+const chapterLabels: Record<string, string> = {
+  ACT1_RAIN_ARRIVES: "第一幕 · 雨至",
+  ACT2_THREE_SHADOWS: "第二幕 · 三影",
+  ACT3_RIVER_REVERSED: "第三幕 · 倒河",
+  ACT4_NIGHT_WITHOUT_SUN: "第四幕 · 无日之夜",
+  ACT5_TEN_SUN_OMEN: "第五幕 · 赤日之兆",
+};
+function chapterLabel(chapter: string): string {
+  return chapterLabels[chapter] ?? chapter.replace("ACT", "第").replace(/_/g, " ");
+}
+
+const sceneLabels: Record<string, string> = {
+  prologue: "卷首",
+  dungeon: "副本", dungeon_entry: "副本入口", dungeon_hub: "副本腹地", dungeon_room: "副本深处", dungeon_climax: "副本至暗处", dungeon_resolution: "副本出口",
+  micro_dungeon_entry: "秘境入口",
+  grove_descent: "桑林", grove_resolution: "桑林",
+  riverbed_survey: "退水河床",
+  saltmarsh_route: "盐沼路",
+  night_talk: "雨棚", night_hub: "雨棚", night_resolution: "雨棚",
+  seven_days: "黑雨七日", seven_days_hub: "黑雨七日",
+  return_table: "归还桌", return_table_hub: "归还桌", return_receipt: "回执处", return_receipts_hub: "回执处",
+  letter_scene: "信栈", letter_hub: "信栈",
+  council: "议事", children_council: "议事", final_council: "议事", civic_compact: "公约",
+  ending: "终局", ending_aftermath: "终局之后", ending_echo: "终局余响", ending_negotiation: "终局", ending_resolution: "终局", ending_revisit: "终局回访", ending_aftermath_hub: "终局之后",
+  epilogue_scene: "尾声",
+  character_hub: "故人", character_scene: "故人", character_entrance: "故人", character_investigation: "查证", character_resolution: "故人",
+  archive_hub: "卷宗", archive_scene: "卷宗",
+  material_hub: "材料", material_scene: "材料", material_experiment: "材料试炼", material_test: "材料试炼", material_resolution: "材料",
+  memory_hub: "记忆", memory_scene: "记忆",
+  exploration: "野外", tracking: "追踪",
+  investigation: "查证", investigation_dialogue: "查证",
+  rescue: "救援", rescue_scene: "救援", rescue_consequence: "救援",
+  hazard: "险地", micro_crisis: "险情", micro_crisis_hub: "险情", micro_encounter: "遭遇",
+  faction_hub: "势力", faction_scene: "势力", faction_investigation: "势力查证", faction_resolution: "势力",
+  community_hearing: "公听", community_repair: "修葺", community_repair_hub: "修葺", community_mission: "公事", community_choice: "公议",
+  public_hearing: "公听", public_warning: "示警",
+  confession: "告解",
+  testimony_scene: "证词",
+  evidence_scene: "取证", evidence_craft: "取证",
+  craft_scene: "手艺",
+  preparation: "准备", preparation_entry: "准备", preparation_resolution: "准备", preparedness: "准备", preparedness_hub: "准备",
+  ordinary_affair: "俗事", ordinary_affairs_hub: "俗事", ordinary_affairs_resolution: "俗事",
+  origin_hub: "出身", origin_scene: "出身",
+  relationship_revisit: "旧识", relationship_revisit_hub: "旧识",
+  revisit_hub: "回访", revisit_resolution: "回访",
+  first_lesson: "初课", first_lesson_hub: "初课", first_lesson_resolution: "初课",
+  rule_reveal: "规则",
+  resource_scene: "筹谋", resource_conflict: "争夺",
+  lore_scene: "掌故", lore_dialogue: "掌故",
+  monster_dialogue: "异兽", monster_resolution: "异兽",
+  mystery_dialogue: "疑团",
+  revelation: "揭示", vision: "幻视", ritual: "仪式", puzzle: "谜题", climax: "高潮",
+  cross_region: "远行", cross_region_hub: "远行", cross_region_resolution: "远行",
+  dialogue_scene: "交谈", ethical_choice: "抉择",
+  combat_resolution: "战斗", encounter_resolution: "遭遇",
+  act_break: "幕间", aftermath_hub: "灾后",
+  codex_hub: "山海志", codex_resolution: "山海志",
+  echo_summary: "回响",
+  volume_transition: "卷间", volume_transition_hub: "卷间",
+};
+
 function StorySafeArea({ state, notice }: { state: GameState; notice: string }) {
+  const sublocation = sceneLabels[currentStoryNode(state).presentation] ?? "";
   return <footer className="story-safe-area" aria-label="当前情境与提醒">
     <span className="safe-header">情境 · 安全区</span>
     <span className="safe-label">所在</span>
-    <span className="safe-location">{state.location}</span>
+    <span className="safe-location">{state.location}{sublocation ? `·${sublocation}` : ""}</span>
     <span className="safe-divider">·</span>
     <span className="safe-label">时日</span>
     <span className="safe-time">第{state.day}日 · {state.period}</span>
@@ -537,7 +668,7 @@ function MapPanel({ state }: { state: GameState }) {
   const places = [
     { name: "杳湾", tag: "起点", x: 49, y: 48 }, { name: "北滩无名尸", tag: "线索", x: 27, y: 29 }, { name: "东桑林", tag: "异象", x: 72, y: 26 }, { name: "旧盐井", tag: "深处", x: 68, y: 69 },
   ];
-  return <div className="map-panel"><p>本章的行旅由剧情选择推进。舆图记录已经在故事中显形的地点与线索；当前所在：{state.location}。</p><div className="map-canvas">{places.map((p) => <button key={p.name} className={p.name === state.location ? "is-here" : ""} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.name !== state.location}><i /><b>{p.name}</b><small>{p.name === state.location ? "此间" : p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已抵达</span><span><i />剧情线索</span><span><i className="locked-dot" />尚待剧情开启</span></div></div>;
+  return <div className="map-panel function-page function-page--map"><div className="archive-toolbar map-toolbar"><div><small>行旅舆图</small><h2>舆图</h2></div></div><p>本章的行旅由剧情选择推进。舆图记录已经在故事中显形的地点与线索；当前所在：{state.location}。</p><div className="map-canvas">{places.map((p) => <button key={p.name} className={p.name === state.location ? "is-here" : ""} style={{ left: `${p.x}%`, top: `${p.y}%` }} disabled={p.name !== state.location}><i /><b>{p.name}</b><small>{p.name === state.location ? "此间" : p.tag}</small></button>)}</div><div className="legend"><span><i className="known" />已抵达</span><span><i />剧情线索</span><span><i className="locked-dot" />尚待剧情开启</span></div></div>;
 }
 
 function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
@@ -556,7 +687,7 @@ function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card
   const [category, setCategory] = useState(categories[0]?.id ?? "event");
   const activeCategory = categories.find((group) => group.id === category) ?? categories[0];
   const entries = blackRainContent.codex.filter((entry) => activeCategory?.sources.includes(entry.category)).filter((entry) => (state.codexLayers?.[entry.id]?.length ?? 0) > 0);
-  return <section className="archive-browser codex-browser" aria-label="山海志"><div className="archive-toolbar"><div><small>见闻辨析</small><h2>山海志</h2></div><span className="inventory-count">{state.codexUnlocked.length} 条已录</span></div><div className="codex-category-tabs" role="tablist" aria-label="山海志分类">{categories.map((group) => <button role="tab" aria-selected={category === group.id} className={category === group.id ? "active" : ""} onClick={() => setCategory(group.id)} key={group.id}>{group.label}<small>{blackRainContent.codex.filter((entry) => group.sources.includes(entry.category) && (state.codexLayers?.[entry.id]?.length ?? 0) > 0).length}</small></button>)}</div><div className="archive-list codex-list-rows">{entries.length === 0 ? <p className="archive-empty">此类见闻尚未被记录。</p> : <>
+  return <section className="archive-browser codex-browser function-page function-page--codex" aria-label="山海志"><div className="archive-toolbar"><div><small>见闻辨析</small><h2>山海志</h2></div><span className="inventory-count">{state.codexUnlocked.length} 条已录</span></div><div className="codex-category-tabs" role="tablist" aria-label="山海志分类">{categories.map((group) => <button role="tab" aria-selected={category === group.id} className={category === group.id ? "active" : ""} onClick={() => setCategory(group.id)} key={group.id}>{group.label}<small>{blackRainContent.codex.filter((entry) => group.sources.includes(entry.category) && (state.codexLayers?.[entry.id]?.length ?? 0)).length}</small></button>)}</div><div className="archive-list codex-list-rows">{entries.length === 0 ? <p className="archive-empty">此类见闻尚未被记录。</p> : <>
     {entries.map((entry) => {
       const unlocked = new Set(state.codexLayers?.[entry.id] ?? []);
       const layer = entry.layers.filter((candidate) => unlocked.has(candidate.id)).at(-1) ?? entry.layers[0];
@@ -573,6 +704,7 @@ function CodexPanel({ state, openDetail }: { state: GameState; openDetail: (card
 
 function InventoryPanel({ state, openDetail }: { state: GameState; openDetail: (card: DetailCard) => void }) {
   const categoryNames: Record<string, string> = { equipment: "装备", generic: "行旅", material: "器物", tool: "器物", clue: "线索", unique: "异物" };
+  const rarityLabels: Record<string, string> = { common: "凡物", uncommon: "精良", rare: "珍异", quest: "任务", mythic: "神话" };
   const categoryGroups: Array<{ id: string; label: string; sources: string[] }> = [
     { id: "generic", label: "行旅", sources: ["generic"] },
     { id: "artifact", label: "器物", sources: ["material", "tool"] },
@@ -587,14 +719,14 @@ function InventoryPanel({ state, openDetail }: { state: GameState; openDetail: (
   const activeCategory = categories.find((group) => group.id === category) ?? categories[0];
   const entries = activeCategory?.sources.includes("generic") ? genericEntries
     : blackRainContent.items.filter((item) => Number(state.itemQuantities?.[item.id] ?? 0) > 0).filter((item) => activeCategory?.sources.includes(item.category)).map((item) => ({ ...item, quantity: Number(state.itemQuantities?.[item.id] ?? 0) }));
-  return <section className="archive-browser inventory-browser" aria-label="行囊"><div className="archive-toolbar"><div><small>行旅准备</small><h2>行囊</h2></div><span className="inventory-count">{view === "equipment" ? `${equipmentSlots.filter((slot) => slot.name).length}/${equipmentSlots.length} 在身` : `${entries.length} 类物件`}</span></div><div className="inventory-view-tabs" role="tablist" aria-label="行囊内容"><button role="tab" aria-selected={view === "equipment"} className={view === "equipment" ? "active" : ""} onClick={() => setView("equipment")}>在身装备</button><button role="tab" aria-selected={view === "items"} className={view === "items" ? "active" : ""} onClick={() => setView("items")}>随身物</button></div>{view === "equipment" ? <div className="archive-list inventory-list">{equipmentSlots.map((slot) => <ArchiveRow key={slot.label} eyebrow="在身装备位" title={slot.name ?? "未携带"} note={slot.name ? `${slot.label} · 可在剧情中响应条件` : `${slot.label} · 尚未携带`} disabled={!slot.name} onClick={() => openDetail({ eyebrow: `${slot.label} · 在身装备`, title: slot.name!, text: "此物已随身携带。它的效用由剧情中的场景、认知与选择共同决定，而不是单独堆叠数值。", source: "装备位仅记录当前在身物；替换与消耗会随剧情状态更新。", facts: [{ label: "装备位", value: slot.label }, { label: "状态", value: "已携带" }] })} />)}</div> : <><div className="category-tabs compact-tabs inventory-category-tabs" role="tablist" aria-label="随身物分类">{categories.map((group) => <button role="tab" aria-selected={category === group.id} className={category === group.id ? "active" : ""} onClick={() => setCategory(group.id)} key={group.id}>{group.label}</button>)}</div><div className="archive-list inventory-list">
-    {entries.map((item) => <ArchiveRow key={item.id} eyebrow={categoryNames[item.category] ?? item.category} title={item.name} note={`持有 ${item.quantity} 件`} onClick={() => {
+  return <section className="archive-browser inventory-browser function-page function-page--inventory" aria-label="行囊"><div className="archive-toolbar"><div><small>行旅准备</small><h2>行囊</h2></div><span className="inventory-count">{view === "equipment" ? `${equipmentSlots.filter((slot) => slot.name).length}/${equipmentSlots.length} 在身` : `${entries.length} 类物件`}</span></div><div className="inventory-view-tabs" role="tablist" aria-label="行囊内容"><button role="tab" aria-selected={view === "equipment"} className={view === "equipment" ? "active" : ""} onClick={() => setView("equipment")}>在身装备</button><button role="tab" aria-selected={view === "items"} className={view === "items" ? "active" : ""} onClick={() => setView("items")}>随身物</button></div>{view === "equipment" ? <div className="archive-list inventory-list">{equipmentSlots.map((slot) => <ArchiveRow key={slot.label} eyebrow="在身装备位" title={slot.name ?? "未携带"} note={slot.name ? `${slot.label} · 可在剧情中响应条件` : `${slot.label} · 尚未携带`} disabled={!slot.name} onClick={() => openDetail({ eyebrow: `${slot.label} · 在身装备`, title: slot.name!, text: "此物已随身携带。它的效用由剧情中的场景、认知与选择共同决定，而不是单独堆叠数值。", source: "装备位仅记录当前在身物；替换与消耗会随剧情状态更新。", facts: [{ label: "装备位", value: slot.label }, { label: "状态", value: "已携带" }] })} />)}</div> : <><div className="category-tabs compact-tabs inventory-category-tabs" role="tablist" aria-label="随身物分类">{categories.map((group) => <button role="tab" aria-selected={category === group.id} className={category === group.id ? "active" : ""} onClick={() => setCategory(group.id)} key={group.id}>{group.label}</button>)}</div><div className="archive-list inventory-list">
+    {entries.map((item) => { const rarity = (item as { rarity?: string }).rarity; const rarityLabel = rarity ? (rarityLabels[rarity] ?? rarity) : ""; return <ArchiveRow key={item.id} eyebrow={`${categoryNames[item.category] ?? item.category}${rarityLabel ? ` · ${rarityLabel}` : ""}`} title={item.name} note={`持有 ${item.quantity} 件`} onClick={() => {
       const content = itemById.get(item.id);
       const recognition = content?.recognitionStages[Math.max(0, Number(state.itemKnowledge?.[item.id] ?? 0) - 1)] ?? content?.recognitionStages[0];
       const knownStage = Math.max(0, Number(state.itemKnowledge?.[item.id] ?? 0));
       const stageNames = ["未辨", "初见", "传闻", "行证", "推论"];
       openDetail({ eyebrow: `${categoryNames[item.category] ?? item.category} · 随身物`, title: recognition?.displayName ?? item.name, text: recognition?.text ?? item.text, source: content ? `来源：${content.origin}` : "来源：角色出身", facts: [{ label: "数量", value: item.quantity }, { label: "认知", value: stageNames[knownStage] ?? "已识别" }, { label: "物性", value: content?.properties?.join(" · ") ?? "行旅物件" }], sections: content ? [{ label: "当前用途", text: recognition?.effects?.length ? "此物已显出可在特定场景中触发的用法；满足条件时，剧情会给出相应选择。" : "尚未显出明确用途；可继续观察、询问或用于相关场景。" }, { label: "叙事关联", text: content.storyHooks.length ? `可能关联：${content.storyHooks.join(" · ")}` : "尚未记录明确的后续关联。" }] : [{ label: "携带缘由", text: "这是角色出身携带的行旅物件；它不以固定数值替代剧情中的判断。" }] });
-    }} />)}{entries.length === 0 && <p className="archive-empty">此类行囊尚未获得。</p>}</div></>}</section>;
+    }} />; })}{entries.length === 0 && <p className="archive-empty">此类行囊尚未获得。</p>}</div></>}</section>;
 }
 
 function PeoplePanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
@@ -609,7 +741,7 @@ function PeoplePanel({ state, mutate, openDetail }: { state: GameState; mutate: 
 
 function ArchiveBrowser({ label, categories, categoryLabels = {}, selectedCategory, setSelectedCategory, emptyText, children }: { label: string; categories: string[]; categoryLabels?: Record<string, string>; selectedCategory: string; setSelectedCategory: (value: string) => void; emptyText: string; children: React.ReactNode }) {
   const childCount = Array.isArray(children) ? children.length : 1;
-  return <section className="archive-browser" aria-label={label}>
+  return <section className="archive-browser function-page function-page--people" aria-label={label}>
     <div className="archive-toolbar"><div><small>卷内检索</small><h2>{label}</h2></div><select aria-label={label} value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>{categories.map((category) => <option value={category} key={category}>{categoryLabels[category] ?? category}</option>)}</select></div>
     <div className="category-tabs" role="tablist" aria-label={label}>{categories.map((category) => <button role="tab" aria-selected={selectedCategory === category} className={selectedCategory === category ? "active" : ""} onClick={() => setSelectedCategory(category)} key={category}>{categoryLabels[category] ?? category}</button>)}</div>
     <div className="archive-list">{childCount ? children : <p className="archive-empty">{emptyText}</p>}</div>
@@ -620,20 +752,49 @@ function ArchiveRow({ eyebrow, title, note, onClick, disabled = false, tone, met
   return <button className="archive-row" onClick={onClick} disabled={disabled}>{tone && <i className={`row-tone row-tone-${tone}`} aria-hidden="true" />}<span>{eyebrow}</span><b>{title}</b><small>{note}</small>{meter && <span className={`row-meter ${meter.value >= 0 ? "pos" : "neg"}`} aria-label={`关系 ${meter.value}`}><i><em style={{ width: `${Math.min(100, Math.abs(meter.value) / (meter.max ?? 10) * 100)}%` }} /></i><b>{meter.value > 0 ? `+${meter.value}` : meter.value}</b></span>}<i>{disabled ? "空位" : "查看"}</i></button>;
 }
 
-function MorePanel({ state, openOverlay, openPeople }: { state: GameState; openOverlay: (o: OverlayId) => void; openPeople: () => void }) {
+function FatePanel({ state, mutate, openDetail }: { state: GameState; mutate: (l: string, f: (s: GameState) => GameState) => void; openDetail: (card: DetailCard) => void }) {
+  const [tab, setTab] = useState<"people" | "quests" | "echoes">("people");
+  return <div className="fate-panel function-page function-page--fate">
+    <div className="archive-toolbar fate-toolbar"><div><small>命运记录</small><h2>命录</h2></div></div>
+    <div className="fate-tabs" role="tablist" aria-label="命录">
+      <button role="tab" aria-selected={tab === "people"} className={tab === "people" ? "active" : ""} onClick={() => setTab("people")}>故交</button>
+      <button role="tab" aria-selected={tab === "quests"} className={tab === "quests" ? "active" : ""} onClick={() => setTab("quests")}>命轨</button>
+      <button role="tab" aria-selected={tab === "echoes"} className={tab === "echoes" ? "active" : ""} onClick={() => setTab("echoes")}>余响</button>
+    </div>
+    {tab === "people" ? <PeoplePanel state={state} mutate={mutate} openDetail={openDetail} /> : tab === "quests" ? <QuestLog state={state} /> : <EchoLedger state={state} />}
+  </div>;
+}
+
+function EchoLedger({ state }: { state: GameState }) {
+  const echoes = settledEchoes(state);
+  return <section className="echo-ledger" aria-label="已写入的余响"><header><small>杳湾记事</small><h3>已写入的余响</h3><p>只记录已经发生、且会在后续被再次读取的事。</p></header>{echoes.length === 0 ? <p className="quest-empty">眼下还没有写入可回收的世界记录。继续观察、求证或承担一项代价。</p> : <div className="echo-list">{echoes.map((echo) => <article key={echo.key}><i aria-hidden="true">◆</i><div><b>{echo.purpose}</b><small>{echo.destination === "next-volume" ? "已写入 · 将带入下一卷" : "已写入 · 将在本卷后续回响"}</small></div></article>)}</div>}</section>;
+}
+
+function QuestLog({ state }: { state: GameState }) {
+  const [questTab, setQuestTab] = useState<"active" | "completed">("active");
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const activeQuests = blackRainContent.quests.filter((quest) => state.activeQuests?.includes(quest.id));
-  return <div className="more-panel">{activeQuests.length > 0 && <section className="quest-summary"><small>进行中的事件</small>{activeQuests.map((quest) => <article key={quest.id}><b>{quest.name}</b><p>{quest.summary}</p><small>当前问题仍在杳湾延续。</small></article>)}</section>}<button onClick={openPeople}><b>人物与关系</b><span>目标、秘密、关系来源与近况</span></button><button onClick={() => openOverlay("saves")}><b>存档与迁移</b><span>自动存档、命数槽、导入与导出</span></button><button onClick={() => openOverlay("settings")}><b>阅读与无障碍</b><span>字号、行距、动效与背景纹理</span></button><button onClick={() => openOverlay("help")}><b>系统说明</b><span>剧情内容、平台边界与快捷操作</span></button><div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div></div>;
+  const completedQuests = blackRainContent.quests.filter((quest) => state.completedQuests?.includes(quest.id));
+  const shownQuests = questTab === "active" ? activeQuests : completedQuests;
+  const hasTasks = activeQuests.length > 0 || completedQuests.length > 0;
+  function toggleQuest(id: string) {
+    setCollapsed((prev) => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  }
+  return <div className="quest-log">
+    {hasTasks ? <section className="quest-summary"><div className="quest-tabs" role="tablist" aria-label="事件分类"><button className={questTab === "active" ? "active" : ""} onClick={() => setQuestTab("active")} role="tab" aria-selected={questTab === "active"}>任务{activeQuests.length > 0 ? ` · ${activeQuests.length}` : ""}</button><button className={questTab === "completed" ? "active" : ""} onClick={() => setQuestTab("completed")} role="tab" aria-selected={questTab === "completed"}>已完成事件{completedQuests.length > 0 ? ` · ${completedQuests.length}` : ""}</button></div>{shownQuests.length === 0 ? <p className="quest-empty">{questTab === "active" ? "当前没有进行中的任务。" : "尚未完成任何事件。"}</p> : shownQuests.map((quest) => <article key={quest.id} className={collapsed.has(quest.id) ? "collapsed" : ""}><button className="quest-title" onClick={() => toggleQuest(quest.id)} aria-expanded={!collapsed.has(quest.id)}><b>{quest.name}</b><i aria-hidden="true">{collapsed.has(quest.id) ? "＋" : "－"}</i></button>{!collapsed.has(quest.id) && <><p>{quest.summary}</p><small>{questTab === "active" ? "当前问题仍在杳湾延续。" : "此事已了结。"}</small></>}</article>)}</section> : <p className="quest-empty">尚没有进行中或已了结的事件。</p>}
+    <div className="event-log"><h3>最近记录</h3>{state.log.map((x, i) => <p key={`${x}-${i}`}>{x}</p>)}</div>
+  </div>;
 }
 
 function DetailCardModal({ card, close }: { card: DetailCard; close: () => void }) {
-  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{highlightText(card.text)}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}{card.sections && <div className="detail-sections">{card.sections.map((section) => <section className={section.locked ? "locked" : ""} key={section.label}><small>{section.label}</small><p>{highlightText(section.text)}</p></section>)}</div>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
+  return <div className="modal-backdrop detail-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && close()}><section className="modal detail-card function-detail" role="dialog" aria-modal="true" aria-labelledby="detail-card-title"><button className="close" onClick={close} aria-label="关闭详情">×</button><small className="detail-eyebrow">{card.eyebrow}</small><h2 id="detail-card-title">{card.title}</h2><p>{highlightText(card.text)}</p>{card.facts && <dl className="detail-facts">{card.facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>}{card.sections && <div className="detail-sections">{card.sections.map((section) => <section className={section.locked ? "locked" : ""} key={section.label}><small>{section.label}</small><p>{highlightText(section.text)}</p></section>)}</div>}<footer>{card.source}</footer>{card.action && <button className="ink-button detail-action" onClick={() => { card.action?.run(); close(); }}>{card.action.label}</button>}</section></div>;
 }
 
-function Modal({ type, close, state, activeId, setState, settings, setSettings, downloadSave, importRef, setNotice, exitToMain, createNewCharacter }: { type: Exclude<OverlayId, null>; close: () => void; state: GameState | null; activeId: string | null; setState: (s: GameState | null) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void; exitToMain: () => void; createNewCharacter: (d: CharacterDraft) => void }) {
+function Modal({ type, close, switchOverlay, state, activeId, setState, settings, setSettings, downloadSave, importRef, setNotice, exitToMain, createNewCharacter }: { type: Exclude<OverlayId, null>; close: () => void; switchOverlay: (o: OverlayId) => void; state: GameState | null; activeId: string | null; setState: (s: GameState | null) => void; settings: Settings; setSettings: (s: Settings) => void; downloadSave: () => void; importRef: React.RefObject<HTMLInputElement | null>; setNotice: (s: string) => void; exitToMain: () => void; createNewCharacter: (d: CharacterDraft) => void }) {
   return <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && close()}><section className="modal" role="dialog" aria-modal="true" aria-label="游戏弹窗"><button className="close" onClick={close}>×</button>
     {type === "character" && state && <CharacterDrawer state={state} />}
     {type === "create" && <CharacterCreator initial={state?.player ?? defaultPlayerDraft} complete={(draft) => { createNewCharacter(draft); close(); }} />}
-    {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} onExit={exitToMain} />}
+    {type === "settings" && <SettingsPanel value={settings} setValue={setSettings} onClose={close} onExit={exitToMain} onSwitch={switchOverlay} />}
     {type === "saves" && <SavePanel state={state} activeId={activeId} setState={setState} download={downloadSave} importNow={() => importRef.current?.click()} setNotice={setNotice} />}
     {type === "help" && <HelpPanel />}
   </section></div>;
@@ -652,20 +813,57 @@ function CharacterCreator({ initial, complete }: { initial: CharacterDraft; comp
   return <div className="creator"><span className="eyebrow">CHARACTER · 立身</span><h2>{titles[step]}</h2><p>差异会带来新的信息、选择与代价，而不只是数字增减。</p><div className="creator-options">{groups[step].map((x) => <button key={x.id} className={draft[keys[step]] === x.id ? "active" : ""} onClick={() => setDraft({ ...draft, [keys[step]]: x.id })}><b>{x.name}</b><span>{x.note}</span>{"bonus" in x && <small>{x.bonus}</small>}</button>)}</div>{step === 2 && <label className="name-field"><span>你的名字</span><input maxLength={8} value={draft.name === "无名之人" ? "" : draft.name} placeholder="无名之人" onChange={(e) => setDraft({ ...draft, name: e.target.value || "无名之人" })} /></label>}<div className="creator-footer"><button disabled={step === 0} onClick={() => setStep(step - 1)}>上一步</button><div>{[0, 1, 2].map((n) => <i className={n === step ? "active" : ""} key={n} />)}</div>{step < 2 ? <button className="ink-button" onClick={() => setStep(step + 1)}>下一步</button> : <button className="ink-button" onClick={() => complete(draft)}>立身入世</button>}</div></div>;
 }
 
-function SettingsPanel({ value, setValue, onExit }: { value: Settings; setValue: (s: Settings) => void; onExit: () => void }) {
-  return <div className="settings-panel game-settings"><span className="eyebrow">SETTINGS · 游戏</span><h2>游戏设置</h2><section className="settings-section"><h3>流程</h3><button className={`toggle ${value.autoSave ? "on" : ""}`} onClick={() => setValue({ ...value, autoSave: !value.autoSave })}><span>自动保存进度</span><i /></button><button className={`toggle ${value.haptics ? "on" : ""}`} onClick={() => setValue({ ...value, haptics: !value.haptics })}><span>触感反馈</span><i /></button></section><section className="settings-section"><h3>阅读</h3><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button></section><section className="settings-section"><h3>声音与表现</h3><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></section><p>当前为本地浏览器 Demo：账号、云存档、广告与支付只保留接口边界，尚不启用。</p><button className="exit-main-button" onClick={onExit}>回到主页</button></div>;
+function SettingsPanel({ value, setValue, onClose, onExit, onSwitch }: { value: Settings; setValue: (s: Settings) => void; onClose: () => void; onExit: () => void; onSwitch: (o: OverlayId) => void }) {
+  const initial = useRef(value);
+  const [confirming, setConfirming] = useState(false);
+  const [cacheStatus, setCacheStatus] = useState("");
+  const [needsReload, setNeedsReload] = useState(false);
+
+  function handleCancel() {
+    setValue(initial.current);
+    setConfirming(false);
+    onClose();
+  }
+
+  function handleClearCache() {
+    if (!confirming) {
+      setConfirming(true);
+      setCacheStatus("");
+      return;
+    }
+    const result = clearCache();
+    setConfirming(false);
+    setCacheStatus(`已清理 ${result.storageKeysRemoved} 项临时缓存，存档、进度与账号信息不受影响。`);
+    setNeedsReload(result.httpCacheCleared);
+  }
+
+  return <div className="settings-panel game-settings"><span className="eyebrow">设置 · 游戏 · 内容 v{blackRainContent.manifest.contentVersion}</span><h2>游戏设置</h2><section className="settings-section"><h3>流程</h3><button className={`toggle ${value.autoSave ? "on" : ""}`} onClick={() => setValue({ ...value, autoSave: !value.autoSave })}><span>自动保存进度</span><i /></button><button className={`toggle ${value.haptics ? "on" : ""}`} onClick={() => setValue({ ...value, haptics: !value.haptics })}><span>触感反馈</span><i /></button></section><section className="settings-section"><h3>阅读</h3><label>正文字号 <b>{Math.round(value.fontScale * 100)}%</b><input type="range" min="0.9" max="1.3" step="0.05" value={value.fontScale} onChange={(e) => setValue({ ...value, fontScale: Number(e.target.value) })} /></label><label>正文行距 <b>{value.lineHeight.toFixed(1)}</b><input type="range" min="1.5" max="2.2" step="0.1" value={value.lineHeight} onChange={(e) => setValue({ ...value, lineHeight: Number(e.target.value) })} /></label><button className={`toggle ${value.textReveal ? "on" : ""}`} onClick={() => setValue({ ...value, textReveal: !value.textReveal })}><span>文字渐显</span><i /></button><label>文字出现速度 <b>{value.textSpeed.toFixed(2)}x</b><input type="range" min="0.5" max="3" step="0.25" value={value.textSpeed} onChange={(e) => setValue({ ...value, textSpeed: Number(e.target.value) })} /></label><button className={`toggle ${value.highContrast ? "on" : ""}`} onClick={() => setValue({ ...value, highContrast: !value.highContrast })}><span>高对比阅读</span><i /></button></section><section className="settings-section"><h3>声音与表现</h3><label>环境音量 <b>{value.ambientVolume}%</b><input type="range" min="0" max="100" value={value.ambientVolume} onChange={(e) => setValue({ ...value, ambientVolume: Number(e.target.value) })} /></label><button className={`toggle ${value.simplifiedTexture ? "on" : ""}`} onClick={() => setValue({ ...value, simplifiedTexture: !value.simplifiedTexture })}><span>简化背景纹理</span><i /></button><button className={`toggle ${value.reducedMotion ? "on" : ""}`} onClick={() => setValue({ ...value, reducedMotion: !value.reducedMotion })}><span>减弱界面动效</span><i /></button></section>
+    <section className="settings-section settings-nav"><h3>存档与说明</h3><button className="settings-nav-button" onClick={() => onSwitch("saves")}><span>存档与迁移</span><i>›</i></button><button className="settings-nav-button" onClick={() => onSwitch("help")}><span>系统说明</span><i>›</i></button></section>
+    <section className="settings-section settings-cache">
+      <h3>缓存</h3>
+      <p className="settings-cache-note">仅清理临时缓存（资源缓存与界面状态标记），<b>不会删除</b>你的存档、进度或账号设备信息。</p>
+      <button className={`cache-clear-button ${confirming ? "confirming" : ""}`} onClick={handleClearCache} aria-label="清理临时缓存">{confirming ? "再次点击确认清理缓存" : "清理缓存"}</button>
+      {cacheStatus && <p className="cache-status" role="status">{cacheStatus}</p>}
+      {needsReload && <button className="cache-reload-button" onClick={() => window.location.reload()} aria-label="重新载入以应用最新资源">资源已更新 · 重新载入</button>}
+    </section>
+    <p>当前为本地浏览器 Demo：账号、云存档、广告与支付只保留接口边界，尚不启用。</p>
+    <div className="settings-actions" role="group" aria-label="设置操作">
+      <button className="settings-action secondary" onClick={handleCancel}>取消</button>
+      <button className="settings-action primary" onClick={onClose}>保存</button>
+      <button className="settings-action home" onClick={onExit}>返回主页</button>
+    </div></div>;
 }
 
 function SavePanel({ state, activeId, setState, download, importNow, setNotice }: { state: GameState | null; activeId: string | null; setState: (s: GameState | null) => void; download: () => void; importNow: () => void; setNotice: (s: string) => void }) {
   const slots = ["manual-1", "manual-2", "manual-3", "manual-4", "manual-5"];
   const latestChoice = state?.storyHistory?.filter((entry) => entry.kind.startsWith("player-")).at(-1)?.text ?? "尚未作出关键选择";
   const hasCharacter = Boolean(state && activeId);
-  return <div className="save-panel"><span className="eyebrow">LOCAL FIRST · 本地存档</span><h2>命数留痕</h2>
+  return <div className="save-panel"><span className="eyebrow">本地优先 · 本地存档</span><h2>命数留痕</h2>
     {hasCharacter && state && activeId ? <>
-      <div className="auto-save"><div><small>自动存档 · 当前内容 v{state.contentVersion}</small><b>{state.player.name} · {state.location} · 年十八</b><span>{state.lastSavedAt ? new Date(state.lastSavedAt).toLocaleString("zh-CN") : "尚未写入"} · 最近：{latestChoice}</span></div><button onClick={() => { saveCharacter(activeId, state); setState({ ...state, lastSavedAt: new Date().toISOString() }); setNotice("当前进度已写入"); }}>写入当前进度</button></div>
+      <div className="auto-save"><div><small>自动存档 · 当前内容版本 {state.contentVersion}</small><b>{state.player.name} · {state.location} · 年十八</b><span>{state.lastSavedAt ? new Date(state.lastSavedAt).toLocaleString("zh-CN") : "尚未写入"} · 最近：{latestChoice}</span></div><button onClick={() => { saveCharacter(activeId, state); setState({ ...state, lastSavedAt: new Date().toISOString() }); setNotice("当前进度已写入"); }}>写入当前进度</button></div>
       {slots.map((slot, i) => <div className="save-slot" key={slot}><span>{i + 1}</span><div><b>命数槽 {i + 1}</b><small>可写入当前章节，或读取该槽已有记录</small></div><button onClick={() => { saveCharacterSlot(activeId, i + 1, state); setNotice(`命数槽 ${i + 1} 已写入`); }}>写入</button><button onClick={() => { try { const loaded = loadCharacterSlot(activeId, i + 1); if (loaded) { setState(loaded); setNotice(`命数槽 ${i + 1} 已读取`); } else setNotice("此命数槽尚为空"); } catch { setNotice("存档损坏，未覆盖当前进度"); } }}>读取</button></div>)}
     </> : <p className="save-empty">尚未进入角色。你可导入一份存档，或先在主页创建角色。</p>}
     <div className="save-actions"><button onClick={download} disabled={!hasCharacter}>导出 JSON</button><button onClick={importNow}>导入 JSON</button></div><p>进度保存在此设备；本版本不接入账号或云同步。导入失败不会覆盖当前存档。</p></div>;
 }
 
-function HelpPanel() { return <div className="help-panel"><span className="eyebrow">ABOUT · 系统说明</span><h2>这是一册会记得你的书</h2><p>当前版本已加载第一卷《黑雨》v{blackRainContent.manifest.contentVersion}：剧情按节点呈现，选择会写入本地存档并解锁对应的任务、物品、关系与山海志见闻。</p><div><b>当前内容来源</b><span>仅读取“剧情/第一卷_黑雨/第一章_黑雨”的内容包与正文；备份目录不会参与游戏加载。</span></div><div><b>后续平台化</b><span>领域状态不直接依赖浏览器界面；存档与平台服务经适配层隔离，可在后续对接微信小游戏的文件、触摸、音频与生命周期 API。</span></div><small>剧情内容更新后，以内容包的 manifest 版本和当前节点 ID 为准重新载入。</small></div>; }
+function HelpPanel() { return <div className="help-panel"><span className="eyebrow">关于 · 系统说明</span><h2>这是一册会记得你的书</h2><p>当前版本已加载第一卷《黑雨》v{blackRainContent.manifest.contentVersion}：剧情按节点呈现，选择会写入本地存档并解锁对应的任务、物品、关系与山海志见闻。</p><div><b>当前内容来源</b><span>仅读取“剧情/第一卷_黑雨/第一章_黑雨”的内容包与正文；备份目录不会参与游戏加载。</span></div><div><b>后续平台化</b><span>领域状态不直接依赖浏览器界面；存档与平台服务经适配层隔离，可在后续对接微信小游戏的文件、触摸、音频与生命周期 API。</span></div><small>剧情内容更新后，以内容包的 manifest 版本和当前节点 ID 为准重新载入。</small></div>; }
