@@ -6,6 +6,7 @@
 
 ### 部署
 
+- 新增 GitHub Pages 部署（手机浏览器预览用）：因当前 OAuth token 无 `workflow` 作用域，无法使用 Actions 工作流，改为分支式部署——本地 `vinext build` 静态导出至 `dist/client`（本游戏为单路由 SPA，无需 basePath），将 `dist/client` 内容推送到 `gh-pages` 分支，于 GitHub 仓库 Settings → Pages 选择该分支即发布，稳定地址 `https://77joe7.github.io/shanhai-yiwen/`，后续更新只需重新构建并推送 `gh-pages`。`next.config.mjs` 维持原 `output:"export"` + `images.unoptimized:true`，未引入 basePath 或平台分支逻辑。`scripts/inject-pwa-meta.mjs` 的 PWA meta 注入保持原 favicon 绝对路径。
 - 发布可在手机浏览器预览的《山海异闻录：天地未定》Sites 私有站点：生产静态构建已封装为首个线上版本；站点维持仅所有者访问，项目 ID 仅登记于 `.openai/hosting.json`，不包含运行时密钥。
 - 将线上部署从 Cloudflare Workers 完整迁移至 EdgeOne Makers（国内直连，region=china）。因 Vinext RSC 默认产出 SSR（无 index.html），新增 `next.config.mjs` 设 `output:"export"` 与 `images.unoptimized:true`，使 `vinext build` 预渲染为静态站点（`dist/client/index.html` 等），经 edgeone-pages MCP `deploy_folder`（projectType=static）上线；已验证首页、JS chunk 与背景图均返回 200。Cloudflare Worker（shanhai-yiwen-system-preview.302628809.workers.dev）保留为兜底，可按需停用。
 - 重新部署第一卷《黑雨》v4.1.0（464 节点）：内容包更新后重新构建静态导出并部署 EdgeOne（V1.4 对齐的 5 页导航、撤回、branchClass、高亮跳转、稀有度标签、幕名修正等代码改动同步上线）。部署前打基线 tag `deploy-v4.1.0-20260814`（指向 commit `89451b3`），剧情内容包完整快照另冻结于 `剧情/.../备份/2026-08-14_v4.1.0/`（zip，含 10 个 JSON + 正文 + 资料）。已验证线上 HTTP 200、`contentVersion:"4.1.0"`。
