@@ -5,9 +5,9 @@ from pathlib import Path
 from docx import Document
 
 
-ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "山海异闻录_天地未定_游戏设计说明书暨开发任务书_V1.3_优化修订版.docx"
-OUTPUT = ROOT / "剧情" / "第一卷_黑雨" / "第一章_黑雨" / "资料" / "V1.3说明书_提取摘录.txt"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SOURCE = PROJECT_ROOT / "01_产品文档" / "02_说明书" / "山海异闻录_天地未定_游戏设计说明书暨开发任务书_V1.3_优化修订版.docx"
+OUTPUT = PROJECT_ROOT / "03_剧情内容" / "第一卷_黑雨" / "第一章_黑雨" / "资料" / "V1.3说明书_提取摘录.txt"
 
 
 def main() -> None:

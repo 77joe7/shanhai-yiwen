@@ -6,10 +6,11 @@ import json
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CONTENT_ROOT = PROJECT_ROOT / "03_剧情内容"
 STORY_PATHS = [
-    ROOT / "剧情" / "第一卷_黑雨" / "第一章_黑雨" / "内容包" / "story-nodes.json",
-    ROOT / "剧情" / "第一卷_黑雨" / "第一章_黑雨" / "内容包" / "story-nodes-expansion.json",
+    CONTENT_ROOT / "第一卷_黑雨" / "第一章_黑雨" / "内容包" / "story-nodes.json",
+    CONTENT_ROOT / "第一卷_黑雨" / "第一章_黑雨" / "内容包" / "story-nodes-expansion.json",
 ]
 
 

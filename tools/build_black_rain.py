@@ -11,8 +11,8 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-ROOT = Path(__file__).resolve().parents[1]
-CHAPTER_DIR = ROOT / "剧情" / "第一卷_黑雨" / "第一章_黑雨"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CHAPTER_DIR = PROJECT_ROOT / "03_剧情内容" / "第一卷_黑雨" / "第一章_黑雨"
 PACK_DIR = CHAPTER_DIR / "内容包"
 MANUSCRIPT = CHAPTER_DIR / "正文" / "黑雨_完整游戏小说.md"
 EXPANSION_DOCUMENT = "story-nodes-expansion.json"

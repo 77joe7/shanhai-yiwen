@@ -17,7 +17,7 @@
 
 ## 第一章内容接入
 
-第一卷《黑雨》第一章内容包 v3.0.0 已接入运行：`app/game/blackRainContent.ts` 从 `剧情/第一卷_黑雨/第一章_黑雨/内容包/*.json` 导入，并以 `story-nodes` 与 `story-nodes-expansion` 合并加载剧情节点（manifest：365 可达节点、8 出身、4 主结局）。内容节点只声明条件和 Effect，不直接操作 DOM 或 `localStorage`；现有存档字段与平台适配层保持不变。
+第一卷《黑雨》第一章内容包 v3.0.0 已接入运行：`app/game/blackRainContent.ts` 通过兼容入口 `代码/剧情/` 读取根目录权威内容 `03_剧情内容/第一卷_黑雨/第一章_黑雨/内容包/*.json`，并以 `story-nodes` 与 `story-nodes-expansion` 合并加载剧情节点（manifest：365 可达节点、8 出身、4 主结局）。内容节点只声明条件和 Effect，不直接操作 DOM 或 `localStorage`；现有存档字段与平台适配层保持不变。
 
 ## 微信小游戏适配方向
 
