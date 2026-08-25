@@ -39,3 +39,7 @@ desktop.ini
 
 # Keep intentional final PDF deliverables tracked.
 !*.pdf
+
+# Root-canonical content compatibility junctions; edit the root directories instead.
+/剧情/
+/说明书/
