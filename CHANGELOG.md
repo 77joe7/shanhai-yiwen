@@ -4,6 +4,11 @@
 
 ## [未发布]
 
+### 文档
+
+- 新增《山海异闻录：天地未定》UI 视觉系统规范 V1.4：基于 `ui设计/意向图` 的七张参考图，固化暗色湿墨石、低噪声焦金、五项导航“志异／命录／行游／行囊／舆图”、行游/命录/行囊/舆图/志异的可执行版式，并纳入遭遇战、装备、物品栏与状态可视化；保留 V1.3 的精确基础令牌与无障碍约束，不导入或复用参考图资产，也不自行定义数值公式或未登记玩法。
+- 新增 UI 设计交付目录说明 V1.4，声明 V1.4 视觉规范为当前受控规范，并保留 V1.3 文档与参考原包的历史可追溯性。
+
 ### 部署
 
 - 新增 GitHub Pages 部署（手机浏览器预览用）：因当前 OAuth token 无 `workflow` 作用域，无法使用 Actions 工作流，改为分支式部署——本地 `vinext build` 静态导出至 `dist/client`（本游戏为单路由 SPA，无需 basePath），将 `dist/client` 内容推送到 `gh-pages` 分支，于 GitHub 仓库 Settings → Pages 选择该分支即发布，稳定地址 `https://77joe7.github.io/shanhai-yiwen/`，后续更新只需重新构建并推送 `gh-pages`。`next.config.mjs` 维持原 `output:"export"` + `images.unoptimized:true`，未引入 basePath 或平台分支逻辑。`scripts/inject-pwa-meta.mjs` 的 PWA meta 注入保持原 favicon 绝对路径。
